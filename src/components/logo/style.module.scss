@@ -1,0 +1,20 @@
+.logo {
+    cursor: pointer;
+    font-size: 30px;
+    font-weight: 700;
+    margin: 5px;
+    border-bottom: white 6px solid;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    @media(min-width: 768px) {
+        font-size: 40px;
+        width: 60px;
+        height: 60px;
+    }
+}

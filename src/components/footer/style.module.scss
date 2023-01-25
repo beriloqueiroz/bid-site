@@ -1,0 +1,15 @@
+.footer {
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+    padding: 20px 0;
+    border-top: var(--light) 2px solid;
+    .classic {
+        color:var(--light);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+  }
+  
