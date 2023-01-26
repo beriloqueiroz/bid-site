@@ -2,7 +2,7 @@ import style from "@/components/burgerButton/style.module.scss";
 import { useState } from "react";
 import SideBar from "../sideBar";
 export default function BurgerButton() {
-  const [isShowSideBar, setShowSideBar] = useState(false);
+  const [isShowSideBar, setShowSideBar] = useState(true);
   return (
     <>
       <div

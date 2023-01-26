@@ -3,8 +3,8 @@
     font-size: 30px;
     font-weight: 700;
     margin: 5px;
-    border-bottom: white 6px solid;
-    color: white;
+    border-bottom: var(--color-light-1) 6px solid;
+    color: var(--color-light-1);
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -12,9 +12,9 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    @media(min-width: 768px) {
-        font-size: 40px;
-        width: 60px;
-        height: 60px;
+    @media (min-width: 768px) {
+        font-size: 60px;
+        width: 100px;
+        height: 100px;
     }
 }

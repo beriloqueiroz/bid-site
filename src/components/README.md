@@ -1,9 +1,12 @@
 # Components
 
-- [ ] Header
-  - [ ] Hamburger
-  - [ ] Logo
+- [x] Header
+  - [x] Hamburger
+  - [x] Logo
 - [ ] Footer
 - [ ] ContactForm
 - [ ] Banner
-- [ ] SideBar
+- [x] SideBar
+- [ ] Privacidade (page)
+
+- organizar guia de estilo enquanto é cedo, criar variáveis [ok]

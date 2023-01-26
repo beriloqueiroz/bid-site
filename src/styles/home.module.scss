@@ -1,46 +1,11 @@
 .main {
-    background: linear-gradient(107deg, #f60 13%, #fec44a 69%);
-    padding-top: 100px;
     width: 100%;
     margin: auto;
-    .section {
-        max-width: 1100px;
-        margin: auto;
-    }
-    .apresentation {
-        display: flex;
-        justify-content: flex-end;
-        .apresentationContent { 
-            margin: 0 10px;
-            .apresentationTitle {
-                font-size: 36px;
-                color: white;
-                font-weight: 700;
-                margin: 40px 0;
-            }
-            .apresentationDescription {
-                font-size: 20px;
-                color: white;
-                font-weight: 200;
-            }
-            .buttons {
-                display: flex;
-                gap:20%;
-                justify-content: center;
-                margin-top: 40px;
-                .buttonAbout {
-                    border: 2px solid #fff;
-                    opacity: 1;
-                    transition: 400ms;
-                    border-radius: 4px;
-                    padding: 10px;
-                    cursor: pointer;
-                }
-                .buttonAbout:hover {
-                    background-color: #f60;
-                    color: white;
-                }  
-            }            
-        }
+    section {
+        // max-width: 1100px;
+        margin: 0 auto;
+        padding-left: calc((100% - 1200px) / 2);
+        padding-right: calc((100% - 1200px) / 2);
+        padding-bottom: 3rem;
     }
 }

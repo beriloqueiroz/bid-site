@@ -6,6 +6,18 @@
   --font-mono: 'Barlow', Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  --background-color-1: white;
+  --background-color-dark: #333333;
+  --color-primary-1: #f60;
+  --color-primary-2: #F2873D;
+  --color-secondary-1: #fec44a;
+  --color-secondary-2: #9A7A5B;
+  --color-dark-1: #777777;
+  --color-dark-2: black;
+  --color-success-1: green;
+  --color-light-1: white;
+  --color-light-2: #ECECEC;
+  --color-light-3: #F8F8F8;
 }
 
 * {
@@ -24,7 +36,7 @@ body {
 }
 
 body {
-  background: white;
+  background: var(--background-color-1);
 }
 
 a {
@@ -34,4 +46,10 @@ a {
 
 #__next {
   height: 100%;
+}
+
+.active {
+  box-shadow: 0 0.2rem 0.7rem rgba(0, 0, 0, 0.3);
+  background-color: var(--color-primary-2);
+  height: auto;
 }

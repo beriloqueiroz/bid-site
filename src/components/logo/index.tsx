@@ -5,7 +5,7 @@ export default function Logo() {
   const router = useRouter();
   return (
     <div className={style.logo} onClick={() => router.push("/")}>
-      dib
+      bid
     </div>
   );
 }
