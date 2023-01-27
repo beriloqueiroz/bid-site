@@ -2,7 +2,7 @@ import style from "@/components/burgerButton/style.module.scss";
 import { useState } from "react";
 import SideBar from "../sideBar";
 export default function BurgerButton() {
-  const [isShowSideBar, setShowSideBar] = useState(true);
+  const [isShowSideBar, setShowSideBar] = useState<boolean>(true);
   return (
     <>
       <div
@@ -13,7 +13,7 @@ export default function BurgerButton() {
             !isShowSideBar ? style.active : ""
           }`}></div>
       </div>
-      <SideBar active={!isShowSideBar} />
+      <SideBar active={!isShowSideBar} setActive={setShowSideBar} />
     </>
   );
 }

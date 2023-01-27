@@ -1,17 +1,24 @@
 import style from "@/components/sideBar/style.module.scss";
 import { useRouter } from "next/router";
 import { SideBarProps } from "./props";
-export default function SideBar({ active }: SideBarProps) {
+export default function SideBar({ active, setActive }: SideBarProps) {
   const router = useRouter();
-
+  const closeAndAbout = () => {
+    router.push("#sobre");
+    setActive(true);
+  };
+  const closeAndContact = () => {
+    router.push("#contato");
+    setActive(true);
+  };
   return (
     <div className={`${style.container} ${active && style.active}`}>
       <nav className={style.nav}>
         <ul className={style.ul}>
-          <li className={style.li} onClick={() => router.push("#sobre")}>
+          <li className={style.li} onClick={closeAndAbout}>
             Sobre nós
           </li>
-          <li className={style.li} onClick={() => router.push("#contato")}>
+          <li className={style.li} onClick={closeAndContact}>
             Contato
           </li>
           <br />
