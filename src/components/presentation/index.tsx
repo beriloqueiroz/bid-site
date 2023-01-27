@@ -10,14 +10,15 @@ export default function Presentation() {
           Bom, Inteligente e Direto, Simples assim!
         </h1>
         <div className={styles.banner}>
-          <video
+          {/* <video
             src='/short_presentation.webm'
             typeof='video/webm'
             title='Apresentação da bid'
             autoPlay
             muted
             loop
-          />
+          /> */}
+          <img src='/short_presentation.gif' alt='video de apresentação' />
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
