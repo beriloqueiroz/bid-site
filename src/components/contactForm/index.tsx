@@ -98,6 +98,11 @@ export default function ContactForm() {
               telefone)
             </span>
           )}
+          {submitted && !error && (
+            <span className={styles.successMessage}>
+              Sucesso ao enviar informações. Bm breve entraremos em contato.
+            </span>
+          )}
         </form>
       </div>
     </section>
