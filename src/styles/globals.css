@@ -19,6 +19,7 @@
   --color-light-1: white;
   --color-light-2: #ECECEC;
   --color-light-3: #F8F8F8;
+  --color-error: #880000;
 }
 
 * {

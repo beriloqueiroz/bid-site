@@ -37,6 +37,10 @@
             textarea {
                 height: 100px;
             }
+            .errorMessage {
+                color: var(--color-error);
+                margin: 1rem 0;
+            }
             button {
                 color: var(--color-light-1);
                 background-color: var(--color-primary-2);
@@ -45,6 +49,24 @@
                 width: 50%;
                 margin-top: 1.5rem;
                 border: var(--color-light-2) 2px solid;
+                height: 60px;
+                .loading {
+                    width: 40px;
+                    height: 100%;
+                    margin: auto;
+                    animation: loading 3s linear infinite;
+                    @keyframes loading {
+                        0% {
+                            transform: rotate(0);
+                        }
+                        100% {
+                            transform: rotate(360deg);
+                        }
+                    }
+                    border-radius: 50%;
+                    border: 2px var(--color-light-1) dashed;
+                    background: transparent;
+                }
             }
         }
     }
