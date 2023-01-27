@@ -1,5 +1,6 @@
 import styles from "@/components/contactForm/style.module.scss";
 import { useState } from "react";
+import * as ga4 from "../google/ga4lib";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -37,6 +38,7 @@ export default function ContactForm() {
         setEmail("");
         setMessage("");
         setPhone("");
+        ga4.event({ action: "click", params: "lead_form" });
       } else {
         setError(true);
       }

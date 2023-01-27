@@ -1,4 +1,4 @@
-const GA_TRACKING_ID = "G-BDL6T80L70";
+const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
 export default function GoogleAnalytics() {
   return (
