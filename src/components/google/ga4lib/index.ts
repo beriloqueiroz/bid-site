@@ -14,7 +14,7 @@ export const pageView = (url: string) => {
     });
 };
 
-// log specific events happening.
 export const event = ({ action, params }: EventProps) => {
     window.gtag("event", action, params);
+    console.log('event', action)
 };
