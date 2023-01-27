@@ -38,7 +38,7 @@ export default function ContactForm() {
         setEmail("");
         setMessage("");
         setPhone("");
-        ga4.event({ action: "click", params: "lead_form" });
+        ga4.event({ action: "lead_form", params: {} });
       } else {
         setError(true);
       }

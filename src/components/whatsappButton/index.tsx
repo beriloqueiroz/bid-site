@@ -6,7 +6,7 @@ export default function WhatsappButton() {
   const whatsappMessage = "Olá, estou na bid, gostaria de mais informações";
 
   function goWhatsapp() {
-    ga4.event({ action: "click", params: "lead_whatsapp" });
+    ga4.event({ action: "lead_whatsapp", params: {} });
     window.open(
       `https://api.whatsapp.com/send/?phone=${whatsPhone}&text=${whatsappMessage}&type=phone_number&app_absent=0`,
       "_blank"
