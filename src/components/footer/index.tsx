@@ -1,6 +1,7 @@
 import styles from "@/components/footer/style.module.scss";
 import { useRouter } from "next/router";
 import Logo from "../logo";
+import WhatsappButton from "../whatsappButton";
 
 export default function Footer() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function Footer() {
           </a>
         </div>
       </div>
+      <WhatsappButton />
     </footer>
   );
 }

@@ -5,10 +5,36 @@ export default function About() {
     <section className={styles.container} id='sobre'>
       <div className={styles.content}>
         <h1>Sobre Nós</h1>
-        <h2>Missão, Visão, Valores</h2>
+        <p>
+          Nossa <strong>Missão</strong> é proporcionar a operação de entregas de
+          forma simples e inteligente. Temos como <strong>Visão</strong> que, é
+          possível tornar-se uma referência em entregas rápidas para empresas em
+          Fortaleza, tendo como <strong>Valores</strong>: respeito, honestidade,
+          cordialidade, inteligencia e agilidade.
+        </p>
         <h2>Onde estamos</h2>
+        <p>
+          Estamos em <strong>Fortaleza</strong> e entregamos em toda cidade e
+          região metropolitana.
+        </p>
         <h2>A quem atendemos</h2>
+        <p>
+          Atendemos a empresas, e-commerces/lojas virtuais que desejam
+          <strong> simplificar</strong> a operação com entrega em Fortaleza e
+          região metropolitana.
+        </p>
         <h2>Como trabalhamos</h2>
+        <p>
+          Possuímos entregadores <strong>treinados</strong>, experientes e
+          especialistas na região que atuamos, e através deles e de um sistema
+          <strong> inteligente</strong> de rotas, e acompanhamento, conseguimos
+          obter <strong>eficiência</strong>, velocidade e um{" "}
+          <strong>preço incrível</strong>. Nosso entregador coleta na sua
+          empresa as encomendas/pedidos no final da tarde e entrega no dia
+          seguinte. Sem complicação e sem dor de cabeça. e claro, você nos paga
+          um preço mais barato do que o normal. Assim oferece preço e prazo para
+          seu cliente, <strong>aumenta as vendas</strong> e todo mundo ganha.
+        </p>
       </div>
     </section>
   );

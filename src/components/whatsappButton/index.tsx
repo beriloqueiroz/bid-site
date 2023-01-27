@@ -1,4 +1,3 @@
-import { WhatsappProps } from "./props";
 import whatsStyles from "@/components/whatsappButton/style.module.scss";
 
 export default function WhatsappButton() {
@@ -11,7 +10,6 @@ export default function WhatsappButton() {
       target='_blank'
       rel='noreferrer'>
       <svg
-        fill='#ffffff'
         width='50px'
         height='50px'
         viewBox='0 0 256 256'
