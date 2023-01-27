@@ -1,7 +1,7 @@
 .presentation {
     display: flex;
     flex-direction: column;
-    background: linear-gradient(107deg, var(--color-primary-1) 13%, var(--color-secondary-1) 69%);
+    background: linear-gradient(107deg, var(--presentation-2) 13%, var(--presentation-2) 69%);
     padding-top: 100px;
 
     @media (min-width: 768px) {
@@ -52,7 +52,7 @@
             text-align: center;
             margin: 20px 10px;
             strong {
-                color: var(--color-primary-2);
+                color: var(--color-primary-3);
             }
             @media (min-width: 768px) {
                 grid-column: 1;

@@ -1,5 +1,5 @@
 .footer {
-    background-color: var(--background-color-dark);
+    background-color: var(--color-primary-2);
     padding: 2rem 1.5rem 3rem 1.5rem;
     .container {
         display: flex;
@@ -16,7 +16,7 @@
             margin: auto;
         }
         h1 {
-            color: var(--color-primary-2);
+            color: var(--color-primary-1);
         }
         .aboutUs {
             display: flex;
@@ -25,9 +25,16 @@
             gap: 1rem;
             h1 {
                 font-size: 26px;
+                @media (min-width: 768px) {
+                    font-size: 40px;
+                    font-weight: 700;
+                }
             }
             p {
                 cursor: pointer;
+            }
+            p:hover {
+                color: var(--color-primary-3);
             }
         }
 
@@ -38,6 +45,13 @@
             gap: 1rem;
             h1 {
                 font-size: 16px;
+                @media (min-width: 768px) {
+                    font-size: 26px;
+                    font-weight: 700;
+                }
+            }
+            a:hover {
+                color: var(--color-primary-3);
             }
         }
     }

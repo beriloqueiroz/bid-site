@@ -25,7 +25,7 @@ export default function Footer() {
         <div className={styles.social}>
           <h1>REDES SOCIAIS</h1>
           <a
-            href='https://instagram.com/bid.log'
+            href='https://www.instagram.com/bid.log/'
             target='_blank'
             rel='noopener noreferrer'>
             Instagram
