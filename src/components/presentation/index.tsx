@@ -13,9 +13,9 @@ export default function Presentation() {
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
-          <strong>inteligente</strong>, reunimos e treinamos entregadores de
-          confiança, para proporcionar um <strong>preço</strong> justo, pra não
-          dizer <strong>barato</strong> , e uma entrega rápida.
+          <strong>inteligente</strong>. Reunimos e treinamos entregadores de
+          confiança para proporcionar um <strong>preço</strong> justo, pra não
+          dizer <strong>barato</strong>, e uma entrega rápida.
         </p>
         <div className={styles.buttons}>
           <button

@@ -19,19 +19,19 @@ export default function About() {
         </p>
         <h2>A quem atendemos</h2>
         <p>
-          Atendemos a empresas, e-commerces/lojas virtuais que desejam
+          Atendemos à empresas, e-commerces/lojas virtuais que desejam
           <strong> simplificar</strong> a operação com entrega em Fortaleza e
           região metropolitana.
         </p>
         <h2>Como trabalhamos</h2>
         <p>
           Possuímos entregadores <strong>treinados</strong>, experientes e
-          especialistas na região que atuamos, e através deles e de um sistema
+          especialistas na região que atuamos, através deles e de um sistema
           <strong> inteligente</strong> de rotas, e acompanhamento, conseguimos
           obter <strong>eficiência</strong>, velocidade e um{" "}
           <strong>preço incrível</strong>. Nosso entregador coleta na sua
           empresa as encomendas/pedidos no final da tarde e entrega no dia
-          seguinte. Sem complicação e sem dor de cabeça. e claro, você nos paga
+          seguinte. Sem complicação e sem dor de cabeça. E claro, você nos paga
           um preço mais barato do que o normal. Assim oferece preço e prazo para
           seu cliente, <strong>aumenta as vendas</strong> e todo mundo ganha.
         </p>
