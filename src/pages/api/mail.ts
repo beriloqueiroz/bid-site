@@ -30,7 +30,7 @@ export default async function handler(
     to: "contato@bid.log.br",
     subject: "Contato pelo formulário do site",
     text: `${body.message}`,
-    html: `<strong>${body.name}, ${body.phone} </strong>`,
+    html: `<strong>${body.name}, ${body.phone} </strong> </br> <p>${body.message}</p>`,
     headers: { 'x-myheader': 'test header' }
   }
 
