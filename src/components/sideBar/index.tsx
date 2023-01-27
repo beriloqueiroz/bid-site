@@ -33,7 +33,7 @@ export default function SideBar({ active, setActive }: SideBarProps) {
             </svg>
             <a
               className={style.li_a}
-              href='intagram.com/bid.log'
+              href='https://intagram.com/bid.log'
               target='_blank'
               rel='noopener noreferrer'>
               @bid.log
