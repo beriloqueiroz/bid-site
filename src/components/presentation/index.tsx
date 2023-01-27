@@ -2,6 +2,7 @@ import styles from "@/components/presentation/style.module.scss";
 import { useRouter } from "next/router";
 export default function Presentation() {
   const router = useRouter();
+
   return (
     <section className={`${styles.section} ${styles.presentation}`}>
       <div className={styles.presentationContent}>
@@ -9,7 +10,14 @@ export default function Presentation() {
           Bom, Inteligente e Direto, Simples assim!
         </h1>
         <div className={styles.banner}>
-          <img src='/short_presentation.gif' alt='apresentação' />
+          <video
+            src='/short_presentation.webm'
+            typeof='video/webm'
+            title='Apresentação da bid'
+            autoPlay
+            muted
+            loop
+          />
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
