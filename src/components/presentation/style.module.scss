@@ -51,6 +51,9 @@
             font-weight: 200;
             text-align: center;
             margin: 20px 10px;
+            strong {
+                color: var(--color-primary-2);
+            }
             @media (min-width: 768px) {
                 grid-column: 1;
                 grid-row: 2;
@@ -73,7 +76,7 @@
                 cursor: pointer;
             }
             .buttonAbout:hover {
-                background-color: var(--color-primary-1);
+                background-color: var(--color-primary-2);
                 color: var(--color-light-1);
             }
             @media (min-width: 768px) {

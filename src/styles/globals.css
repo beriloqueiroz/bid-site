@@ -8,9 +8,9 @@
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
   --background-color-1: white;
   --background-color-dark: #333333;
-  --color-primary-1: #f60;
+  --color-primary-1: #222222;
   --color-primary-2: #F2873D;
-  --color-secondary-1: #fec44a;
+  --color-secondary-1: #555555;
   --color-secondary-2: #9A7A5B;
   --color-dark-1: #777777;
   --color-dark-2: black;
@@ -51,6 +51,6 @@ a {
 
 .active {
   box-shadow: 0 0.2rem 0.7rem rgba(0, 0, 0, 0.3);
-  background-color: var(--color-primary-2);
+  background-color: var(--color-primary-1);
   height: auto;
 }
