@@ -19,7 +19,11 @@ export default function Presentation() {
             muted
             loop
           /> */}
-          <img src='/short_presentation.gif' alt='video de apresentação' />
+          <img
+            src='/short_presentation.gif'
+            alt='video de apresentação'
+            loading='lazy'
+          />
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
