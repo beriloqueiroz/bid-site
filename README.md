@@ -10,7 +10,7 @@
 - [x] Banner (trocar cores do video)
 - [x] SideBar (faltando atualizar link das redes)
 - [x] Privacidade (page)
-- [ ] ajustar problemas de performance (video de apresentação)
+- [x] ajustar problemas de performance (video de apresentação)
 
 ## consulta de status
 

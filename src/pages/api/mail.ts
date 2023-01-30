@@ -37,6 +37,10 @@ export default async function handler(
     headers: { 'x-myheader': 'test header' }
   }
 
+  if (!body.email || body.email == "") {
+    res.status(500).json({ status: 'Nok' })
+  }
+
   transporter.sendMail(mailData, function (err, info) {
     if (err) {
       console.log(err)

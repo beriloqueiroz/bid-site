@@ -1,6 +1,9 @@
 import styles from "@/components/contactForm/style.module.scss";
 import { useState } from "react";
 import * as ga4 from "../google/ga4lib";
+import InputForm from "../inputForm";
+
+import SubmitButton from "../submitButton";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -50,48 +53,47 @@ export default function ContactForm() {
     <section className={styles.container} id='contato'>
       <div>
         <h1 className={styles.title}>Fale conosco</h1>
-        <form action='/api/mail' method='post' className={styles.form}>
-          <label htmlFor='name'>nome: </label>
-          <input
+        <form className={styles.form}>
+          <InputForm
+            label='nome'
             type='text'
             name='name'
             id='name'
             placeholder='João da Silva'
-            required
-            onChange={(e) => setName(e.target.value)}
+            isRequired={true}
+            setOnChange={setName}
             value={name}
           />
-          <label htmlFor='email'>e-mail: </label>
-          <input
+          <InputForm
+            label='e-mail'
             type='email'
             name='email'
             id='email'
             placeholder='email@gmail.com'
-            required
-            onChange={(e) => setEmail(e.target.value)}
+            isRequired={true}
+            setOnChange={setEmail}
             value={email}
           />
-          <label htmlFor='telefone'>telefone: </label>
-          <input
+          <InputForm
+            label='telefone'
             type='tel'
             name='phone'
             id='phone'
             placeholder='(85) 88888888'
-            required
-            onChange={(e) => setPhone(e.target.value)}
+            isRequired={true}
+            setOnChange={setPhone}
             value={phone}
           />
-          <label htmlFor='message'>mensagem: </label>
-          <textarea
+          <InputForm
+            label='mensagem'
             name='mensagem'
             id='message'
             placeholder='Olá, gostaria de solicitar uma ...'
-            onChange={(e) => setMessage(e.target.value)}
+            setOnChange={setMessage}
             value={message}
+            isTextArea={true}
           />
-          <button type='submit' onClick={(e) => handleSubmit(e)}>
-            {!sending ? "Enviar" : <div className={styles.loading}></div>}
-          </button>
+          <SubmitButton sending={sending} handleSubmit={handleSubmit} />
           {!sending && error && (
             <span className={styles.errorMessage}>
               Desculpe Erro ao enviar mensagem, tente por outro canal (Whatsapp,
