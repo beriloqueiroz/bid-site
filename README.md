@@ -9,7 +9,7 @@
 - [x] ContactForm (faltando disparo de email)
 - [x] Banner (trocar cores do video)
 - [x] SideBar (faltando atualizar link das redes)
-- [ ] Privacidade (page)
+- [x] Privacidade (page)
 - [ ] ajustar problemas de performance (video de apresentação)
 
 ## consulta de status

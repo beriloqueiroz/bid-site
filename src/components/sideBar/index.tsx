@@ -50,7 +50,7 @@ export default function SideBar({ active, setActive }: SideBarProps) {
             </svg>
             <a
               className={style.li_a}
-              href='https://br.linkedin.com/in/bid.log'
+              href='https://www.linkedin.com/company/bid-log'
               target='_blank'
               rel='noopener noreferrer'>
               bid.log

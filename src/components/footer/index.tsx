@@ -47,7 +47,7 @@ export default function Footer() {
             Instagram
           </a>
           <a
-            href='https://br.linkedin.com/in/bid.log'
+            href='https://www.linkedin.com/company/bid-log'
             target='_blank'
             rel='noopener noreferrer'>
             Linkedin
