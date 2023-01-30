@@ -10,7 +10,7 @@ export default function About() {
           forma simples e inteligente. Temos como <strong>Visão</strong>:
           tornar-se uma referência em entregas rápidas, confiáveis e eficientes
           para empresas em Fortaleza, tendo como <strong>Valores</strong>:
-          respeito, honestidade, cordialidade, inteligencia e agilidade.
+          respeito, honestidade, cordialidade, inteligência e agilidade.
         </p>
         <h2>Onde estamos</h2>
         <p>

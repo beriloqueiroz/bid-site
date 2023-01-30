@@ -85,7 +85,7 @@ export default function ContactForm() {
           <textarea
             name='mensagem'
             id='message'
-            placeholder='Olá, gostaria e fazer uma solicitar uma ...'
+            placeholder='Olá, gostaria de solicitar uma ...'
             onChange={(e) => setMessage(e.target.value)}
             value={message}
           />

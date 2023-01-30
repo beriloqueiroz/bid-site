@@ -25,7 +25,7 @@
             margin: auto;
         }
         h1 {
-            color: var(--color-primary-1);
+            color: var(--color-light-1);
         }
         .aboutUs {
             display: flex;
@@ -41,6 +41,10 @@
             }
             p {
                 cursor: pointer;
+                margin-left: 1rem;
+            }
+            a {
+                margin-left: 1rem;
             }
             p:hover {
                 color: var(--color-primary-3);
@@ -64,6 +68,9 @@
             }
             a:hover {
                 color: var(--color-primary-3);
+            }
+            a {
+                margin-left: 1rem;
             }
         }
     }
