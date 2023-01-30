@@ -1,6 +1,7 @@
 import styles from "@/components/footer/style.module.scss";
 import { useRouter } from "next/router";
 import Logo from "../logo";
+import PrivacyModal from "../privacyModal";
 import WhatsappButton from "../whatsappButton";
 
 export default function Footer() {
@@ -13,10 +14,10 @@ export default function Footer() {
           <Logo />
           <p>bid transporte inteligente</p>
           <p>bid © 2023. Todos os direitos reservados.</p>
-          <div onClick={() => router.push("/privacidade")}>
-            Política de Privacidade e Cookies <br />
-            Termos de uso
+          <div onClick={() => router.push("/politica-privacidade-cookies")}>
+            Política de Privacidade e Cookies
           </div>
+          {/* <div onClick={() => router.push("/termos")}>Termos de uso</div> */}
         </div>
         <div className={styles.aboutUs}>
           <h1>EMPRESA</h1>
@@ -54,6 +55,7 @@ export default function Footer() {
         </div>
       </div>
       <WhatsappButton />
+      <PrivacyModal />
     </footer>
   );
 }

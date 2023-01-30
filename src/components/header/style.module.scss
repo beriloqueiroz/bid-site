@@ -6,6 +6,9 @@
     width: 100%;
     padding: 0 1rem;
     height: auto;
+    box-shadow: 0 0.2rem 0.7rem rgba(0, 0, 0, 0.3);
+    background-color: var(--color-primary-1);
+    height: auto;
     .mobile_menu {
         display: flex;
         justify-content: space-between;
