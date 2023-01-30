@@ -1,5 +1,8 @@
 .section {
     padding: 100px 1rem;
+    @media (min-width: 768px) {
+        padding-top: 150px;
+    }
     form {
         display: flex;
         flex-direction: column;
@@ -13,12 +16,21 @@
         padding: 2rem;
         list-style: none;
         margin: 1rem auto;
-        background-color: var(--color-primary-2);
         color: var(--color-light-1);
         display: flex;
+        flex-direction: column;
+        width: fit-content;
+        width: -moz-fit-content;
+        display: flex;
+        @media (min-width: 768px) {
+            flex-direction: row;
+        }
         li {
-            margin: 1rem 0;
+            background-color: var(--color-primary-2);
+            margin: 1rem 1rem;
             text-align: center;
+            max-width: 500px;
+            padding: 1rem;
             p {
                 background-color: var(--background-color-dark);
                 width: 100%;
