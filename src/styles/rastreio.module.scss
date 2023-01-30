@@ -9,4 +9,26 @@
             width: 100%;
         }
     }
+    .ul {
+        padding: 2rem;
+        list-style: none;
+        margin: 1rem auto;
+        background-color: var(--color-primary-2);
+        color: var(--color-light-1);
+        display: flex;
+        li {
+            margin: 1rem 0;
+            text-align: center;
+            p {
+                background-color: var(--background-color-dark);
+                width: 100%;
+                border: 2px solid var(--color-light-1);
+                margin: 1rem 0;
+                padding: 0.5rem;
+            }
+            span {
+                font-size: 26px;
+            }
+        }
+    }
 }

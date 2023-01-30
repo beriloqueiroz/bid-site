@@ -4,22 +4,29 @@ import SubmitButton from "@/components/submitButton";
 import axios from "axios";
 import { useState } from "react";
 import style from "../styles/rastreio.module.scss";
-type Data = {
-  status?: string;
-  teste: string;
+import moment from "moment";
+type OrderDTO = {
+  name: string;
+  date: string;
+  endDate: string;
+  orderId: string;
+  taskStatus: number;
+  address: {
+    formatted_address: string;
+  };
 };
 export default function Rastreio() {
   const [order, setOrder] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
-  const [response, setResponse] = useState<Data>({ teste: "" });
+  const [response, setResponse] = useState<OrderDTO[]>([]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSending(true);
     setError(false);
-    const response = await axios.get("/api/tracking?order=${order}", {
+    const response = await axios.get(`/api/tracking?order=${order}`, {
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
@@ -65,7 +72,34 @@ export default function Rastreio() {
             </span>
           )}
         </form>
-        <div>{JSON.stringify(response)}</div>
+        {response.length <= 0 ? null : (
+          <ul className={style.ul}>
+            {response.map((order) => (
+              <li key={order.orderId}>
+                <p>
+                  <strong>Descrição:</strong> {order.name}
+                </p>
+                <p>
+                  <strong>Data inicial:</strong>{" "}
+                  {moment(order.date).format("DD/MM/YYYY hh:mm:ss")}
+                </p>
+                <p>
+                  <strong>Data final:</strong>{" "}
+                  {moment(order.endDate).format("DD/MM/YYYY hh:mm:ss")}
+                </p>
+                <p>
+                  <strong>Pedido:</strong> {order.orderId}
+                </p>
+                <p>
+                  <strong>Endereço:</strong> {order.address.formatted_address}
+                </p>
+                <span>
+                  <strong>Status:</strong> {order.taskStatus}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </Layout>
   );
