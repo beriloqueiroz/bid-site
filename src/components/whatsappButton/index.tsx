@@ -3,7 +3,8 @@ import * as ga4 from "../google/ga4lib";
 
 export default function WhatsappButton() {
   const whatsPhone = "5585997492562";
-  const whatsappMessage = "Olá, estou na bid, gostaria de mais informações";
+  const whatsappMessage =
+    "Olá, estou interessado nos serviços da bid e gostaria de mais informações.";
 
   function goWhatsapp() {
     ga4.event({ action: "lead_whatsapp", params: {} });

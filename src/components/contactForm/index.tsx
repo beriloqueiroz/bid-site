@@ -56,7 +56,7 @@ export default function ContactForm() {
             type='text'
             name='name'
             id='name'
-            placeholder='joão da silva'
+            placeholder='João da Silva'
             required
             onChange={(e) => setName(e.target.value)}
             value={name}
@@ -85,7 +85,7 @@ export default function ContactForm() {
           <textarea
             name='mensagem'
             id='message'
-            placeholder='Olá, gostaria e fazer uma cotação...'
+            placeholder='Olá, gostaria e fazer uma solicitar uma ...'
             onChange={(e) => setMessage(e.target.value)}
             value={message}
           />

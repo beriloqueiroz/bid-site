@@ -7,14 +7,14 @@ export default function About() {
         <h1>Sobre Nós</h1>
         <p>
           Nossa <strong>Missão</strong> é proporcionar a operação de entregas de
-          forma simples e inteligente. Temos como <strong>Visão</strong> que, é
-          possível tornar-se uma referência em entregas rápidas para empresas em
-          Fortaleza, tendo como <strong>Valores</strong>: respeito, honestidade,
-          cordialidade, inteligencia e agilidade.
+          forma simples e inteligente. Temos como <strong>Visão</strong>:
+          tornar-se uma referência em entregas rápidas, confiáveis e eficientes
+          para empresas em Fortaleza, tendo como <strong>Valores</strong>:
+          respeito, honestidade, cordialidade, inteligencia e agilidade.
         </p>
         <h2>Onde estamos</h2>
         <p>
-          Estamos em <strong>Fortaleza</strong> e entregamos em toda cidade e
+          Estamos em <strong>Fortaleza</strong> e entregamos em toda capital e
           região metropolitana.
         </p>
         <h2>A quem atendemos</h2>
@@ -26,8 +26,8 @@ export default function About() {
         <h2>Como trabalhamos</h2>
         <p>
           Possuímos entregadores <strong>treinados</strong>, experientes e
-          especialistas na região que atuamos, através deles e de um sistema
-          <strong> inteligente</strong> de rotas, e acompanhamento, conseguimos
+          especialistas na região que atuamos. Através deles e de um sistema
+          <strong> inteligente</strong> de rotas e acompanhamento, conseguimos
           obter <strong>eficiência</strong>, velocidade e um{" "}
           <strong>preço incrível</strong>. Nosso entregador coleta na sua
           empresa as encomendas/pedidos no final da tarde e entrega no dia

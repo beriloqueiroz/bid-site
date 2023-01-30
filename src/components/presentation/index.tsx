@@ -7,7 +7,8 @@ export default function Presentation() {
     <section className={`${styles.section} ${styles.presentation}`}>
       <div className={styles.presentationContent}>
         <h1 className={styles.presentationTitle}>
-          Bom, Inteligente e Direto, Simples assim!
+          bom, inteligente e direto.
+          <br /> <span>Simples assim!</span>
         </h1>
         <div className={styles.banner}>
           {/* <video

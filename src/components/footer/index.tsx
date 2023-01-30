@@ -14,13 +14,28 @@ export default function Footer() {
           <p>bid transporte inteligente</p>
           <p>bid © 2023. Todos os direitos reservados.</p>
           <div onClick={() => router.push("/privacidade")}>
-            Política de Privacidade e Cookies | Termos de uso
+            Política de Privacidade e Cookies <br />
+            Termos de uso
           </div>
         </div>
         <div className={styles.aboutUs}>
-          <h1>bid</h1>
+          <h1>EMPRESA</h1>
           <p onClick={() => router.push("#sobre")}>Conheça a bid</p>
-          <p onClick={() => router.push("#contato")}>Fale conosco</p>
+          <p onClick={() => router.push("#contato")}>
+            Fale conosco | Trabalhe conosco
+          </p>
+        </div>
+        <div className={styles.aboutUs}>
+          <h1>CONTATO</h1>
+          <a href='tel:85997492562' target='_blank' rel='noopener noreferrer'>
+            +55 85 997492562 (Whatsapp)
+          </a>
+          <a
+            href='mailto:contato@bid.log.br'
+            target='_blank'
+            rel='noopener noreferrer'>
+            contato@bid.log.br
+          </a>
         </div>
         <div className={styles.social}>
           <h1>REDES SOCIAIS</h1>
