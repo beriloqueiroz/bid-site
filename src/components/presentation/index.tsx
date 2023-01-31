@@ -1,6 +1,5 @@
 import styles from "@/components/presentation/style.module.scss";
 import { useRouter } from "next/router";
-import LazyLoad from "react-lazy-load";
 
 export default function Presentation() {
   const router = useRouter();
@@ -13,17 +12,16 @@ export default function Presentation() {
           <br /> <span>Simples assim!</span>
         </h1>
         <div className={styles.banner}>
-          <LazyLoad>
-            <video
-              title='Apresentação da bid'
-              muted
-              autoPlay
-              loop
-              playsInline
-              preload='auto'>
-              <source src='/short_presentation.mp4' type='video/mp4' />
-            </video>
-          </LazyLoad>
+          <video
+            id='video_id'
+            title='Apresentação da bid'
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload='auto'>
+            <source src='/short_presentation.mp4' type='video/mp4' />
+          </video>
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
@@ -34,12 +32,12 @@ export default function Presentation() {
         <div className={styles.buttons}>
           <button
             className={styles.buttonAbout}
-            onClick={() => router.push("#contato")}>
+            onClick={() => router.push("/#contato")}>
             ENTRE EM CONTATO
           </button>
           <button
             className={styles.buttonAbout}
-            onClick={() => router.push("#sobre")}>
+            onClick={() => router.push("/#sobre")}>
             MAIS SOBRE NÓS
           </button>
         </div>
