@@ -72,7 +72,9 @@ export default function Rastreio() {
             </span>
           )}
         </form>
-        {response.length <= 0 ? null : (
+        {response.length <= 0 ? (
+          <p className={style.warn}>Nenhum pacote encontrado</p>
+        ) : (
           <ul className={style.ul}>
             {response.map((order) => (
               <li key={order.orderId}>

@@ -54,12 +54,25 @@ async function get(url: string, auth: string): Promise<any> {
 
 async function getOrderByNumber(orderNumber: string): Promise<Order[]> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
-  const auth = process.env.SECRET_API_DELIFORCE_1 as string;
-  let responseData = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, auth);
-  console.log('resposne data', responseData)
 
-  if (responseData.length <= 0) return [];
-  return responseData;
+  if (orderNumber.indexOf("-") < 0) {
+    return [];
+  }
+
+  const prefix = orderNumber.slice(0, orderNumber.indexOf("-"))
+  const orderNumberWithoutPrefix = orderNumber.slice(orderNumber.indexOf("-") + 1, orderNumber.length)
+
+  const generalAuth = process.env['CONFIG_' + prefix] as string;
+
+  if (!generalAuth) return [];
+
+  const keys = JSON.parse(generalAuth) as string[];
+
+  for (const key of keys) {
+    let responseData = await get(urlbase + `/task/orderid?orderId=${orderNumberWithoutPrefix}`, key);
+    if (responseData.length > 0) return responseData;
+  }
+  return [];
 }
 
 export default async function handler(
