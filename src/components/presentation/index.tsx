@@ -1,6 +1,7 @@
 import styles from "@/components/presentation/style.module.scss";
 import { useRouter } from "next/router";
-
+import React from "react";
+const LazyVideo = React.lazy(() => import("./video"));
 export default function Presentation() {
   const router = useRouter();
 
@@ -12,16 +13,7 @@ export default function Presentation() {
           <br /> <span>Simples assim!</span>
         </h1>
         <div className={styles.banner}>
-          <video
-            id='video_id'
-            title='Apresentação da bid'
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload='auto'>
-            <source src='/short_presentation.mp4' type='video/mp4' />
-          </video>
+          <LazyVideo />
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
