@@ -28,7 +28,6 @@ export default function SideBar({ active, setActive }: SideBarProps) {
           <li className={style.li} onClick={closeAndTracking}>
             Rastreio
           </li>
-          <br />
           <li className={style.liSocial}>
             <svg
               className={style.svg}
