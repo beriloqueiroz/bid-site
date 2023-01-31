@@ -141,7 +141,7 @@ export default async function handler(
 function getDescStatus(status: string) {
   const st = [
     'Não atribuído',
-    'Assigned',
+    'Atribuído',
     'Aceito',
     'Iniciado',
     'Chegou',
