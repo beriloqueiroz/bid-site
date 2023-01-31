@@ -4,11 +4,11 @@ import { SideBarProps } from "./props";
 export default function SideBar({ active, setActive }: SideBarProps) {
   const router = useRouter();
   const closeAndAbout = () => {
-    router.push("/#sobre");
+    router.push("#sobre");
     setActive(true);
   };
   const closeAndContact = () => {
-    router.push("/#contato");
+    router.push("#contato");
     setActive(true);
   };
   const closeAndTracking = () => {
