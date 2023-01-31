@@ -1,6 +1,6 @@
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
-export default function GoogleAnalytics() {
+export default function GoogleAnalytics({ nonce }: { nonce: string }) {
   return (
     <>
       {/* Global Site Tag (gtag.js) - Google Analytics */}
@@ -9,6 +9,7 @@ export default function GoogleAnalytics() {
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
       />
       <script
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
