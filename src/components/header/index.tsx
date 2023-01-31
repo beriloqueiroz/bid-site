@@ -16,10 +16,10 @@ export default function Header() {
         <div className={styles.links}>
           <nav>
             <ul>
-              <li onClick={() => router.push("#sobre")}>
+              <li onClick={() => router.push("/#sobre")}>
                 FAZEMOS SUAS ENTREGAS
               </li>
-              <li onClick={() => router.push("#contato")}>CONTATO</li>
+              <li onClick={() => router.push("/#contato")}>CONTATO</li>
               <li onClick={() => router.push("/rastreio")}>RASTREIO</li>
             </ul>
           </nav>
