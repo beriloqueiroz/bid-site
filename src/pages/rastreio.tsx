@@ -5,12 +5,20 @@ import axios from "axios";
 import { useState } from "react";
 import style from "../styles/rastreio.module.scss";
 import moment from "moment";
-type OrderDTO = {
+type TaskLog = {
+  _id: string;
+  role: number;
+  taskStatus: string;
+  taskId: string;
+  clientId: string;
+  driverName: string;
+  user: string;
+  distanceTravelled: number;
+  created_at: string;
   name: string;
   date: string;
   endDate: string;
   orderId: string;
-  taskStatus: number;
   address: {
     formatted_address: string;
   };
@@ -20,7 +28,7 @@ export default function Rastreio() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
-  const [response, setResponse] = useState<OrderDTO[]>([]);
+  const [response, setResponse] = useState<TaskLog[]>([]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -51,7 +59,7 @@ export default function Rastreio() {
             type='text'
             name='order'
             id='order'
-            placeholder='12365478'
+            placeholder='PREFX-12365478'
             isRequired={true}
             setOnChange={setOrder}
             value={order}
@@ -76,27 +84,30 @@ export default function Rastreio() {
           <p className={style.warn}>Nenhum pacote encontrado</p>
         ) : (
           <ul className={style.ul}>
-            {response.map((order) => (
-              <li key={order.orderId}>
+            {response.map((task) => (
+              <li key={task._id}>
                 <p>
-                  <strong>Descrição:</strong> {order.name}
+                  <strong>Descrição:</strong> {task.name}
                 </p>
                 <p>
                   <strong>Data inicial:</strong>{" "}
-                  {moment(order.date).format("DD/MM/YYYY hh:mm:ss")}
+                  {moment(task.date).format("DD/MM/YYYY hh:mm:ss")}
                 </p>
                 <p>
                   <strong>Data final:</strong>{" "}
-                  {moment(order.endDate).format("DD/MM/YYYY hh:mm:ss")}
+                  {moment(task.endDate).format("DD/MM/YYYY hh:mm:ss")}
                 </p>
                 <p>
-                  <strong>Pedido:</strong> {order.orderId}
+                  <strong>Pedido:</strong> {task.orderId}
                 </p>
                 <p>
-                  <strong>Endereço:</strong> {order.address.formatted_address}
+                  <strong>Endereço:</strong> {task.address.formatted_address}
+                </p>
+                <p>
+                  <strong>Motoboy:</strong> {task.driverName}
                 </p>
                 <span>
-                  <strong>Status:</strong> {order.taskStatus}
+                  <strong>Status:</strong> {task.taskStatus}
                 </span>
               </li>
             ))}

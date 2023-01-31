@@ -1,7 +1,8 @@
 import styles from "@/components/presentation/style.module.scss";
 import { useRouter } from "next/router";
-import React from "react";
-const LazyVideo = React.lazy(() => import("./video"));
+import Video from "./video";
+// import React from "react";
+// const LazyVideo = React.lazy(() => import("./video"));
 export default function Presentation() {
   const router = useRouter();
 
@@ -13,7 +14,7 @@ export default function Presentation() {
           <br /> <span>Simples assim!</span>
         </h1>
         <div className={styles.banner}>
-          <LazyVideo />
+          <Video />
         </div>
         <p className={styles.presentationDescription}>
           A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
