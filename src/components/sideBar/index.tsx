@@ -11,6 +11,10 @@ export default function SideBar({ active, setActive }: SideBarProps) {
     router.push("#contato");
     setActive(true);
   };
+  const closeAndTracking = () => {
+    router.push("/rastreio");
+    setActive(true);
+  };
   return (
     <div className={`${style.container} ${active && style.active}`}>
       <nav className={style.nav}>
@@ -20,6 +24,9 @@ export default function SideBar({ active, setActive }: SideBarProps) {
           </li>
           <li className={style.li} onClick={closeAndContact}>
             Contato
+          </li>
+          <li className={style.li} onClick={closeAndTracking}>
+            Rastreio
           </li>
           <br />
           <li className={style.liSocial}>

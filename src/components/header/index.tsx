@@ -20,6 +20,7 @@ export default function Header() {
                 FAZEMOS SUAS ENTREGAS
               </li>
               <li onClick={() => router.push("#contato")}>CONTATO</li>
+              <li onClick={() => router.push("/rastreio")}>RASTREIO</li>
             </ul>
           </nav>
         </div>
