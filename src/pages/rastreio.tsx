@@ -22,6 +22,9 @@ type TaskLog = {
   address: {
     formatted_address: string;
   };
+  reason: string;
+  imageArry: string[];
+  notes: string;
 };
 export default function Rastreio() {
   const [order, setOrder] = useState("");
@@ -128,7 +131,14 @@ export default function Rastreio() {
                       <p>
                         {moment(task.created_at).format("DD/MM/YYYY hh:mm:ss")}
                       </p>
-                      <span onClick={() => showDetail(task._id)}>detalhes</span>
+                      <p className={style.reason}>
+                        {task.reason ? task.reason : ""}
+                      </p>
+                      <p
+                        className={style.more_detail}
+                        onClick={() => showDetail(task._id)}>
+                        mais detalhes
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -137,14 +147,6 @@ export default function Rastreio() {
                     <p>
                       <strong>Descrição:</strong> {task.name}
                     </p>
-                    {/* <p>
-                      <strong>Data inicial:</strong>{" "}
-                      {moment(task.date).format("DD/MM/YYYY hh:mm:ss")}
-                    </p>
-                    <p>
-                      <strong>Data final:</strong>{" "}
-                      {moment(task.endDate).format("DD/MM/YYYY hh:mm:ss")}
-                    </p> */}
                     <p>
                       <strong>Pedido:</strong> {task.orderId}
                     </p>
@@ -152,6 +154,31 @@ export default function Rastreio() {
                       <strong>Endereço:</strong>{" "}
                       {task.address.formatted_address}
                     </p>
+                    {task.notes && (
+                      <p>
+                        <strong>Notas:</strong> {task.notes}
+                      </p>
+                    )}
+                    {task.imageArry?.length > 0 && (
+                      <div>
+                        <strong>Imagens:</strong>
+                        {task.imageArry.map((img, i) => (
+                          <a
+                            className={style.imagem}
+                            key={i}
+                            href={img}
+                            target='_blank'
+                            rel='noopener noreferrer'>
+                            <img
+                              src={img}
+                              alt={`Imagem ${i + 1}`}
+                              width='50px'
+                              height='50px'
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </li>

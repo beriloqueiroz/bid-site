@@ -33,6 +33,9 @@ type TaskLog = {
   distanceTravelled: number,
   created_at: string
   __v: number
+  reason: string
+  imageArry: string[]
+  notes: string
 }
 
 type TaskLogDTO = {
@@ -52,6 +55,9 @@ type TaskLogDTO = {
   address: {
     formatted_address: string,
   },
+  reason: string
+  imageArry: string[]
+  notes: string
 }
 
 async function get(url: string, auth: string): Promise<any> {
@@ -132,7 +138,8 @@ export default async function handler(
   let history = await getHistory(`${param["order"]}`);
   let response = history?.map(hist => ({
     ...hist,
-    taskStatus: getDescStatus(hist.taskStatus)
+    driverName: hist.driverName || "Motoboy",
+    taskStatus: getDescStatus(hist.taskStatus) || "Esperando"
   }))
 
   res.status(200).json(response)
@@ -140,11 +147,11 @@ export default async function handler(
 
 function getDescStatus(status: string) {
   const st = [
-    'Não atribuído',
-    'Atribuído',
+    'Não coletado',
+    'Coletado',
     'Aceito',
     'Iniciado',
-    'Chegou',
+    'Chegando',
     'Entregue com sucesso',
     'Falha na entrega',
     'Devolvido',
