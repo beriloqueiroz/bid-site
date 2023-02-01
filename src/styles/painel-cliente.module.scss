@@ -1,0 +1,54 @@
+.section {
+    padding: 100px 1rem;
+    @media (min-width: 768px) {
+        padding-top: 150px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 1rem;
+        .inputUp {
+            display: flex;
+            justify-content: baseline;
+            input[type="file"] {
+                display: none;
+            }
+            .choose_btn {
+                background-color: var(--color-primary-1);
+                color: var(--color-light-1);
+                border-radius: 5px;
+                padding: 0.5rem;
+                width: fit-content;
+                width: -moz-fit-content;
+                cursor: pointer;
+            }
+            .choose_btn:hover {
+                background-color: var(--color-primary-3);
+            }
+            button {
+                margin-left: 0.5rem;
+                background-color: var(--color-primary-2);
+                border: 2px solid var(--color-warn);
+                color: var(--color-light-1);
+                border-radius: 5px;
+                padding: 0.5rem;
+                width: fit-content;
+                width: -moz-fit-content;
+            }
+            button:hover {
+                background-color: var(--color-primary-3);
+            }
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+    .warn {
+        margin: 1rem 0;
+        padding: 1rem;
+        font-size: 20px;
+        text-align: center;
+    }
+}
