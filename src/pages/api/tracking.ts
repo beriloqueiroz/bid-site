@@ -16,7 +16,7 @@ type Order = {
   phone: string
   businessType: number
   orderId: string
-  taskStatus: number
+  taskStatus: string | null | undefined
   taskId: string
   created_at: string
 }
@@ -25,7 +25,7 @@ type TaskLog = {
   _id: string
   isDeleted: number,
   role: number,
-  taskStatus: string
+  taskStatus: string | null | undefined
   taskId: string
   clientId: string
   driverName: string
@@ -41,7 +41,7 @@ type TaskLog = {
 type TaskLogDTO = {
   _id: string
   role: number,
-  taskStatus: string
+  taskStatus: string | null | undefined
   taskId: string
   clientId: string
   driverName: string
@@ -58,6 +58,7 @@ type TaskLogDTO = {
   reason: string
   imageArry: string[]
   notes: string
+  taskDescStatus: string | null | undefined
 }
 
 async function get(url: string, auth: string): Promise<any> {
@@ -108,6 +109,7 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | un
         date: order?.date || "",
         endDate: order?.endDate || "",
         orderId: order?.orderId || "",
+        taskDescStatus: getDescStatus(hist),
         address: {
           formatted_address: order?.address.formatted_address || "",
         },
@@ -136,32 +138,78 @@ export default async function handler(
   const param = req.query;
 
   let history = await getHistory(`${param["order"]}`);
-  let response = history?.map(hist => ({
-    ...hist,
-    driverName: hist.driverName || "Motoboy",
-    taskStatus: getDescStatus(hist.taskStatus) || "Esperando"
-  }))
 
-  res.status(200).json(response)
+  res.status(200).json(history)
 }
+/*
+Unassigned	1	Task not assigned to any driver
+Assigned	2	Task assigned to driver
+Accepted	3	Task accepted by driver
+Started	4	Task is started by driver
+Arrived	5	Driver has arrived to task Location
+Success	6	Task completed successfully
+Fail	7	Task Failed
+Declined	8	Task declined by driver
+Cancelled	9	Task cancelled by driver
+Acknowledged	10	Task Acknowledged by driver
+Deleted	14	Deleted Task
 
-function getDescStatus(status: string) {
+Tarefa criada 		---> Nenhum status
+Tarefa atribuida 	---> Arquivo de transporte recebido
+Tarefa reconhecida   —-> Pacote coletado pelo Entregador
+Tarefa iniciada		---> Pacote em rota de entrega
+Tarefa falhou		---> Falha na Entrega
+Tarefa atualizada	---> Dados de entrega atualizados - Nova tentativa de entrega
+Imagem adicionada	---> Protocolo de entrega adicionado
+Notas adicionada	---> Nota de entrega adicionada
+Tarefa sucedida		---> Pacote entregue com sucesso
+Tarefa chegando		---> O Entregador está próximo ao endereço de destino
+Tarefa cancelada	---> Entrega cancelada
+*/
+function getDescStatus(task: TaskLog): string | undefined | null {
   const st = [
-    'Não coletado',
-    'Coletado',
-    'Aceito',
-    'Iniciado',
-    'Chegando',
-    'Entregue com sucesso',
-    'Falha na entrega',
-    'Devolvido',
-    'Cancelado',
-    'Reconhecido',
-    '',
-    '',
-    '',
-    'Excluído'
+    {
+      in: "2",
+      out: 'Arquivo de transporte recebido'
+    },
+    {
+      in: "3",
+      out: 'Pacote coletado pelo Entregador'
+    },
+    {
+      in: "4",
+      out: 'Pacote em rota de entrega'
+    },
+    {
+      in: "5",
+      out: 'O Entregador está próximo ao endereço de destino'
+    },
+    {
+      in: "6",
+      out: 'Pacote entregue com sucesso'
+    },
+    {
+      in: "7",
+      out: 'Falha na Entrega'
+    },
+    {
+      in: "8",
+      out: 'Entrega abortada'
+    },
+    {
+      in: "9",
+      out: 'Entrega cancelada'
+    }
   ]
-  const getDescStatus = st[parseInt(status) - 1];
-  return getDescStatus;
+  const getDescStatus = st.find(s => s.in == task.taskStatus);
+  if (getDescStatus)
+    return getDescStatus.out;
+
+  if (task.notes)
+    return "Nota de entrega adicionada";
+
+  if (task.imageArry?.length > 0)
+    return "Protocolo de entrega adicionado";
+
+  return "Dados de entrega atualizados - Nova tentativa de entrega";
 }
