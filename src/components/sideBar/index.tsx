@@ -15,6 +15,10 @@ export default function SideBar({ active, setActive }: SideBarProps) {
     router.push("/rastreio");
     setActive(true);
   };
+  const closeAndPanel = () => {
+    router.push("/painel-cliente");
+    setActive(true);
+  };
   return (
     <div className={`${style.container} ${active && style.active}`}>
       <nav className={style.nav}>
@@ -27,6 +31,9 @@ export default function SideBar({ active, setActive }: SideBarProps) {
           </li>
           <li className={style.li} onClick={closeAndTracking}>
             Rastreio
+          </li>
+          <li className={style.li} onClick={closeAndPanel}>
+            Painel
           </li>
           <li className={style.liSocial}>
             <svg
