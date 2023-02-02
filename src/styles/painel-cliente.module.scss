@@ -26,7 +26,8 @@
             .choose_btn:hover {
                 background-color: var(--color-primary-3);
             }
-            button {
+            button,
+            .modelButton {
                 margin-left: 0.5rem;
                 background-color: var(--color-primary-2);
                 border: 2px solid var(--color-warn);
@@ -37,6 +38,9 @@
                 width: -moz-fit-content;
             }
             button:hover {
+                background-color: var(--color-primary-3);
+            }
+            .modelButton:hover {
                 background-color: var(--color-primary-3);
             }
         }

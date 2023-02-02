@@ -1,7 +1,6 @@
 import InputForm from "@/components/inputForm";
 import Layout from "@/components/layout";
 import SubmitButton from "@/components/submitButton";
-import axios from "axios";
 import { useState } from "react";
 import style from "../styles/painel-cliente.module.scss";
 
@@ -121,6 +120,14 @@ export default function CustomerPanel() {
               onChange={handleFileChange}
             />
             {fileSelected && <button onClick={onCancelFile}>Cancelar</button>}
+            <a
+              className={style.modelButton}
+              download
+              href='/model.xlsx'
+              target='_blank'
+              rel='noopener noreferrer'>
+              Baixar tabela modelo
+            </a>
           </div>
           <InputForm
             label='Prefixo'
