@@ -42,11 +42,9 @@ export default async function handler(
 
   transporter.sendMail(mailData, function (err, info) {
     if (err) {
-      console.log(err)
       res.status(500).json({ status: 'Nok' })
     }
     else {
-      console.log(info)
       res.status(200).json({ status: 'Ok' })
     }
   })

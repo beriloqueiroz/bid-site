@@ -114,6 +114,8 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | un
           formatted_address: order?.address.formatted_address || "",
         },
       }));
+      console.log("🚀 ~ file: tracking.ts:117 ~ getHistory ~ historyDTOs", historyDTOs)
+
       return historyDTOs;
     }
   }
@@ -174,7 +176,7 @@ function getDescStatus(task: TaskLog): string | undefined | null {
     },
     {
       in: "3",
-      out: 'Pacote coletado pelo Entregador'
+      out: 'Pacote aceito pelo Entregador'
     },
     {
       in: "4",
@@ -199,9 +201,19 @@ function getDescStatus(task: TaskLog): string | undefined | null {
     {
       in: "9",
       out: 'Entrega cancelada'
+    },
+    {
+      in: "10",
+      out: 'Pacote coletado pelo Entregador'
+    },
+    ,
+    {
+      in: "18",
+      out: 'Dados de entrega atualizados - Nova tentativa de entrega'
     }
   ]
-  const getDescStatus = st.find(s => s.in == task.taskStatus);
+  const getDescStatus = st.find(s => s?.in == task.taskStatus);
+
   if (getDescStatus)
     return getDescStatus.out;
 
@@ -211,5 +223,5 @@ function getDescStatus(task: TaskLog): string | undefined | null {
   if (task.imageArry?.length > 0)
     return "Protocolo de entrega adicionado";
 
-  return "Dados de entrega atualizados - Nova tentativa de entrega";
+  return null;
 }

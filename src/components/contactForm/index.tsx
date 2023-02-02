@@ -16,7 +16,6 @@ export default function ContactForm() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("Sending");
     setSending(true);
     setError(false);
     let data = {
@@ -33,9 +32,7 @@ export default function ContactForm() {
       },
       body: JSON.stringify(data),
     }).then((res) => {
-      console.log("Response received");
       if (res.status === 200) {
-        console.log("Response succeeded!");
         setSubmitted(true);
         setName("");
         setEmail("");

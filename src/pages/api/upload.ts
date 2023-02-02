@@ -25,10 +25,8 @@ const handler = async (
     const { fields, files } = await parseForm(req);
 
     const file = files.media;
-    console.log("🚀 ~ file: upload.ts:28 ~ file", file)
     let url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
     let name = Array.isArray(file) ? file.map((f) => f.newFilename) : file.newFilename;
-    console.log("🚀 ~ file: upload.ts:30 ~ url", url)
 
     const transporter = nodemailer.createTransport({
       host: "smtp.hostinger.com",
@@ -58,11 +56,9 @@ const handler = async (
 
     transporter.sendMail(mailData, function (err, info) {
       if (err) {
-        console.log(err)
         res.status(500).json({ status: 'Nok', error: "" })
       }
       else {
-        console.log(info)
         res.status(200).json({ status: 'Ok', error: "" })
       }
     })

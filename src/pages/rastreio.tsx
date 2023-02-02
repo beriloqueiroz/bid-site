@@ -28,6 +28,10 @@ function ReactIcon({ status }: { status: string }): ReactElement {
     },
     {
       out: <FaMotorcycle />,
+      in: "Pacote aceito pelo Entregador",
+    },
+    {
+      out: <FaMotorcycle />,
       in: "Pacote em rota de entrega",
     },
     {
@@ -157,7 +161,7 @@ export default function Rastreio() {
         {response.length <= 0 ? (
           <p className={style.warn}>Nenhum pacote encontrado</p>
         ) : (
-          <>
+          <div className={style.result}>
             <div className={style.generalOrderInfo}>
               <p>
                 <strong>Descrição:</strong> {response.slice(-1).pop()?.name}
@@ -173,11 +177,7 @@ export default function Rastreio() {
             <ul className={style.ul}>
               {response.map(
                 (task, i) =>
-                  !(
-                    i == response.length - 1 &&
-                    task.taskDescStatus ==
-                      "Dados de entrega atualizados - Nova tentativa de entrega"
-                  ) && (
+                  task.taskStatus != "0" && (
                     <li key={task._id}>
                       <div className={style.init}>
                         <div className={style.icon}>
@@ -239,7 +239,7 @@ export default function Rastreio() {
                   )
               )}
             </ul>
-          </>
+          </div>
         )}
       </section>
     </Layout>
