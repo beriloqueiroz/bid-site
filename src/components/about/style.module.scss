@@ -7,13 +7,23 @@
         h2 {
             color: var(--color-primary-2);
             margin-bottom: 1rem;
+            @media (min-width: 768px) {
+                font-size: 36px;
+                margin: 2rem 0;
+            }
         }
         h2 {
             font-size: 20px;
+            @media (min-width: 768px) {
+                font-size: 30px;
+            }
         }
         p {
             text-align: justify;
             margin: 1rem;
+            @media (min-width: 768px) {
+                font-size: 24px;
+            }
             strong {
                 color: var(--color-primary-2);
             }

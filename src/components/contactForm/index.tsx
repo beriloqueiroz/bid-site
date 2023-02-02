@@ -52,7 +52,7 @@ export default function ContactForm() {
         <h1 className={styles.title}>Fale conosco</h1>
         <form className={styles.form}>
           <InputForm
-            label='nome'
+            label='Nome'
             type='text'
             name='name'
             id='name'
@@ -62,7 +62,7 @@ export default function ContactForm() {
             value={name}
           />
           <InputForm
-            label='e-mail'
+            label='E-mail'
             type='email'
             name='email'
             id='email'
@@ -72,7 +72,7 @@ export default function ContactForm() {
             value={email}
           />
           <InputForm
-            label='telefone'
+            label='Telefone'
             type='tel'
             name='phone'
             id='phone'
@@ -82,7 +82,7 @@ export default function ContactForm() {
             value={phone}
           />
           <InputForm
-            label='mensagem'
+            label='Mensagem'
             name='mensagem'
             id='message'
             placeholder='Olá, gostaria de solicitar uma ...'

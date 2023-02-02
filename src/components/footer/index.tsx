@@ -6,6 +6,9 @@ import WhatsappButton from "../whatsappButton";
 
 export default function Footer() {
   const router = useRouter();
+  const whatsPhone = "5585997492562";
+  const whatsappMessage =
+    "Olá, estou interessado nos serviços da bid e gostaria de mais informações.";
 
   return (
     <footer className={styles.footer}>
@@ -21,14 +24,17 @@ export default function Footer() {
         </div>
         <div className={styles.aboutUs}>
           <h1>EMPRESA</h1>
-          <p onClick={() => router.push("#sobre")}>Conheça a bid</p>
-          <p onClick={() => router.push("#contato")}>
+          <p onClick={() => router.push("/#sobre")}>Conheça a bid</p>
+          <p onClick={() => router.push("/#contato")}>
             Fale conosco | Trabalhe conosco
           </p>
         </div>
         <div className={styles.aboutUs}>
           <h1>CONTATO</h1>
-          <a href='tel:85997492562' target='_blank' rel='noopener noreferrer'>
+          <a
+            href={`https://api.whatsapp.com/send/?phone=${whatsPhone}&text=${whatsappMessage}&type=phone_number&app_absent=0`}
+            target='_blank'
+            rel='noopener noreferrer'>
             +55 85 997492562 (Whatsapp)
           </a>
           <a

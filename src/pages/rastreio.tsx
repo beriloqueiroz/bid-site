@@ -15,6 +15,7 @@ import {
 } from "react-icons/md";
 import { RiImageAddFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
+import { GoPackage } from "react-icons/go";
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
@@ -23,7 +24,7 @@ function ReactIcon({ status }: { status: string }): ReactElement {
       in: "Arquivo de transporte recebido",
     },
     {
-      out: <FaMotorcycle />,
+      out: <GoPackage />,
       in: "Pacote coletado pelo Entregador",
     },
     {
@@ -159,7 +160,7 @@ export default function Rastreio() {
           )}
         </form>
         {response.length <= 0 ? (
-          <p className={style.warn}>Nenhum pacote encontrado</p>
+          submitted && <p className={style.warn}>Nenhum pacote encontrado</p>
         ) : (
           <div className={style.result}>
             <div className={style.generalOrderInfo}>
