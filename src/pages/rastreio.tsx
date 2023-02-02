@@ -133,6 +133,15 @@ export default function Rastreio() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (router.isReady) {
+      router.push(
+        {
+          query: null
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
     setSending(true);
     setError(false);
     setIsPrivate(!!router.query["private"]);
