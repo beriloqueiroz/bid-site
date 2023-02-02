@@ -1,3 +1,4 @@
+import InputForm from "@/components/inputForm";
 import Layout from "@/components/layout";
 import SubmitButton from "@/components/submitButton";
 import axios from "axios";
@@ -8,7 +9,12 @@ export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
+  const [messageError, setMessageError] = useState(
+    " Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato."
+  );
   const [fileName, setFileName] = useState("");
+  const [prefix, setPrefix] = useState("");
+  const [password, setPassword] = useState("");
   const [fileSelected, setFileSelected] = useState<File | null>();
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -26,6 +32,7 @@ export default function CustomerPanel() {
 
     if (!fileList || !fileList[0]) {
       setError(true);
+      setMessageError("Erro ao selecionar!");
       return;
     }
     setFileSelected(fileList[0]);
@@ -37,6 +44,13 @@ export default function CustomerPanel() {
 
     if (!fileSelected) {
       setError(true);
+      setMessageError("Erro, Arquivo não selecionado!");
+      return;
+    }
+
+    if (prefix == "" || password == "") {
+      setError(true);
+      setMessageError("Erro, Credenciais não informadas");
       return;
     }
 
@@ -51,8 +65,8 @@ export default function CustomerPanel() {
         method: "POST",
         body: formData,
         headers: {
-          "X-Company": "MAQAD",
-          "X-Authentication": "123645",
+          "X-Company": prefix,
+          "X-Authentication": password,
         },
       });
 
@@ -60,18 +74,28 @@ export default function CustomerPanel() {
         status,
         error,
       }: {
-        status: string;
+        status: number;
         error: string | null;
       } = await res.json();
 
-      if (error && status == "Nok") {
+      if (error && status == 401) {
         setError(true);
+        setMessageError(error + ", entre em contato conosco!");
+        setSending(false);
+        return;
+      }
+
+      if (error && status == 500) {
+        setError(true);
+        setMessageError("Erro, ao enviar aquivo, entre em contato!");
+        setSending(false);
         return;
       }
 
       setSubmitted(true);
     } catch (error) {
       setError(true);
+      setMessageError("Erro, ao enviar aquivo, entre em contato!");
     }
     setSending(false);
     setFileSelected(null);
@@ -98,18 +122,32 @@ export default function CustomerPanel() {
             />
             {fileSelected && <button onClick={onCancelFile}>Cancelar</button>}
           </div>
-
+          <InputForm
+            label='Prefixo'
+            type='text'
+            name='prefix'
+            id='prefix'
+            placeholder='PREFX'
+            isRequired={true}
+            setOnChange={setPrefix}
+            value={prefix}
+          />
+          <InputForm
+            label='Senha'
+            type='password'
+            name='password'
+            id='password'
+            placeholder='*********'
+            isRequired={true}
+            setOnChange={setPassword}
+            value={password}
+          />
           <SubmitButton
             handleSubmit={handleSubmit}
             sending={sending}
             text='Enviar'
           />
-          {error && (
-            <span className={style.errorMessage}>
-              Desculpe, Erro ao enviar arquivo, tente novamente ou entre em
-              contato.
-            </span>
-          )}
+          {error && <span className={style.errorMessage}>{messageError}</span>}
           {submitted && !error && (
             <span className={style.successMessage}>
               Sucesso ao enviar arquivo.

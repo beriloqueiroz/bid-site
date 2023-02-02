@@ -4,8 +4,8 @@ import nodemailer from "nodemailer";
 
 
 type Data = {
-  status: string
-  error: string
+  status: number
+  error: string | null
 }
 
 const handler = async (
@@ -15,12 +15,27 @@ const handler = async (
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).json({
-      status: "Nok",
+      status: 405,
       error: "Method Not Allowed",
     });
     return;
   }
-  // Just after the "Method Not Allowed" code
+
+  console.log(req.headers)
+
+  const prefixCompany = req.headers["x-company"];
+  const passCompany = req.headers["x-authentication"]
+
+  if (!prefixCompany || !passCompany) {
+    res.status(401).json({ status: 401, error: "Credenciais inválidas" });
+    return;
+  }
+
+  if (process.env[prefixCompany.toString()] != passCompany) {
+    res.status(401).json({ status: 401, error: "Credenciais inválidas" });
+    return;
+  }
+
   try {
     const { fields, files } = await parseForm(req);
 
@@ -43,7 +58,7 @@ const handler = async (
     const mailData = {
       from: `"Tabelas (bid.log.br)" <sender@bid.log.br>`,
       to: "tabelas@bid.log.br",
-      subject: "Tabela pelo formulário do site",
+      subject: `${prefixCompany} - Tabela pelo formulário do site`,
       text: `Em anexo`,
       headers: { 'x-myheader': 'test header' },
       attachments: [
@@ -56,18 +71,18 @@ const handler = async (
 
     transporter.sendMail(mailData, function (err, info) {
       if (err) {
-        res.status(500).json({ status: 'Nok', error: "" })
+        res.status(500).json({ status: 500, error: "Erro ao enviar e-mail" })
       }
       else {
-        res.status(200).json({ status: 'Ok', error: "" })
+        res.status(200).json({ status: 200, error: null })
       }
     })
   } catch (e) {
     if (e instanceof FormidableError) {
-      res.status(e.httpCode || 400).json({ status: "Nok", error: e.message });
+      res.status(e.httpCode || 400).json({ status: 400, error: e.message });
     } else {
       console.error(e);
-      res.status(500).json({ status: "Nok", error: "Internal Server Error" });
+      res.status(500).json({ status: 500, error: "Erro interno" });
     }
   }
 };
