@@ -2,7 +2,7 @@ import InputForm from "@/components/inputForm";
 import Layout from "@/components/layout";
 import SubmitButton from "@/components/submitButton";
 import axios from "axios";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import style from "../styles/rastreio.module.scss";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -16,6 +16,7 @@ import {
 import { RiImageAddFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
 import { GoPackage } from "react-icons/go";
+import { useParams } from "react-router-dom";
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
@@ -94,7 +95,7 @@ type TaskLog = {
   taskDescStatus: string;
 };
 export default function Rastreio() {
-  const [order, setOrder] = useState("");
+  const [orderTrack, setOrder] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
@@ -103,20 +104,47 @@ export default function Rastreio() {
   const [isPrivate, setIsPrivate] = useState(true);
   var router = useRouter();
 
+  useEffect(() => {
+    const tracking = async (orderTrackApi: string) => {
+      setSending(true);
+      setError(false);
+      setIsPrivate(!!router.query["private"]);
+      const responseApi = await axios.get(
+        `/api/tracking?order=${orderTrackApi}`,
+        {
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (responseApi.status === 200) {
+        setSubmitted(true);
+        setResponse(responseApi.data);
+      } else {
+        setError(true);
+      }
+      setSending(false);
+    };
+    if (!!router.query["order"]) {
+      tracking(router.query["order"].toString());
+    }
+  }, [router.query]);
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSending(true);
     setError(false);
     setIsPrivate(!!router.query["private"]);
-    const response = await axios.get(`/api/tracking?order=${order}`, {
+    const responseApi = await axios.get(`/api/tracking?order=${orderTrack}`, {
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
       },
     });
-    if (response.status === 200) {
+    if (responseApi.status === 200) {
       setSubmitted(true);
-      setResponse(response.data);
+      setResponse(responseApi.data);
     } else {
       setError(true);
     }
@@ -141,7 +169,7 @@ export default function Rastreio() {
             placeholder='PREFX-12365478'
             isRequired={true}
             setOnChange={setOrder}
-            value={order}
+            value={orderTrack}
           />
           <SubmitButton
             handleSubmit={handleSubmit}

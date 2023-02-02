@@ -114,7 +114,6 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | un
           formatted_address: order?.address.formatted_address || "",
         },
       }));
-      console.log("🚀 ~ file: tracking.ts:117 ~ getHistory ~ historyDTOs", historyDTOs)
 
       return historyDTOs;
     }

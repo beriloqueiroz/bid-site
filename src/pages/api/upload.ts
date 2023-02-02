@@ -21,7 +21,6 @@ const handler = async (
     return;
   }
 
-  console.log(req.headers)
 
   const prefixCompany = req.headers["x-company"];
   const passCompany = req.headers["x-authentication"]
