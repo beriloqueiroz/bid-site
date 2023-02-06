@@ -93,6 +93,7 @@ type TaskLog = {
   imageArry: string[];
   notes: string;
   taskDescStatus: string;
+  orderDescStatus: string;
 };
 export default function Rastreio() {
   const [orderTrack, setOrder] = useState("");
@@ -136,7 +137,7 @@ export default function Rastreio() {
     if (router.isReady) {
       router.push(
         {
-          query: null
+          query: null,
         },
         undefined,
         { shallow: true }
@@ -210,6 +211,10 @@ export default function Rastreio() {
               <p>
                 <strong>Endereço:</strong>{" "}
                 {response.slice(-1).pop()?.address.formatted_address}
+              </p>
+              <p>
+                <strong>Último Status:</strong>{" "}
+                {response.slice(-1).pop()?.orderDescStatus}
               </p>
             </div>
             <ul className={style.ul}>

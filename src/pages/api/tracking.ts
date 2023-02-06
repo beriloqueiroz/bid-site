@@ -16,7 +16,7 @@ type Order = {
   phone: string
   businessType: number
   orderId: string
-  taskStatus: string | null | undefined
+  taskStatus: string
   taskId: string
   created_at: string
 }
@@ -25,7 +25,7 @@ type TaskLog = {
   _id: string
   isDeleted: number,
   role: number,
-  taskStatus: string | null | undefined
+  taskStatus: string
   taskId: string
   clientId: string
   driverName: string
@@ -41,7 +41,7 @@ type TaskLog = {
 type TaskLogDTO = {
   _id: string
   role: number,
-  taskStatus: string | null | undefined
+  taskStatus: string
   taskId: string
   clientId: string
   driverName: string
@@ -58,7 +58,8 @@ type TaskLogDTO = {
   reason: string
   imageArry: string[]
   notes: string
-  taskDescStatus: string | null | undefined
+  taskDescStatus: string
+  orderDescStatus: string
 }
 
 async function get(url: string, auth: string): Promise<any> {
@@ -76,16 +77,16 @@ async function get(url: string, auth: string): Promise<any> {
   }).then(function (response) {
     result = response.data;
   }).catch(function (error) {
-    throw new Error(`url: ${url},headers : ${JSON.stringify(headers)} error: ${JSON.stringify(error?.response?.data)}` + JSON.stringify(error));
+    console.error(`url: ${url},headers : ${JSON.stringify(headers)} error: ${JSON.stringify(error?.response?.data)}` + JSON.stringify(error));
   });
   return result;
 }
 
-async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | undefined> {
+async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
   if (orderNumber.indexOf("-") < 0) {
-    return null;
+    return [];
   }
 
   const prefix = orderNumber.slice(0, orderNumber.indexOf("-"))
@@ -93,7 +94,7 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | un
 
   const generalAuth = process.env['CONFIG_' + prefix] as string;
 
-  if (!generalAuth) return null;
+  if (!generalAuth) return [];
 
   const keys = JSON.parse(generalAuth) as string[];
 
@@ -101,7 +102,8 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | un
     let orders = await get(urlbase + `/task/orderid?orderId=${orderNumberWithoutPrefix}`, key) as Order[];
     if (orders.length > 0) {
       let order = orders.find(resp => !resp.isDeleted);
-      if (!order) return null;
+      if (!order) return [];
+      console.log("🚀 ~ file: tracking.ts:124 ~ getHistory ~ order", order)
       const histories: TaskLog[] = await getTaskLog(order.taskId, key);
       const historyDTOs: TaskLogDTO[] = histories.map(hist => ({
         ...hist,
@@ -109,17 +111,20 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[] | null | un
         date: order?.date || "",
         endDate: order?.endDate || "",
         orderId: order?.orderId || "",
-        taskDescStatus: getDescStatus(hist),
+        taskDescStatus: getDescStatus(hist.taskStatus, hist.notes, hist.imageArry),
+        orderDescStatus: getDescStatus(order?.taskStatus || ""),
         address: {
+          ...order?.address,
           formatted_address: order?.address.formatted_address || "",
         },
       }));
+      console.log("🚀 ~ file: tracking.ts:120 ~ getHistory ~ historyDTOs", historyDTOs)
 
       return historyDTOs;
     }
   }
 
-  return null;
+  return [];
 }
 
 async function getTaskLog(taskId: string, key: string) {
@@ -127,6 +132,7 @@ async function getTaskLog(taskId: string, key: string) {
 
 
   let responseData = await get(urlbase + `/task/tasklog?taskId=${taskId}`, key);
+  if (!responseData) return [];
   if (responseData.length > 0) return responseData;
 
   return [];
@@ -167,7 +173,7 @@ Tarefa sucedida		---> Pacote entregue com sucesso
 Tarefa chegando		---> O Entregador está próximo ao endereço de destino
 Tarefa cancelada	---> Entrega cancelada
 */
-function getDescStatus(task: TaskLog): string | undefined | null {
+function getDescStatus(taskStatus: string, notes?: string, imageArry?: string[]): string {
   const st = [
     {
       in: "2",
@@ -205,22 +211,23 @@ function getDescStatus(task: TaskLog): string | undefined | null {
       in: "10",
       out: 'Pacote coletado pelo Entregador'
     },
-    ,
     {
       in: "18",
       out: 'Dados de entrega atualizados - Nova tentativa de entrega'
     }
   ]
-  const getDescStatus = st.find(s => s?.in == task.taskStatus);
+  const getDescStatus = st.find(s => s?.in == taskStatus);
+
+  let toReturn = "";
 
   if (getDescStatus)
-    return getDescStatus.out;
+    toReturn = getDescStatus.out;
 
-  if (task.notes)
-    return "Nota de entrega adicionada";
+  if (notes)
+    toReturn = "Nota de entrega adicionada";
 
-  if (task.imageArry?.length > 0)
-    return "Protocolo de entrega adicionado";
+  if (imageArry && imageArry?.length > 0)
+    toReturn = "Protocolo de entrega adicionado";
 
-  return null;
+  return toReturn;
 }
