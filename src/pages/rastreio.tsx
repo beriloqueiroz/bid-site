@@ -181,7 +181,12 @@ export default function Rastreio() {
             setOnChange={setOrder}
             value={orderTrack}
           />
-          <Button handleSubmit={handleSubmit} sending={sending} text='Buscar' />
+          <Button
+            handleSubmit={handleSubmit}
+            sending={sending}
+            text='Buscar'
+            type='submit'
+          />
           {!sending && error && (
             <span className={style.errorMessage}>
               Desculpe, Erro ao buscar, tente novamente ou entre em contato.
