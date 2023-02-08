@@ -235,9 +235,7 @@ export default function Rastreio() {
                         <div className={style.status}>
                           <p>{`${task.taskDescStatus}`}</p>
                           <div className={style.statusInfo}>
-                            <p>
-                              {task.created_at}
-                            </p>
+                            <p>{task.created_at}</p>
                             <p className={style.reason}>
                               {task.reason ? task.reason : ""}
                             </p>

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from 'axios';
-import moment from 'moment';
+import moment, { now } from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Order = {
@@ -110,6 +110,9 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
       console.log("🚀 ~ file: tracking.ts:108 ~ getHistory ~ histories", histories)
       const historyDTOs: TaskLogDTO[] = histories.map(hist => ({
         ...hist,
+        created_at: moment(hist.created_at).format(
+          "DD/MM/YYYY hh:mm:ss A"
+        ) || "",
         name: order?.name || "",
         date: moment(order?.date).format(
           "DD/MM/YYYY hh:mm:ss A"
@@ -124,7 +127,7 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
           ...order?.address,
           formatted_address: order?.address.formatted_address || "",
         },
-        forecast: getForecast("NORMAL", order?.date)
+        forecast: countValidDays(order?.date || now().toString(), getForecast("NORMAL"))
       }));
       // console.log("🚀 ~ file: tracking.ts:120 ~ getHistory ~ historyDTOs", historyDTOs)
 
@@ -134,31 +137,28 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
   return [];
 }
 
-function getForecast(type: string, date: string | undefined): string {
-  if (!date) moment(date).add(10, 'days').format(
-    "DD/MM/YYYY hh:mm:ss A"
-  );
-
-  let add = 0;
+function getForecast(type: string): number {
   let ret = 1;
-  if (moment(date).isoWeekday() == 5) {//sexta
-    add = 3;
-  }
-  if (moment(date).isoWeekday() == 6) {//sexta
-    add = 2;
-  }
-  if (moment(date).isoWeekday() == 6) {//sexta
-    add = 1;
-  }
-
   if (type == "EXPRESSO")
     ret = 0;
   if (type == "LENTO")
     ret = 2;
+  return ret;
+}
 
-  return moment(date).add(ret + add, 'days').format(
+function countValidDays(startDate: string, forecast: Number, validWeekDays: number[] = [1, 2, 3, 4, 5]): string {
+  let count = 0;
+  let forecastDate = moment(startDate);
+  while (count < forecast) {
+    forecastDate = forecastDate.add(1, "days");
+    const weekday = forecastDate.isoWeekday();
+    if (validWeekDays.includes(weekday)) {
+      count++;
+    }
+  }
+  return forecastDate.set({ h: 20, m: 0 }).format(
     "DD/MM/YYYY hh:mm:ss A"
-  )
+  );
 }
 
 async function getTaskLog(taskId: string, key: string) {
