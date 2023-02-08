@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from 'axios';
+import moment from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Order = {
@@ -60,6 +61,7 @@ type TaskLogDTO = {
   notes: string
   taskDescStatus: string
   orderDescStatus: string
+  forecast: string
 }
 
 async function get(url: string, auth: string): Promise<any> {
@@ -109,8 +111,12 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
       const historyDTOs: TaskLogDTO[] = histories.map(hist => ({
         ...hist,
         name: order?.name || "",
-        date: order?.date || "",
-        endDate: order?.endDate || "",
+        date: moment(order?.date).format(
+          "DD/MM/YYYY hh:mm:ss A"
+        ) || "",
+        endDate: moment(order?.endDate).format(
+          "DD/MM/YYYY hh:mm:ss A"
+        ) || "",
         orderId: order?.orderId || "",
         taskDescStatus: getDescStatus(hist.taskStatus, hist.notes, hist.imageArry),
         orderDescStatus: getDescStatus(order?.taskStatus || ""),
@@ -118,14 +124,41 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
           ...order?.address,
           formatted_address: order?.address.formatted_address || "",
         },
+        forecast: getForecast("NORMAL", order?.date)
       }));
       // console.log("🚀 ~ file: tracking.ts:120 ~ getHistory ~ historyDTOs", historyDTOs)
 
       return historyDTOs;
     }
   }
-
   return [];
+}
+
+function getForecast(type: string, date: string | undefined): string {
+  if (!date) moment(date).add(10, 'days').format(
+    "DD/MM/YYYY hh:mm:ss A"
+  );
+
+  let add = 0;
+  let ret = 1;
+  if (moment(date).isoWeekday() == 5) {//sexta
+    add = 3;
+  }
+  if (moment(date).isoWeekday() == 6) {//sexta
+    add = 2;
+  }
+  if (moment(date).isoWeekday() == 6) {//sexta
+    add = 1;
+  }
+
+  if (type == "EXPRESSO")
+    ret = 0;
+  if (type == "LENTO")
+    ret = 2;
+
+  return moment(date).add(ret + add, 'days').format(
+    "DD/MM/YYYY hh:mm:ss A"
+  )
 }
 
 async function getTaskLog(taskId: string, key: string) {

@@ -94,6 +94,7 @@ type TaskLog = {
   notes: string;
   taskDescStatus: string;
   orderDescStatus: string;
+  forecast: string;
 };
 export default function Rastreio() {
   const [orderTrack, setOrder] = useState("");
@@ -214,6 +215,10 @@ export default function Rastreio() {
                 {response.slice(-1).pop()?.address.formatted_address}
               </p>
               <p>
+                <strong>Previsão de entrega:</strong>{" "}
+                {response.slice(-1).pop()?.forecast}
+              </p>
+              <p>
                 <strong>Último Status:</strong>{" "}
                 {response.slice(-1).pop()?.orderDescStatus}
               </p>
@@ -231,9 +236,7 @@ export default function Rastreio() {
                           <p>{`${task.taskDescStatus}`}</p>
                           <div className={style.statusInfo}>
                             <p>
-                              {moment(task.created_at).format(
-                                "DD/MM/YYYY hh:mm:ss"
-                              )}
+                              {task.created_at}
                             </p>
                             <p className={style.reason}>
                               {task.reason ? task.reason : ""}
