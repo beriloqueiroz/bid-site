@@ -105,6 +105,7 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
       if (!order) return [];
       console.log("🚀 ~ file: tracking.ts:124 ~ getHistory ~ order", order)
       const histories: TaskLog[] = await getTaskLog(order.taskId, key);
+      console.log("🚀 ~ file: tracking.ts:108 ~ getHistory ~ histories", histories)
       const historyDTOs: TaskLogDTO[] = histories.map(hist => ({
         ...hist,
         name: order?.name || "",
@@ -118,7 +119,7 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
           formatted_address: order?.address.formatted_address || "",
         },
       }));
-      console.log("🚀 ~ file: tracking.ts:120 ~ getHistory ~ historyDTOs", historyDTOs)
+      // console.log("🚀 ~ file: tracking.ts:120 ~ getHistory ~ historyDTOs", historyDTOs)
 
       return historyDTOs;
     }

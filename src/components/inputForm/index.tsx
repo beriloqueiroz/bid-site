@@ -11,6 +11,7 @@ export default function InputForm({
   isTextArea,
   value,
   label,
+  onKeyDown
 }: Props) {
   function setChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
@@ -32,6 +33,7 @@ export default function InputForm({
           required={isRequired}
           onChange={setChange}
           value={value}
+          onKeyDown={onKeyDown}
         />
       ) : (
         <textarea

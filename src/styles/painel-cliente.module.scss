@@ -34,8 +34,16 @@
                 color: var(--color-light-1);
                 border-radius: 5px;
                 padding: 0.5rem;
-                width: fit-content;
-                width: -moz-fit-content;
+                width: 180px;
+                cursor: pointer;
+                height: 35px;
+                margin-top: auto;
+                font-size: 16px;
+                div {
+                    width: 16px;
+                    height: 16px;
+                    border: 0.2rem var(--color-light-1) dashed;
+                }
             }
             button:hover {
                 background-color: var(--color-primary-3);

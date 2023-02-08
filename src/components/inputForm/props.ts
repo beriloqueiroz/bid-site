@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, KeyboardEventHandler, SetStateAction } from "react"
 
 export default interface Props {
     name: string
@@ -10,4 +10,5 @@ export default interface Props {
     isTextArea?: boolean
     value: string
     label: string
+    onKeyDown?:KeyboardEventHandler<HTMLInputElement> 
 }

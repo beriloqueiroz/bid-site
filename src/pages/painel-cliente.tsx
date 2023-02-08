@@ -1,12 +1,14 @@
 import InputForm from "@/components/inputForm";
 import Layout from "@/components/layout";
-import SubmitButton from "@/components/submitButton";
-import { useState } from "react";
+import Button from "@/components/button";
+import { useRouter } from "next/router";
+import { KeyboardEvent, useState } from "react";
 import style from "../styles/painel-cliente.module.scss";
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(false);
   const [messageError, setMessageError] = useState(
     " Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato."
@@ -38,8 +40,8 @@ export default function CustomerPanel() {
     setFileName(fileList[0].name);
   };
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.preventDefault();
 
     if (!fileSelected) {
       setError(true);
@@ -101,6 +103,48 @@ export default function CustomerPanel() {
     setFileName("");
   };
 
+  const router = useRouter();
+  async function downloadModel(e: React.MouseEvent) {
+    e.preventDefault();
+    try {
+      setDownloading(true);
+      const res = await fetch("/api/authenticate", {
+        method: "GET",
+        headers: {
+          "X-Company": prefix,
+          "X-Authentication": password,
+        },
+      });
+
+      const {
+        status,
+        error,
+      }: {
+        status: number;
+        error: string | null;
+      } = await res.json();
+
+      if (status != 200) {
+        setError(true);
+        setMessageError("Erro ao baixar modelo, entre em contato conosco!");
+        setDownloading(false);
+        return;
+      }
+      router.push(`/model.xlsx`);
+      setDownloading(false);
+    } catch (e) {
+      setError(true);
+      setMessageError("Erro ao baixar modelo, entre em contato conosco!");
+    }
+  }
+
+  const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <Layout simpleHeader={true}>
       <section className={style.section}>
@@ -118,16 +162,16 @@ export default function CustomerPanel() {
               type='file'
               multiple={false}
               onChange={handleFileChange}
+              onKeyDown={handleKeypress}
             />
             {fileSelected && <button onClick={onCancelFile}>Cancelar</button>}
-            <a
-              className={style.modelButton}
-              download
-              href='/model.xlsx'
-              target='_blank'
-              rel='noopener noreferrer'>
-              Baixar tabela modelo
-            </a>
+            <Button
+              plusClass={style.modelButton}
+              handleSubmit={downloadModel}
+              sending={downloading}
+              text='Baixar tabela modelo'
+              type='button'
+            />
           </div>
           <InputForm
             label='Prefixo'
@@ -138,6 +182,7 @@ export default function CustomerPanel() {
             isRequired={true}
             setOnChange={setPrefix}
             value={prefix}
+            onKeyDown={handleKeypress}
           />
           <InputForm
             label='Senha'
@@ -148,11 +193,14 @@ export default function CustomerPanel() {
             isRequired={true}
             setOnChange={setPassword}
             value={password}
+            onKeyDown={handleKeypress}
           />
-          <SubmitButton
+          <Button
             handleSubmit={handleSubmit}
             sending={sending}
             text='Enviar'
+            id='endButton'
+            type='submit'
           />
           {error && <span className={style.errorMessage}>{messageError}</span>}
           {submitted && !error && (

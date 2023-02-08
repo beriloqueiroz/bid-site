@@ -1,6 +1,6 @@
 import InputForm from "@/components/inputForm";
 import Layout from "@/components/layout";
-import SubmitButton from "@/components/submitButton";
+import Button from "@/components/button";
 import axios from "axios";
 import { ReactElement, useEffect, useState } from "react";
 import style from "../styles/rastreio.module.scss";
@@ -181,11 +181,7 @@ export default function Rastreio() {
             setOnChange={setOrder}
             value={orderTrack}
           />
-          <SubmitButton
-            handleSubmit={handleSubmit}
-            sending={sending}
-            text='Buscar'
-          />
+          <Button handleSubmit={handleSubmit} sending={sending} text='Buscar' />
           {!sending && error && (
             <span className={style.errorMessage}>
               Desculpe, Erro ao buscar, tente novamente ou entre em contato.

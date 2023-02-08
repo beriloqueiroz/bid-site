@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as ga4 from "../google/ga4lib";
 import InputForm from "../inputForm";
 
-import SubmitButton from "../submitButton";
+import Button from "../button";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -90,7 +90,7 @@ export default function ContactForm() {
             value={message}
             isTextArea={true}
           />
-          <SubmitButton sending={sending} handleSubmit={handleSubmit} />
+          <Button sending={sending} handleSubmit={handleSubmit} type="submit"/>
           {!sending && error && (
             <span className={styles.errorMessage}>
               Desculpe Erro ao enviar mensagem, tente por outro canal (Whatsapp,
