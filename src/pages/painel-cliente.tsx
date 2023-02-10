@@ -2,12 +2,13 @@ import InputForm from "@/components/inputForm";
 import Layout from "@/components/layout";
 import Button from "@/components/button";
 import { useRouter } from "next/router";
-import { KeyboardEvent, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 import style from "../styles/painel-cliente.module.scss";
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendingIndividual, setSendingIndividual] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(false);
   const [messageError, setMessageError] = useState(
@@ -17,6 +18,15 @@ export default function CustomerPanel() {
   const [prefix, setPrefix] = useState("");
   const [password, setPassword] = useState("");
   const [fileSelected, setFileSelected] = useState<File | null>();
+
+  const [cep, setCep] = useState("");
+  const [street, setStreet] = useState("");
+  const [reference, setReference] = useState("");
+  const [complement, setComplement] = useState("");
+  const [number, setNumber] = useState("");
+  const [order, setOrder] = useState("");
+
+  const router = useRouter();
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -38,6 +48,113 @@ export default function CustomerPanel() {
     }
     setFileSelected(fileList[0]);
     setFileName(fileList[0].name);
+  };
+
+  const getInfosByCep = async (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setCep(e.target.value);
+    if (e.target.value.length >= 8) {
+      try {
+        const res = await fetch("/api/getInfosByCep" + "?cep=" + cep, {
+          method: "GET",
+          headers: {
+            "X-Company": prefix,
+            "X-Authentication": password,
+          },
+        });
+
+        const {
+          status,
+          error,
+          infos,
+        }: {
+          status: number;
+          error: string | null;
+          infos?: {
+            rua: string;
+            bairro: string;
+            cidade: string;
+            cep: string;
+          };
+        } = await res.json();
+
+        if (!infos) {
+          setError(true);
+          setMessageError(error + ", entre em contato conosco!");
+          return;
+        }
+
+        setStreet(infos.rua + ", " + infos.bairro + ", " + infos.cidade);
+      } catch (error) {
+        setError(true);
+        setMessageError("Erro, ao enviar informações, entre em contato!");
+      }
+    } else {
+      setStreet("");
+    }
+  };
+
+  const individualHandleSubmit = async (
+    e?: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (e) e.preventDefault();
+
+    if (prefix == "" || password == "") {
+      setError(true);
+      setMessageError("Erro, Credenciais não informadas");
+      return;
+    }
+
+    setSendingIndividual(true);
+    setError(false);
+
+    let orderNumber = "";
+
+    try {
+      const data = {
+        number,
+        street,
+        complement,
+        reference,
+        cep,
+      };
+      const res = await fetch("/api/sendTask", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "X-Company": prefix,
+          "X-Authentication": password,
+        },
+      });
+
+      const response: {
+        status: number;
+        error: string | null;
+        orderNumber?: string;
+      } = await res.json();
+
+      if (!response.orderNumber) {
+        setError(true);
+        setMessageError(error + ", entre em contato conosco!");
+        setSendingIndividual(false);
+        return;
+      }
+
+      orderNumber = response.orderNumber;
+
+      setCep("");
+      setStreet("");
+      setNumber("");
+      setComplement("");
+      setReference("");
+      setSubmitted(true);
+    } catch (error) {
+      setError(true);
+      setMessageError("Erro, ao enviar informações, entre em contato!");
+    }
+    setSendingIndividual(false);
+    setOrder(orderNumber);
   };
 
   const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -103,7 +220,6 @@ export default function CustomerPanel() {
     setFileName("");
   };
 
-  const router = useRouter();
   async function downloadModel(e: React.MouseEvent) {
     e.preventDefault();
     try {
@@ -141,14 +257,120 @@ export default function CustomerPanel() {
   const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleSubmit();
     }
   };
 
   return (
     <Layout simpleHeader={true}>
       <section className={style.section}>
-        <form>
+        <form className={style.loginForm}>
+          <InputForm
+            label='Prefixo'
+            type='text'
+            name='prefix'
+            id='prefix'
+            placeholder='PREFX'
+            isRequired={true}
+            setOnChange={setPrefix}
+            value={prefix}
+            onKeyDown={handleKeypress}
+          />
+          <InputForm
+            label='Senha'
+            type='password'
+            name='password'
+            id='password'
+            placeholder='*********'
+            isRequired={true}
+            setOnChange={setPassword}
+            value={password}
+            onKeyDown={handleKeypress}
+          />
+        </form>
+
+        {order == "" ? (
+          <form className={style.individualForm}>
+            <InputForm
+              label='CEP'
+              type='text'
+              name='cep'
+              id='cep'
+              placeholder='60123456'
+              isRequired={true}
+              onChange={getInfosByCep}
+              value={cep}
+              onKeyDown={handleKeypress}
+            />
+            <InputForm
+              label='Rua'
+              type='text'
+              name='cep'
+              id='cep'
+              placeholder=''
+              isRequired={true}
+              setOnChange={setStreet}
+              value={street}
+              onKeyDown={handleKeypress}
+              disable={true}
+            />
+            <InputForm
+              label='Número'
+              type='text'
+              name='number'
+              id='number'
+              placeholder='123'
+              isRequired={true}
+              setOnChange={setNumber}
+              value={number}
+              onKeyDown={handleKeypress}
+            />
+            <InputForm
+              label='Complemento'
+              type='text'
+              name='complement'
+              id='complement'
+              placeholder='Casa | Apartamento | ap 14'
+              isRequired={false}
+              setOnChange={setComplement}
+              value={complement}
+              onKeyDown={handleKeypress}
+            />
+            <InputForm
+              label='Ponto de referência'
+              type='text'
+              name='reference'
+              id='reference'
+              placeholder='próximo ao bar do seu zé'
+              isRequired={false}
+              setOnChange={setReference}
+              value={reference}
+              onKeyDown={handleKeypress}
+            />
+            <Button
+              handleSubmit={individualHandleSubmit}
+              sending={sendingIndividual}
+              text='Enviar'
+              id='endButton'
+              type='submit'
+            />
+          </form>
+        ) : (
+          <div className={style.resultIndividualForm}>
+            <div>
+              Este é o número do seu pedido: <strong>{order}</strong>
+            </div>
+            <span>anote na sua encomenda e o resto é com a gente.</span>
+            <Button
+              plusClass={style.resultButton}
+              handleSubmit={() => setOrder("")}
+              sending={downloading}
+              text='Inserir outro'
+              type='button'
+            />
+          </div>
+        )}
+
+        <form className={style.inLoteForm}>
           <div className={style.inputUp}>
             <label htmlFor='table' className={style.choose_btn}>
               {fileName != ""
@@ -173,28 +395,6 @@ export default function CustomerPanel() {
               type='button'
             />
           </div>
-          <InputForm
-            label='Prefixo'
-            type='text'
-            name='prefix'
-            id='prefix'
-            placeholder='PREFX'
-            isRequired={true}
-            setOnChange={setPrefix}
-            value={prefix}
-            onKeyDown={handleKeypress}
-          />
-          <InputForm
-            label='Senha'
-            type='password'
-            name='password'
-            id='password'
-            placeholder='*********'
-            isRequired={true}
-            setOnChange={setPassword}
-            value={password}
-            onKeyDown={handleKeypress}
-          />
           <Button
             handleSubmit={handleSubmit}
             sending={sending}
@@ -202,13 +402,13 @@ export default function CustomerPanel() {
             id='endButton'
             type='submit'
           />
-          {error && <span className={style.errorMessage}>{messageError}</span>}
-          {submitted && !error && (
-            <span className={style.successMessage}>
-              Sucesso ao enviar arquivo.
-            </span>
-          )}
         </form>
+        {error && <span className={style.errorMessage}>{messageError}</span>}
+        {submitted && !error && (
+          <span className={style.successMessage}>
+            Sucesso ao enviar arquivo.
+          </span>
+        )}
       </section>
     </Layout>
   );

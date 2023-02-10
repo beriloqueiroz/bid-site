@@ -1,68 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { Task } from '@/lib/types/Task';
+import { TaskLog } from '@/lib/types/TaskLog';
+import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
 import axios from 'axios';
 import moment, { now } from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-type Order = {
-  _id: string,
-  isDeleted: number,
-  name: string,
-  email: string,
-  date: string,
-  endDate: string,
-  address: {
-    formatted_address: string,
-    geometry: any
-  },
-  phone: string
-  businessType: number
-  orderId: string
-  taskStatus: string
-  taskId: string
-  created_at: string
-}
-
-type TaskLog = {
-  _id: string
-  isDeleted: number,
-  role: number,
-  taskStatus: string
-  taskId: string
-  clientId: string
-  driverName: string
-  user: string
-  distanceTravelled: number,
-  created_at: string
-  __v: number
-  reason: string
-  imageArry: string[]
-  notes: string
-}
-
-type TaskLogDTO = {
-  _id: string
-  role: number,
-  taskStatus: string
-  taskId: string
-  clientId: string
-  driverName: string
-  user: string
-  distanceTravelled: number,
-  created_at: string
-  name: string,
-  date: string,
-  endDate: string,
-  orderId: string
-  address: {
-    formatted_address: string,
-  },
-  reason: string
-  imageArry: string[]
-  notes: string
-  taskDescStatus: string
-  orderDescStatus: string
-  forecast: string
-}
 
 async function get(url: string, auth: string): Promise<any> {
   var result = null;
@@ -84,11 +26,9 @@ async function get(url: string, auth: string): Promise<any> {
   return result;
 }
 
-async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
-  const urlbase = process.env.URL_BASE_DELIFORCE;
-
+async function getHistory(orderNumber: string): Promise<TaskLogDTO | null> {
   if (orderNumber.indexOf("-") < 0) {
-    return [];
+    return null;
   }
 
   const prefix = orderNumber.slice(0, orderNumber.indexOf("-"))
@@ -96,23 +36,20 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
 
   const generalAuth = process.env['CONFIG_' + prefix] as string;
 
-  if (!generalAuth) return [];
+  if (!generalAuth) return null;
 
   const keys = JSON.parse(generalAuth) as string[];
 
   for (const key of keys) {
-    let orders = await get(urlbase + `/task/orderid?orderId=${orderNumberWithoutPrefix}`, key) as Order[];
-    if (orders.length > 0) {
-      let order = orders.find(resp => !resp.isDeleted);
-      if (!order) return [];
-      console.log("🚀 ~ file: tracking.ts:124 ~ getHistory ~ order", order)
-      const histories: TaskLog[] = await getTaskLog(order.taskId, key);
-      console.log("🚀 ~ file: tracking.ts:108 ~ getHistory ~ histories", histories)
-      const historyDTOs: TaskLogDTO[] = histories.map(hist => ({
-        ...hist,
-        created_at: moment(hist.created_at).format(
-          "DD/MM/YYYY hh:mm:ss A"
-        ) || "",
+    const order = await getTaskByOrder(orderNumberWithoutPrefix, key);
+
+    if (!order) return null;
+
+    const histories = await getTaskLog(order.taskId, key);
+    const historyResponse: TaskLogDTO = {
+      history: histories,
+      task: {
+        ...order,
         name: order?.name || "",
         date: moment(order?.date).format(
           "DD/MM/YYYY hh:mm:ss A"
@@ -121,20 +58,17 @@ async function getHistory(orderNumber: string): Promise<TaskLogDTO[]> {
           "DD/MM/YYYY hh:mm:ss A"
         ) || "",
         orderId: order?.orderId || "",
-        taskDescStatus: getDescStatus(hist.taskStatus, hist.notes, hist.imageArry),
-        orderDescStatus: getDescStatus(order?.taskStatus || ""),
+        taskDescStatus: getDescStatus(order?.taskStatus || ""),
         address: {
           ...order?.address,
           formatted_address: order?.address.formatted_address || "",
         },
         forecast: countValidDays(order?.date || now().toString(), getForecast("NORMAL"))
-      }));
-      // console.log("🚀 ~ file: tracking.ts:120 ~ getHistory ~ historyDTOs", historyDTOs)
-
-      return historyDTOs;
-    }
+      }
+    };
+    return historyResponse;
   }
-  return [];
+  return null;
 }
 
 function getForecast(type: string): number {
@@ -161,20 +95,33 @@ function countValidDays(startDate: string, forecast: Number, validWeekDays: numb
   );
 }
 
-async function getTaskLog(taskId: string, key: string) {
+async function getTaskLog(taskId: string, key: string): Promise<TaskLog[]> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
-
-
-  let responseData = await get(urlbase + `/task/tasklog?taskId=${taskId}`, key);
+  let responseData = await get(urlbase + `/task/tasklog?taskId=${taskId}`, key) as TaskLog[];
   if (!responseData) return [];
-  if (responseData.length > 0) return responseData;
+  if (!responseData.length) return [];
+  return responseData.map(hist => ({
+    ...hist,
+    created_at: moment(hist.created_at).format(
+      "DD/MM/YYYY hh:mm:ss A"
+    ) || "",
+    taskDescStatus: getDescStatus(hist.taskStatus, hist.notes, hist.imageArry),
+  }));
+}
 
-  return [];
+async function getTaskByOrder(orderNumber: string, key: string): Promise<Task | null> {
+  const urlbase = process.env.URL_BASE_DELIFORCE;
+  let tasks = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, key) as Task[];
+  if (!tasks.length)
+    return null;
+  let task = tasks.find(resp => !resp.isDeleted);
+  if (!task) return null;
+  return task;
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<TaskLogDTO[] | null | undefined>
+  res: NextApiResponse<TaskLogDTO | null | undefined>
 ) {
   const param = req.query;
 

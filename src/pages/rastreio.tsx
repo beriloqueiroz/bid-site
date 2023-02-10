@@ -4,7 +4,6 @@ import Button from "@/components/button";
 import axios from "axios";
 import { ReactElement, useEffect, useState } from "react";
 import style from "../styles/rastreio.module.scss";
-import moment from "moment";
 import { useRouter } from "next/router";
 import { FaMotorcycle, FaCheckCircle } from "react-icons/fa";
 import {
@@ -16,7 +15,7 @@ import {
 import { RiImageAddFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
 import { GoPackage } from "react-icons/go";
-import { useParams } from "react-router-dom";
+import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
@@ -72,37 +71,13 @@ function ReactIcon({ status }: { status: string }): ReactElement {
   return st?.out || <></>;
 }
 
-type TaskLog = {
-  _id: string;
-  role: number;
-  taskStatus: string;
-  taskId: string;
-  clientId: string;
-  driverName: string;
-  user: string;
-  distanceTravelled: number;
-  created_at: string;
-  name: string;
-  date: string;
-  endDate: string;
-  orderId: string;
-  address: {
-    formatted_address: string;
-  };
-  reason: string;
-  imageArry: string[];
-  notes: string;
-  taskDescStatus: string;
-  orderDescStatus: string;
-  forecast: string;
-};
 export default function Rastreio() {
   const [orderTrack, setOrder] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
   const [isShowDetail, setShowDetail] = useState([""]);
-  const [response, setResponse] = useState<TaskLog[]>([]);
+  const [response, setResponse] = useState<TaskLogDTO | null>(null);
   const [isPrivate, setIsPrivate] = useState(true);
   var router = useRouter();
 
@@ -199,32 +174,31 @@ export default function Rastreio() {
             </span>
           )}
         </form>
-        {response.length <= 0 ? (
+        {!response ? (
           submitted && <p className={style.warn}>Nenhum pacote encontrado</p>
         ) : (
           <div className={style.result}>
             <div className={style.generalOrderInfo}>
               <p>
-                <strong>Descrição:</strong> {response.slice(-1).pop()?.name}
+                <strong>Descrição:</strong> {response?.task.name}
               </p>
               <p>
-                <strong>Pedido:</strong> {response.slice(-1).pop()?.orderId}
+                <strong>Pedido:</strong> {response.task.orderId}
               </p>
               <p>
                 <strong>Endereço:</strong>{" "}
-                {response.slice(-1).pop()?.address.formatted_address}
+                {response.task.address.formatted_address}
               </p>
               <p>
                 <strong>Previsão de entrega:</strong>{" "}
-                {response.slice(-1).pop()?.forecast}
+                {response.task.forecast.slice(0, 10)}
               </p>
               <p>
-                <strong>Último Status:</strong>{" "}
-                {response.slice(-1).pop()?.orderDescStatus}
+                <strong>Último Status:</strong> {response.task.taskDescStatus}
               </p>
             </div>
             <ul className={style.ul}>
-              {response.map(
+              {response.history.map(
                 (task, i) =>
                   task.taskStatus != "0" && (
                     <li key={task._id}>

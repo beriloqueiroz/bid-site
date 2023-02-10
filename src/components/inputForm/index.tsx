@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler } from "react";
+import { ChangeEvent, ChangeEventHandler, Dispatch } from "react";
 import Props from "./props";
 import style from "./style.module.scss";
 export default function InputForm({
@@ -8,18 +8,20 @@ export default function InputForm({
   placeholder,
   isRequired,
   setOnChange,
+  onChange,
   isTextArea,
   value,
   label,
-  onKeyDown
+  onKeyDown,
+  disable = false,
 }: Props) {
   function setChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
   ) {
-    setOnChange(e.target.value);
+    setOnChange && setOnChange(e.target.value);
   }
   return (
-    <>
+    <div className={style.container}>
       <label className={style.label} htmlFor={name}>
         {label}
       </label>
@@ -31,9 +33,10 @@ export default function InputForm({
           id={id}
           placeholder={placeholder}
           required={isRequired}
-          onChange={setChange}
+          onChange={onChange || setChange}
           value={value}
           onKeyDown={onKeyDown}
+          disabled={disable}
         />
       ) : (
         <textarea
@@ -45,6 +48,6 @@ export default function InputForm({
           value={value}
         />
       )}
-    </>
+    </div>
   );
 }

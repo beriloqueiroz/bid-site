@@ -21,7 +21,6 @@ const handler = async (
     return;
   }
 
-
   const prefixCompany = req.headers["x-company"];
   const passCompany = req.headers["x-authentication"]
 
@@ -36,7 +35,7 @@ const handler = async (
   }
 
   try {
-    const { fields, files } = await parseForm(req);
+    const { files } = await parseForm(req);
 
     const file = files.media;
     let url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
