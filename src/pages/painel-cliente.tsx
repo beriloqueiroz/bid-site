@@ -83,10 +83,6 @@ export default function CustomerPanel() {
             estado: string;
           };
         } = await res.json();
-        console.log(
-          "🚀 ~ file: painel-cliente.tsx:86 ~ CustomerPanel ~ infos",
-          infos
-        );
 
         if (!infos) {
           setError(true);
@@ -118,6 +114,21 @@ export default function CustomerPanel() {
     if (prefix == "" || password == "") {
       setError(true);
       setMessageError("Erro, Credenciais não informadas");
+      return;
+    }
+
+    if (
+      street == "" ||
+      number == "" ||
+      neighborhood == "" ||
+      city == "" ||
+      state == "" ||
+      cep == ""
+    ) {
+      setError(true);
+      setMessageError(
+        "Erro, preencha todos os campos obrigatórios, os campos obrigatórios possuem *"
+      );
       return;
     }
 
@@ -314,7 +325,7 @@ export default function CustomerPanel() {
         {order == "" ? (
           <form className={style.individualForm}>
             <InputForm
-              label='CEP'
+              label='CEP *'
               type='text'
               name='cep'
               id='cep'
@@ -361,7 +372,7 @@ export default function CustomerPanel() {
               disable={true}
             />
             <InputForm
-              label='Número'
+              label='Número *'
               type='text'
               name='number'
               id='number'
@@ -372,7 +383,7 @@ export default function CustomerPanel() {
               onKeyDown={handleKeypress}
             />
             <InputForm
-              label='Telefone'
+              label='Telefone *'
               type='text'
               name='phone'
               id='phone'
