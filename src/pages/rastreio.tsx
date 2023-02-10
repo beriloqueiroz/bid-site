@@ -15,7 +15,7 @@ import {
 import { RiImageAddFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
 import { GoPackage } from "react-icons/go";
-import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
+import { TaskLogDTO } from "@/lib/deliforce/types/TaskLogDTO";
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [

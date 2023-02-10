@@ -7,7 +7,8 @@ type Data = {
     rua: string,
     bairro: string,
     cidade: string,
-    cep: string
+    cep: string,
+    estado: string
   }
 }
 
@@ -16,7 +17,8 @@ const getInfosByCEP = async (cep: string) => {
     rua: "Rua Sousa Carvalho",
     bairro: "Bonsucesso",
     cidade: "Fortaleza",
-    cep: cep
+    cep: cep,
+    estado: "Ceará"
   }
   return infos
 }
@@ -53,12 +55,6 @@ const handler = async (
     console.error(e);
     res.status(500).json({ status: 500, error: "Erro interno" });
   }
-};
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 };
 
 export default handler;

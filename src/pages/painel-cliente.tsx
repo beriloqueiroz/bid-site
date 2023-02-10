@@ -25,6 +25,10 @@ export default function CustomerPanel() {
   const [complement, setComplement] = useState("");
   const [number, setNumber] = useState("");
   const [order, setOrder] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
 
   const router = useRouter();
 
@@ -76,8 +80,13 @@ export default function CustomerPanel() {
             bairro: string;
             cidade: string;
             cep: string;
+            estado: string;
           };
         } = await res.json();
+        console.log(
+          "🚀 ~ file: painel-cliente.tsx:86 ~ CustomerPanel ~ infos",
+          infos
+        );
 
         if (!infos) {
           setError(true);
@@ -85,13 +94,19 @@ export default function CustomerPanel() {
           return;
         }
 
-        setStreet(infos.rua + ", " + infos.bairro + ", " + infos.cidade);
+        setStreet(infos.rua);
+        setNeighborhood(infos.bairro);
+        setCity(infos.cidade);
+        setState(infos.estado);
       } catch (error) {
         setError(true);
         setMessageError("Erro, ao enviar informações, entre em contato!");
       }
     } else {
       setStreet("");
+      setNeighborhood("");
+      setCity("");
+      setState("");
     }
   };
 
@@ -113,11 +128,15 @@ export default function CustomerPanel() {
 
     try {
       const data = {
-        number,
         street,
+        number,
+        neighborhood,
+        city,
+        state,
+        cep,
         complement,
         reference,
-        cep,
+        phone,
       };
       const res = await fetch("/api/sendTask", {
         method: "POST",
@@ -136,22 +155,26 @@ export default function CustomerPanel() {
 
       if (!response.orderNumber) {
         setError(true);
-        setMessageError(error + ", entre em contato conosco!");
         setSendingIndividual(false);
-        return;
+        throw new Error("Erro ao enviar pacote");
       }
 
       orderNumber = response.orderNumber;
-
+      setSubmitted(true);
       setCep("");
       setStreet("");
       setNumber("");
       setComplement("");
       setReference("");
-      setSubmitted(true);
+      setPhone("");
+      setCity("");
+      setNeighborhood("");
+      setCity("");
     } catch (error) {
       setError(true);
-      setMessageError("Erro, ao enviar informações, entre em contato!");
+      setMessageError(
+        "Erro, ao enviar informações, entre em contato! " + error
+      );
     }
     setSendingIndividual(false);
     setOrder(orderNumber);
@@ -304,12 +327,36 @@ export default function CustomerPanel() {
             <InputForm
               label='Rua'
               type='text'
-              name='cep'
-              id='cep'
+              name='street'
+              id='street'
               placeholder=''
               isRequired={true}
               setOnChange={setStreet}
               value={street}
+              onKeyDown={handleKeypress}
+              disable={true}
+            />
+            <InputForm
+              label='Bairro'
+              type='text'
+              name='neighborhood'
+              id='neighborhood'
+              placeholder=''
+              isRequired={true}
+              setOnChange={setNeighborhood}
+              value={neighborhood}
+              onKeyDown={handleKeypress}
+              disable={true}
+            />
+            <InputForm
+              label='Estado'
+              type='text'
+              name='state'
+              id='state'
+              placeholder=''
+              isRequired={true}
+              setOnChange={setState}
+              value={state}
               onKeyDown={handleKeypress}
               disable={true}
             />
@@ -322,6 +369,17 @@ export default function CustomerPanel() {
               isRequired={true}
               setOnChange={setNumber}
               value={number}
+              onKeyDown={handleKeypress}
+            />
+            <InputForm
+              label='Telefone'
+              type='text'
+              name='phone'
+              id='phone'
+              placeholder='85 989888888'
+              isRequired={true}
+              setOnChange={setPhone}
+              value={phone}
               onKeyDown={handleKeypress}
             />
             <InputForm

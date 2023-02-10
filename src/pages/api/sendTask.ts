@@ -1,3 +1,7 @@
+import { sendTask } from "@/lib/deliforce/service";
+import { SendTask } from "@/lib/types/SendTask";
+import { randomInt } from "crypto";
+import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
 
@@ -11,6 +15,7 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<Data | null>
 ) => {
+  console.log("🚀 ~ file: sendTask.ts:18 ~ req", req.body)
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).json({
@@ -33,9 +38,57 @@ const handler = async (
     return;
   }
 
+  const generalAuth = process.env['CONFIG_' + prefixCompany] as string;
+  const driver = process.env['DRIVER_' + prefixCompany] as string;
+  const team = process.env['TEAM_' + prefixCompany] as string;
+  const rule = process.env['RULE_' + prefixCompany] as string;
+
+  if (!generalAuth || !rule || !driver || !team) return null;
+
+  const keys = JSON.parse(generalAuth) as string[];
+
+  const {
+    street,
+    number,
+    neighborhood,
+    city,
+    state,
+    cep,
+    complement,
+    reference,
+    phone } = JSON.parse(req.body);
   try {
-    sendEmail(req, res, prefixCompany.toString())
-    const orderNumber = "12365478"
+    const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
+    const startDate = moment()
+    const data: SendTask = {
+      address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
+      complement: complement,
+      phone: phone,
+      name: `${orderNumber}`,
+      value: "10.00",
+      startDate: startDate.toString(),
+      endDate: startDate.add(1, 'days').toString(),
+      reference: reference,
+
+      driverID: driver,
+      ruleID: rule,
+      teamID: team,
+
+      description: prefixCompany.toString(),
+      email: "sender@bid.log.br",
+      orderNumber: orderNumber,
+
+    };
+    console.log("🚀 ~ file: sendTask.ts:81 ~ data", data)
+    const key = keys[0]
+    console.log("🚀 ~ file: sendTask.ts:82 ~ key", key)
+    const response = await sendTask(data, key);
+    console.log("🚀 ~ file: sendTask.ts:86 ~ response", response)
+    if (response?.error) {
+      res.status(500).json({ status: 500, error: response });
+      return;
+    }
+    // sendEmail(req, res, prefixCompany.toString())
     res.status(200).json({ status: 200, error: null, orderNumber: orderNumber })
   } catch (e) {
     console.error(e);

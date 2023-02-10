@@ -33,13 +33,7 @@ const handler = async (
         return;
     }
 
-    res.status(200).json({ status: 200, error: null, token:"123456" });
-};
-
-export const config = {
-    api: {
-        bodyParser: false,
-    },
+    res.status(200).json({ status: 200, error: null, token: "123456" });
 };
 
 export default handler;
