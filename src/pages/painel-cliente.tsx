@@ -29,6 +29,7 @@ export default function CustomerPanel() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
+  const [recipient, setRecipient] = useState("");
 
   const [requiredError, setRequiredError] = useState(false);
   const [isLogged, setLogged] = useState(false);
@@ -207,6 +208,7 @@ export default function CustomerPanel() {
         complement,
         reference,
         phone,
+        recipient
       };
       const res = await fetch("/api/sendTask", {
         method: "POST",
@@ -489,6 +491,19 @@ export default function CustomerPanel() {
                   value={reference}
                   onKeyDown={handleKeypress}
                   classPlus={style.i8}
+                />
+                <InputForm
+                  label='Destinatário *'
+                  type='text'
+                  name='recipient'
+                  id='recipient'
+                  placeholder='josé da silva'
+                  isRequired={true}
+                  setOnChange={setRecipient}
+                  value={recipient}
+                  onKeyDown={handleKeypress}
+                  classPlus={style.i8}
+                  alertRequired={requiredError && recipient == ""}
                 />
                 <Button
                   handleSubmit={individualHandleSubmit}

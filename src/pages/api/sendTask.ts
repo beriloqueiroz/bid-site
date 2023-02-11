@@ -55,13 +55,14 @@ const handler = async (
     cep,
     complement,
     reference,
-    phone } = JSON.parse(req.body);
+    phone,
+    recipient } = JSON.parse(req.body);
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const startDate = moment()
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: complement,
+      complement: complement + " para: " + recipient,
       phone: phone,
       name: `${orderNumber}`,
       value: "10.00",
