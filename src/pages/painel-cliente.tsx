@@ -60,7 +60,7 @@ export default function CustomerPanel() {
     setCep(e.target.value);
     if (e.target.value.length >= 8) {
       try {
-        const res = await fetch("/api/getInfosByCep" + "?cep=" + cep, {
+        const res = await fetch("/api/getInfosByCep" + "?cep=" + e.target.value, {
           method: "GET",
           headers: {
             "X-Company": prefix,

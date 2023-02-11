@@ -15,7 +15,6 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<Data | null>
 ) => {
-  console.log("🚀 ~ file: sendTask.ts:18 ~ req", req.body)
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).json({
@@ -79,11 +78,8 @@ const handler = async (
       orderNumber: orderNumber,
 
     };
-    console.log("🚀 ~ file: sendTask.ts:81 ~ data", data)
     const key = keys[0]
-    console.log("🚀 ~ file: sendTask.ts:82 ~ key", key)
     const response = await sendTask(data, key);
-    console.log("🚀 ~ file: sendTask.ts:86 ~ response", response)
     if (response?.error) {
       res.status(500).json({ status: 500, error: response });
       return;

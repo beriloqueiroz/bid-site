@@ -1,3 +1,4 @@
+import { ceps } from "@/lib/util/ceps";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -13,13 +14,7 @@ type Data = {
 }
 
 const getInfosByCEP = async (cep: string) => {
-  const infos = {
-    rua: "Rua Sousa Carvalho",
-    bairro: "Bonsucesso",
-    cidade: "Fortaleza",
-    cep: cep,
-    estado: "Ceará"
-  }
+  const infos = ceps.find(elem => elem.cep === cep);
   return infos
 }
 const handler = async (
@@ -49,7 +44,8 @@ const handler = async (
   }
 
   try {
-    const infos = await getInfosByCEP("60541646");
+    const param = req.query;
+    const infos = await getInfosByCEP(`${param["cep"]}`);
     res.status(200).json({ status: 200, error: null, infos: infos })
   } catch (e) {
     console.error(e);
