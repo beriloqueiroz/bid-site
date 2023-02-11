@@ -13,4 +13,6 @@ export default interface Props {
     onKeyDown?: KeyboardEventHandler<HTMLInputElement>
     disable?: boolean | undefined
     onChange?: ChangeEventHandler<HTMLInputElement> | undefined
+    classPlus?: string
+    alertRequired?: boolean
 }

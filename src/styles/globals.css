@@ -1,29 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap");
 
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: 'Barlow', Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  --font-mono: "Barlow", Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
   --background-color-1: white;
   --background-color-dark: #000000;
   --presentation-1: #000000;
   --presentation-2: #000000;
   --color-primary-1: #000000;
-  --color-primary-2: #3B0F55;
-  --color-primary-3: #FF5B74;
-  --color-primary-4: #FF81A4;
+  --color-primary-2: #3b0f55;
+  --color-primary-3: #ff5b74;
+  --color-primary-4: #ff81a4;
   --color-secondary-1: #000000;
-  --color-secondary-2: #9A7A5B;
+  --color-secondary-2: #9a7a5b;
   --color-dark-1: #777777;
   --color-dark-2: black;
   --color-success-1: #00ff00;
   --color-success-2: green;
   --color-light-1: white;
-  --color-light-2: #ECECEC;
-  --color-light-3: #F8F8F8;
+  --color-light-2: #ececec;
+  --color-light-3: #f8f8f8;
+  --color-light-4: #aaaaaa;
   --color-error: #880000;
+  
 }
 
 * {

@@ -14,6 +14,8 @@ export default function InputForm({
   label,
   onKeyDown,
   disable = false,
+  classPlus = "",
+  alertRequired=false
 }: Props) {
   function setChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
@@ -21,13 +23,13 @@ export default function InputForm({
     setOnChange && setOnChange(e.target.value);
   }
   return (
-    <div className={style.container}>
+    <div className={`${style.container} ${classPlus}`}>
       <label className={style.label} htmlFor={name}>
         {label}
       </label>
       {!isTextArea ? (
         <input
-          className={style.input}
+          className={`${style.input} ${alertRequired ? style.alertRequired :''}`}
           type={type}
           name={name}
           id={id}

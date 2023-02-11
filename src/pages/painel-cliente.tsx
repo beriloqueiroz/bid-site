@@ -30,6 +30,8 @@ export default function CustomerPanel() {
   const [state, setState] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
 
+  const [requiredError, setRequiredError] = useState(false);
+
   const router = useRouter();
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,13 +62,16 @@ export default function CustomerPanel() {
     setCep(e.target.value);
     if (e.target.value.length >= 8) {
       try {
-        const res = await fetch("/api/getInfosByCep" + "?cep=" + e.target.value, {
-          method: "GET",
-          headers: {
-            "X-Company": prefix,
-            "X-Authentication": password,
-          },
-        });
+        const res = await fetch(
+          "/api/getInfosByCep" + "?cep=" + e.target.value,
+          {
+            method: "GET",
+            headers: {
+              "X-Company": prefix,
+              "X-Authentication": password,
+            },
+          }
+        );
 
         const {
           status,
@@ -110,6 +115,7 @@ export default function CustomerPanel() {
     e?: React.MouseEvent<HTMLButtonElement>
   ) => {
     if (e) e.preventDefault();
+    setRequiredError(false);
 
     if (prefix == "" || password == "") {
       setError(true);
@@ -129,6 +135,7 @@ export default function CustomerPanel() {
       setMessageError(
         "Erro, preencha todos os campos obrigatórios, os campos obrigatórios possuem *"
       );
+      setRequiredError(true);
       return;
     }
 
@@ -305,6 +312,7 @@ export default function CustomerPanel() {
             id='prefix'
             placeholder='PREFX'
             isRequired={true}
+            alertRequired={requiredError && prefix == ""}
             setOnChange={setPrefix}
             value={prefix}
             onKeyDown={handleKeypress}
@@ -316,6 +324,7 @@ export default function CustomerPanel() {
             id='password'
             placeholder='*********'
             isRequired={true}
+            alertRequired={requiredError && password == ""}
             setOnChange={setPassword}
             value={password}
             onKeyDown={handleKeypress}
@@ -331,9 +340,11 @@ export default function CustomerPanel() {
               id='cep'
               placeholder='60123456'
               isRequired={true}
+              alertRequired={requiredError && cep == ""}
               onChange={getInfosByCep}
               value={cep}
               onKeyDown={handleKeypress}
+              classPlus={style.i1}
             />
             <InputForm
               label='Rua'
@@ -342,10 +353,12 @@ export default function CustomerPanel() {
               id='street'
               placeholder=''
               isRequired={true}
+              alertRequired={requiredError && street == ""}
               setOnChange={setStreet}
               value={street}
               onKeyDown={handleKeypress}
               disable={true}
+              classPlus={style.i2}
             />
             <InputForm
               label='Bairro'
@@ -354,10 +367,12 @@ export default function CustomerPanel() {
               id='neighborhood'
               placeholder=''
               isRequired={true}
+              alertRequired={requiredError && neighborhood == ""}
               setOnChange={setNeighborhood}
               value={neighborhood}
               onKeyDown={handleKeypress}
               disable={true}
+              classPlus={style.i3}
             />
             <InputForm
               label='Estado'
@@ -366,10 +381,12 @@ export default function CustomerPanel() {
               id='state'
               placeholder=''
               isRequired={true}
+              alertRequired={requiredError && state == ""}
               setOnChange={setState}
               value={state}
               onKeyDown={handleKeypress}
               disable={true}
+              classPlus={style.i4}
             />
             <InputForm
               label='Número *'
@@ -378,9 +395,11 @@ export default function CustomerPanel() {
               id='number'
               placeholder='123'
               isRequired={true}
+              alertRequired={requiredError && number == ""}
               setOnChange={setNumber}
               value={number}
               onKeyDown={handleKeypress}
+              classPlus={style.i5}
             />
             <InputForm
               label='Telefone *'
@@ -389,9 +408,11 @@ export default function CustomerPanel() {
               id='phone'
               placeholder='85 989888888'
               isRequired={true}
+              alertRequired={requiredError && phone == ""}
               setOnChange={setPhone}
               value={phone}
               onKeyDown={handleKeypress}
+              classPlus={style.i6}
             />
             <InputForm
               label='Complemento'
@@ -403,6 +424,7 @@ export default function CustomerPanel() {
               setOnChange={setComplement}
               value={complement}
               onKeyDown={handleKeypress}
+              classPlus={style.i7}
             />
             <InputForm
               label='Ponto de referência'
@@ -414,6 +436,7 @@ export default function CustomerPanel() {
               setOnChange={setReference}
               value={reference}
               onKeyDown={handleKeypress}
+              classPlus={style.i8}
             />
             <Button
               handleSubmit={individualHandleSubmit}
@@ -421,6 +444,7 @@ export default function CustomerPanel() {
               text='Enviar'
               id='endButton'
               type='submit'
+              plusClass={style.i9}
             />
           </form>
         ) : (
@@ -474,9 +498,7 @@ export default function CustomerPanel() {
         </form>
         {error && <span className={style.errorMessage}>{messageError}</span>}
         {submitted && !error && (
-          <span className={style.successMessage}>
-            Sucesso ao enviar arquivo.
-          </span>
+          <span className={style.successMessage}>Sucesso ao enviar.</span>
         )}
       </section>
     </Layout>
