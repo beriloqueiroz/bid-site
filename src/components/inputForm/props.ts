@@ -1,4 +1,4 @@
-import { ChangeEventHandler, Dispatch, KeyboardEventHandler, SetStateAction } from "react"
+import { ChangeEventHandler, Dispatch, KeyboardEventHandler, ReactNode, SetStateAction } from "react"
 
 export default interface Props {
     name: string
@@ -15,4 +15,7 @@ export default interface Props {
     onChange?: ChangeEventHandler<HTMLInputElement> | undefined
     classPlus?: string
     alertRequired?: boolean
+    pattern?: string
+    children?: ReactNode;
+
 }

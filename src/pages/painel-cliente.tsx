@@ -4,6 +4,10 @@ import Button from "@/components/button";
 import { useRouter } from "next/router";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 import style from "../styles/painel-cliente.module.scss";
+import moment from "moment";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { BsCalendar2Check } from "react-icons/bs";
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
@@ -30,6 +34,9 @@ export default function CustomerPanel() {
   const [state, setState] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [charDateInvalid, setCharDateInvalid] = useState(false);
+  const [invalidDeliveryDate, setInvalidDeliveryDate] = useState(false);
 
   const [requiredError, setRequiredError] = useState(false);
   const [isLogged, setLogged] = useState(false);
@@ -186,12 +193,16 @@ export default function CustomerPanel() {
         neighborhood == "" ||
         city == "" ||
         state == "" ||
-        cep == ""
+        cep == "" ||
+        !isValidDate(deliveryDate)
       ) {
         setError(true);
         setRequiredError(true);
         throw new Error(
-          "preencha todos os campos obrigatórios, os campos obrigatórios possuem *"
+          `preencha todos os campos obrigatórios, os campos obrigatórios possuem *, ${
+            !isValidDate(deliveryDate) &&
+            "verifique se a data de entrega não está para o final de semana"
+          }`
         );
       }
 
@@ -208,7 +219,8 @@ export default function CustomerPanel() {
         complement,
         reference,
         phone,
-        recipient
+        recipient,
+        deliveryDate,
       };
       const res = await fetch("/api/sendTask", {
         method: "POST",
@@ -242,6 +254,7 @@ export default function CustomerPanel() {
       setNeighborhood("");
       setCity("");
       setOrder(response.orderNumber);
+      setDeliveryDate("");
     } catch (error) {
       setError(true);
       handleMessageError("Erro, ao enviar informações, " + error);
@@ -342,10 +355,77 @@ export default function CustomerPanel() {
   }
 
   const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
+    setCharDateInvalid(false);
+    console.log(e.key);
     if (e.key === "Enter") {
       e.preventDefault();
     }
+    if (e.key === "Backspace") setCharDateInvalid(true);
   };
+
+  const handleKeypressDate = (e: KeyboardEvent<HTMLInputElement>) => {
+    setCharDateInvalid(false);
+    if (e.key === "Enter") {
+      e.preventDefault();
+      return;
+    }
+    if (e.key === "Backspace") {
+      setCharDateInvalid(true);
+      return;
+    }
+  };
+
+  function isNumber(value: string) {
+    if (typeof value === "string") {
+      return !isNaN(parseInt(value));
+    }
+  }
+
+  const setDateDeliveryByCalendar = (date: Date) => {
+    setInvalidDeliveryDate(false);
+    setInvalidDeliveryDate(!isValidDate(date.toISOString()));
+    setDeliveryDate(moment(date).format("DD/MM/YYYY"));
+  };
+
+  const setDateDelivery = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setInvalidDeliveryDate(false);
+    if (charDateInvalid) {
+      setDeliveryDate(e.target.value);
+      return;
+    }
+    if (!isNumber(e.target.value)) {
+      setCharDateInvalid(true);
+      return;
+    }
+    let dateFormatted = e.target.value;
+    if (dateFormatted.length == 2) dateFormatted = dateFormatted + "/";
+    if (dateFormatted.length == 5) dateFormatted = dateFormatted + "/";
+    if (dateFormatted.length <= 10) setDeliveryDate(dateFormatted);
+    if (e.target.value.length === 10) {
+      setInvalidDeliveryDate(!isValidDate(e.target.value));
+    }
+  };
+
+  function isValidDate(date: string) {
+    const day = date.substring(0, 2);
+    const month = date.substring(3, 5);
+    const year = date.substring(6, 10);
+    if (isWeekDay(`${year}-${month}-${day}`)) {
+      return false;
+    }
+    return moment(`${year}-${month}-${day}`).isValid();
+  }
+
+  function isWeekDay(date: string, validWeekDays: number[] = [6, 7]) {
+    let dateConverted = moment(date);
+    const weekday = dateConverted.isoWeekday();
+    if (validWeekDays.includes(weekday)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <Layout simpleHeader={true}>
@@ -505,13 +585,41 @@ export default function CustomerPanel() {
                   classPlus={style.i8}
                   alertRequired={requiredError && recipient == ""}
                 />
+                <InputForm
+                  label='Data de entrega *'
+                  type='text'
+                  name='deliveryDate'
+                  id='deliveryDate'
+                  placeholder='21/12/2023'
+                  isRequired={true}
+                  onChange={setDateDelivery}
+                  value={deliveryDate}
+                  onKeyDown={handleKeypressDate}
+                  classPlus={style.i9}
+                  alertRequired={
+                    (requiredError && deliveryDate == "") || invalidDeliveryDate
+                  }>
+                  <div className={style.calendarIconContainer}>
+                    <div className={style.iconContainer}>
+                      <div className={style.iconCalendar}>
+                        <BsCalendar2Check />
+                      </div>
+                      <DatePicker
+                        calendarClassName={style.calendar}
+                        wrapperClassName={style.buttonCalendarIcon}
+                        onChange={setDateDeliveryByCalendar}
+                      />
+                    </div>
+                  </div>
+                </InputForm>
+
                 <Button
                   handleSubmit={individualHandleSubmit}
                   sending={sendingIndividual}
                   text='Enviar'
                   id='endButton'
                   type='submit'
-                  plusClass={style.i9}
+                  plusClass={style.i10}
                 />
               </form>
             ) : (

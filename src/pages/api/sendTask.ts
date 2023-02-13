@@ -62,9 +62,9 @@ const handler = async (
     const startDate = moment()
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: complement + " para: " + recipient,
+      complement: complement,
       phone: phone,
-      name: `${orderNumber}`,
+      name: `${orderNumber} - ${recipient}`,
       value: "10.00",
       startDate: startDate.toString(),
       endDate: startDate.add(1, 'days').toString(),

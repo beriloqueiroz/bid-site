@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    position: relative;
     .input,
     .textarea {
         background: #f8f8f8;
@@ -24,5 +25,9 @@
     }
     .alertRequired {
         border: 2px solid var(--color-error);
+    }
+    .alertRequired:focus {
+        border: 2px solid var(--color-error);
+        background-color: var(--color-error);
     }
 }

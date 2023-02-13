@@ -15,7 +15,9 @@ export default function InputForm({
   onKeyDown,
   disable = false,
   classPlus = "",
-  alertRequired=false
+  alertRequired = false,
+  pattern,
+  children,
 }: Props) {
   function setChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
@@ -28,18 +30,24 @@ export default function InputForm({
         {label}
       </label>
       {!isTextArea ? (
-        <input
-          className={`${style.input} ${alertRequired ? style.alertRequired :''}`}
-          type={type}
-          name={name}
-          id={id}
-          placeholder={placeholder}
-          required={isRequired}
-          onChange={onChange || setChange}
-          value={value}
-          onKeyDown={onKeyDown}
-          disabled={disable}
-        />
+        <>
+          <input
+            className={`${style.input} ${
+              alertRequired ? style.alertRequired : ""
+            }`}
+            type={type}
+            name={name}
+            id={id}
+            placeholder={placeholder}
+            required={isRequired}
+            onChange={onChange || setChange}
+            value={value}
+            onKeyDown={onKeyDown}
+            disabled={disable}
+            pattern={pattern}
+          />
+          {children}
+        </>
       ) : (
         <textarea
           className={style.textarea}
@@ -48,6 +56,7 @@ export default function InputForm({
           placeholder={placeholder}
           onChange={setChange}
           value={value}
+          disabled={disable}
         />
       )}
     </div>
