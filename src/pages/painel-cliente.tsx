@@ -383,7 +383,7 @@ export default function CustomerPanel() {
 
   const setDateDeliveryByCalendar = (date: Date) => {
     setInvalidDeliveryDate(false);
-    setInvalidDeliveryDate(!isValidDate(date.toISOString()));
+    setInvalidDeliveryDate(!isValidDate(moment(date).format("DD/MM/YYYY")));
     setDeliveryDate(moment(date).format("DD/MM/YYYY"));
   };
 
