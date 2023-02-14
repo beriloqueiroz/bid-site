@@ -14,3 +14,22 @@ export function countValidDays(startDate: string, forecast: Number, validWeekDay
         "DD/MM/YYYY hh:mm:ss A"
     );
 }
+
+export function dateByDeliveryType(type: string) {
+    let forecast = 1;
+    if (type == "D") forecast = 0;
+    if (type.includes("+")) {
+        const numb = type.split("+")[1];
+        if (isNumber(numb)) {
+            forecast = parseInt(numb);
+        }
+    }
+    const now = moment().format("DD/MM/YYYY hh:mm:ss A");
+    return countValidDays(now, forecast);
+}
+
+function isNumber(value: string) {
+    if (typeof value === "string") {
+        return !isNaN(parseInt(value));
+    }
+}

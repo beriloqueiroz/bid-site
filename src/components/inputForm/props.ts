@@ -13,9 +13,15 @@ export default interface Props {
     onKeyDown?: KeyboardEventHandler<HTMLInputElement>
     disable?: boolean | undefined
     onChange?: ChangeEventHandler<HTMLInputElement> | undefined
+    selectOnChange?: ChangeEventHandler<HTMLSelectElement> | undefined
     classPlus?: string
     alertRequired?: boolean
     pattern?: string
     children?: ReactNode;
+    isSelect?: boolean;
+    optionsSelect?: OptionSelect[]
+}
 
+export type OptionSelect = {
+    value: string, content: string
 }

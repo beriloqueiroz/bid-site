@@ -1,5 +1,6 @@
 import { sendTask } from "@/lib/deliforce/service";
 import { SendTask } from "@/lib/types/SendTask";
+import { dateByDeliveryType } from "@/lib/util/rules";
 import { randomInt } from "crypto";
 import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -56,18 +57,18 @@ const handler = async (
     complement,
     reference,
     phone,
-    recipient } = JSON.parse(req.body);
+    recipient,
+    deliveryType } = JSON.parse(req.body);
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
-    const startDate = moment()
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
       complement: complement,
       phone: phone,
       name: `${orderNumber} - ${recipient}`,
       value: "10.00",
-      startDate: startDate.toString(),
-      endDate: startDate.add(1, 'days').toString(),
+      startDate: moment(dateByDeliveryType(deliveryType)).subtract(5, "hours").format("DD/MM/YYYY hh:mm:ss A"),
+      endDate: dateByDeliveryType(deliveryType),
       reference: reference,
 
       driverID: driver,

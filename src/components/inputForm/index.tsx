@@ -1,6 +1,7 @@
 import { ChangeEvent, ChangeEventHandler, Dispatch } from "react";
 import Props from "./props";
 import style from "./style.module.scss";
+
 export default function InputForm({
   name,
   type,
@@ -18,37 +19,24 @@ export default function InputForm({
   alertRequired = false,
   pattern,
   children,
+  isSelect,
+  selectOnChange,
+  optionsSelect,
 }: Props) {
   function setChange(
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+    e:
+      | ChangeEvent<HTMLInputElement>
+      | ChangeEvent<HTMLTextAreaElement>
+      | ChangeEvent<HTMLSelectElement>
   ) {
     setOnChange && setOnChange(e.target.value);
   }
-  return (
-    <div className={`${style.container} ${classPlus}`}>
-      <label className={style.label} htmlFor={name}>
-        {label}
-      </label>
-      {!isTextArea ? (
-        <>
-          <input
-            className={`${style.input} ${
-              alertRequired ? style.alertRequired : ""
-            }`}
-            type={type}
-            name={name}
-            id={id}
-            placeholder={placeholder}
-            required={isRequired}
-            onChange={onChange || setChange}
-            value={value}
-            onKeyDown={onKeyDown}
-            disabled={disable}
-            pattern={pattern}
-          />
-          {children}
-        </>
-      ) : (
+  function InputTextArea() {
+    return (
+      <div className={`${style.container} ${classPlus}`}>
+        <label className={style.label} htmlFor={name}>
+          {label}
+        </label>
         <textarea
           className={style.textarea}
           name={name}
@@ -58,7 +46,57 @@ export default function InputForm({
           value={value}
           disabled={disable}
         />
-      )}
+      </div>
+    );
+  }
+  if (isTextArea) {
+    return InputTextArea();
+  }
+  if (isSelect) {
+    return (
+      <div className={`${style.container} ${classPlus}`}>
+        <label className={style.label} htmlFor={name}>
+          {label}
+        </label>
+        <select
+          name={name}
+          id={id}
+          className={`${style.input} ${
+            alertRequired ? style.alertRequired : ""
+          }`}
+          placeholder={placeholder}
+          required={isRequired}
+          onChange={selectOnChange || setChange}
+          value={value}
+          disabled={disable}>
+          {optionsSelect?.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.content}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+  return (
+    <div className={`${style.container} ${classPlus}`}>
+      <label className={style.label} htmlFor={name}>
+        {label}
+      </label>
+      <input
+        className={`${style.input} ${alertRequired ? style.alertRequired : ""}`}
+        type={type}
+        name={name}
+        id={id}
+        placeholder={placeholder}
+        required={isRequired}
+        onChange={onChange || setChange}
+        value={value}
+        onKeyDown={onKeyDown}
+        disabled={disable}
+        pattern={pattern}
+      />
+      {children}
     </div>
   );
 }
