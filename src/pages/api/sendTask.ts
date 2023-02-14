@@ -59,6 +59,8 @@ const handler = async (
     phone,
     recipient,
     deliveryType } = JSON.parse(req.body);
+
+  console.log(req.body)
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const data: SendTask = {
@@ -67,7 +69,7 @@ const handler = async (
       phone: phone,
       name: `${orderNumber} - ${recipient}`,
       value: "10.00",
-      startDate: moment(dateByDeliveryType(deliveryType)).subtract(5, "hours").format("DD/MM/YYYY hh:mm:ss A"),
+      startDate: dateByDeliveryType(deliveryType, 1),
       endDate: dateByDeliveryType(deliveryType),
       reference: reference,
 
@@ -82,6 +84,7 @@ const handler = async (
     };
     const key = keys[0]
     const response = await sendTask(data, key);
+    console.log("🚀 ~ file: sendTask.ts:87 ~ response", response)
     if (response?.error) {
       res.status(500).json({ status: 500, error: response });
       return;

@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 import style from "../styles/painel-cliente.module.scss";
 import { OptionSelect } from "@/components/inputForm/props";
+import ToggleButton from "@/components/toggleButton";
+import { isNumber } from "util";
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
@@ -34,8 +36,11 @@ export default function CustomerPanel() {
   const [deliveryType, setDeliveryType] = useState("");
 
   const [requiredError, setRequiredError] = useState(false);
+  const [disableOnchange, setDisableOnchange] = useState(false);
   const [isLogged, setLogged] = useState(false);
+  const [inLote, setInLote] = useState(false);
   const [optionsSelect, setOptionsSelect] = useState<OptionSelect[]>([
+    { value: "", content: "SELECIONE" },
     { value: "D+1", content: "ENTREGA NO PRÓXIMO DIA ÚTIL" },
     { value: "D", content: "ENTREGA NO MESMO DIA" },
   ]);
@@ -120,9 +125,19 @@ export default function CustomerPanel() {
     setFileName(fileList[0].name);
   };
 
+  function isNumber(value: string) {
+    if (typeof value === "string") {
+      return !isNaN(parseInt(value));
+    }
+  }
+
   const getInfosByCep = async (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
   ) => {
+    if (!isNumber(e.target.value.slice(-1)) && e.target.value.length > 0) {
+      console.log("teste");
+      return;
+    }
     setCep(e.target.value);
     if (e.target.value.length >= 8) {
       try {
@@ -393,202 +408,221 @@ export default function CustomerPanel() {
           />
         </form>
         {isLogged && (
-          <>
-            {order == "" ? (
-              <form className={style.individualForm}>
-                <InputForm
-                  label='CEP *'
-                  type='text'
-                  name='cep'
-                  id='cep'
-                  placeholder='60123456'
-                  isRequired={true}
-                  alertRequired={requiredError && cep == ""}
-                  onChange={getInfosByCep}
-                  value={cep}
-                  onKeyDown={handleKeypress}
-                  classPlus={style.i1}
-                />
-                <InputForm
-                  label='Rua'
-                  type='text'
-                  name='street'
-                  id='street'
-                  placeholder=''
-                  isRequired={true}
-                  alertRequired={requiredError && street == ""}
-                  setOnChange={setStreet}
-                  value={street}
-                  onKeyDown={handleKeypress}
-                  disable={true}
-                  classPlus={style.i2}
-                />
-                <InputForm
-                  label='Bairro'
-                  type='text'
-                  name='neighborhood'
-                  id='neighborhood'
-                  placeholder=''
-                  isRequired={true}
-                  alertRequired={requiredError && neighborhood == ""}
-                  setOnChange={setNeighborhood}
-                  value={neighborhood}
-                  onKeyDown={handleKeypress}
-                  disable={true}
-                  classPlus={style.i3}
-                />
-                <InputForm
-                  label='Estado'
-                  type='text'
-                  name='state'
-                  id='state'
-                  placeholder=''
-                  isRequired={true}
-                  alertRequired={requiredError && state == ""}
-                  setOnChange={setState}
-                  value={state}
-                  onKeyDown={handleKeypress}
-                  disable={true}
-                  classPlus={style.i4}
-                />
-                <InputForm
-                  label='Número *'
-                  type='text'
-                  name='number'
-                  id='number'
-                  placeholder='123'
-                  isRequired={true}
-                  alertRequired={requiredError && number == ""}
-                  setOnChange={setNumber}
-                  value={number}
-                  onKeyDown={handleKeypress}
-                  classPlus={style.i5}
-                />
-                <InputForm
-                  label='Telefone *'
-                  type='text'
-                  name='phone'
-                  id='phone'
-                  placeholder='85 989888888'
-                  isRequired={true}
-                  alertRequired={requiredError && phone == ""}
-                  setOnChange={setPhone}
-                  value={phone}
-                  onKeyDown={handleKeypress}
-                  classPlus={style.i6}
-                />
-                <InputForm
-                  label='Complemento'
-                  type='text'
-                  name='complement'
-                  id='complement'
-                  placeholder='Casa | Apartamento | ap 14'
-                  isRequired={false}
-                  setOnChange={setComplement}
-                  value={complement}
-                  onKeyDown={handleKeypress}
-                  classPlus={style.i7}
-                />
-                <InputForm
-                  label='Ponto de referência'
-                  type='text'
-                  name='reference'
-                  id='reference'
-                  placeholder='próximo ao bar do seu zé'
-                  isRequired={false}
-                  setOnChange={setReference}
-                  value={reference}
-                  onKeyDown={handleKeypress}
-                  classPlus={style.i8}
-                />
-                <InputForm
-                  label='Destinatário *'
-                  type='text'
-                  name='recipient'
-                  id='recipient'
-                  placeholder='josé da silva'
-                  isRequired={true}
-                  setOnChange={setRecipient}
-                  value={recipient}
-                  onKeyDown={handleKeypress}
-                  classPlus={style.i8}
-                  alertRequired={requiredError && recipient == ""}
-                />
-                <InputForm
-                  label='Modalidade *'
-                  type='text'
-                  name='deliveryType'
-                  id='deliveryType'
-                  placeholder='Selecione'
-                  isRequired={true}
-                  setOnChange={setDeliveryType}
-                  value={deliveryType}
-                  isSelect={true}
-                  optionsSelect={optionsSelect}
-                  classPlus={style.i9}
-                  alertRequired={requiredError && deliveryType == ""}
-                />
+          <div className={style.forms}>
+            <div className={style.chooseForm}>
+              <h1
+                className={`${style.titleChoose} ${
+                  !inLote ? style.titleSelected : ""
+                }`}>
+                Individual
+              </h1>
+              <ToggleButton handle={() => setInLote(!inLote)} />
+              <h1
+                className={`${style.titleChoose} ${
+                  inLote ? style.titleSelected : ""
+                }`}>
+                Em lote
+              </h1>
+            </div>
+            {!inLote ? (
+              <>
+                {order == "" ? (
+                  <form className={style.individualForm}>
+                    <InputForm
+                      label='CEP *'
+                      type='text'
+                      name='cep'
+                      id='cep'
+                      placeholder='60123456'
+                      isRequired={true}
+                      alertRequired={requiredError && cep == ""}
+                      onChange={getInfosByCep}
+                      value={cep}
+                      // onKeyDown={handleKeypress}
+                      classPlus={style.i1}
+                    />
+                    <InputForm
+                      label='Rua'
+                      type='text'
+                      name='street'
+                      id='street'
+                      placeholder=''
+                      isRequired={true}
+                      alertRequired={requiredError && street == ""}
+                      setOnChange={setStreet}
+                      value={street}
+                      onKeyDown={handleKeypress}
+                      disable={true}
+                      classPlus={style.i2}
+                    />
+                    <InputForm
+                      label='Bairro'
+                      type='text'
+                      name='neighborhood'
+                      id='neighborhood'
+                      placeholder=''
+                      isRequired={true}
+                      alertRequired={requiredError && neighborhood == ""}
+                      setOnChange={setNeighborhood}
+                      value={neighborhood}
+                      onKeyDown={handleKeypress}
+                      disable={true}
+                      classPlus={style.i3}
+                    />
+                    <InputForm
+                      label='Estado'
+                      type='text'
+                      name='state'
+                      id='state'
+                      placeholder=''
+                      isRequired={true}
+                      alertRequired={requiredError && state == ""}
+                      setOnChange={setState}
+                      value={state}
+                      onKeyDown={handleKeypress}
+                      disable={true}
+                      classPlus={style.i4}
+                    />
+                    <InputForm
+                      label='Número *'
+                      type='text'
+                      name='number'
+                      id='number'
+                      placeholder='123'
+                      isRequired={true}
+                      alertRequired={requiredError && number == ""}
+                      setOnChange={setNumber}
+                      value={number}
+                      onKeyDown={handleKeypress}
+                      classPlus={style.i5}
+                    />
+                    <InputForm
+                      label='Telefone *'
+                      type='text'
+                      name='phone'
+                      id='phone'
+                      placeholder='85 989888888'
+                      isRequired={true}
+                      alertRequired={requiredError && phone == ""}
+                      setOnChange={setPhone}
+                      value={phone}
+                      onKeyDown={handleKeypress}
+                      classPlus={style.i6}
+                    />
+                    <InputForm
+                      label='Complemento'
+                      type='text'
+                      name='complement'
+                      id='complement'
+                      placeholder='Casa | Apartamento | ap 14'
+                      isRequired={false}
+                      setOnChange={setComplement}
+                      value={complement}
+                      onKeyDown={handleKeypress}
+                      classPlus={style.i7}
+                    />
+                    <InputForm
+                      label='Ponto de referência'
+                      type='text'
+                      name='reference'
+                      id='reference'
+                      placeholder='próximo ao bar do seu zé'
+                      isRequired={false}
+                      setOnChange={setReference}
+                      value={reference}
+                      onKeyDown={handleKeypress}
+                      classPlus={style.i8}
+                    />
+                    <InputForm
+                      label='Destinatário *'
+                      type='text'
+                      name='recipient'
+                      id='recipient'
+                      placeholder='josé da silva'
+                      isRequired={true}
+                      setOnChange={setRecipient}
+                      value={recipient}
+                      onKeyDown={handleKeypress}
+                      classPlus={style.i8}
+                      alertRequired={requiredError && recipient == ""}
+                    />
+                    <InputForm
+                      label='Modalidade *'
+                      type='text'
+                      name='deliveryType'
+                      id='deliveryType'
+                      placeholder='Selecione'
+                      isRequired={true}
+                      setOnChange={setDeliveryType}
+                      value={deliveryType}
+                      isSelect={true}
+                      optionsSelect={optionsSelect}
+                      classPlus={style.i9}
+                      alertRequired={requiredError && deliveryType == ""}
+                    />
+                    <Button
+                      handleSubmit={individualHandleSubmit}
+                      sending={sendingIndividual}
+                      text='Enviar'
+                      id='endButton'
+                      type='submit'
+                      plusClass={style.i10}
+                    />
+                  </form>
+                ) : (
+                  <div className={style.resultIndividualForm}>
+                    <div>
+                      Este é o número do seu pedido: <strong>{order}</strong>
+                    </div>
+                    <span>anote na sua encomenda e o resto é com a gente.</span>
+                    <Button
+                      plusClass={style.resultButton}
+                      handleSubmit={() => setOrder("")}
+                      sending={downloading}
+                      text='Inserir outro'
+                      type='button'
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <form className={style.inLoteForm}>
+                <div className={style.inputUp}>
+                  <label htmlFor='table' className={style.choose_btn}>
+                    {fileName != ""
+                      ? `Arquivo selecionado: ${fileName}`
+                      : "Escolher arquivo"}
+                  </label>
+                  <input
+                    accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+                    id='table'
+                    name='table'
+                    type='file'
+                    multiple={false}
+                    onChange={handleFileChange}
+                    onKeyDown={handleKeypress}
+                  />
+                  {fileSelected && (
+                    <button onClick={onCancelFile}>Cancelar</button>
+                  )}
+                  <Button
+                    plusClass={style.modelButton}
+                    handleSubmit={downloadModel}
+                    sending={downloading}
+                    text='Baixar tabela modelo'
+                    type='button'
+                  />
+                </div>
                 <Button
-                  handleSubmit={individualHandleSubmit}
-                  sending={sendingIndividual}
+                  handleSubmit={handleSubmit}
+                  sending={sending}
                   text='Enviar'
                   id='endButton'
                   type='submit'
-                  plusClass={style.i10}
                 />
               </form>
-            ) : (
-              <div className={style.resultIndividualForm}>
-                <div>
-                  Este é o número do seu pedido: <strong>{order}</strong>
-                </div>
-                <span>anote na sua encomenda e o resto é com a gente.</span>
-                <Button
-                  plusClass={style.resultButton}
-                  handleSubmit={() => setOrder("")}
-                  sending={downloading}
-                  text='Inserir outro'
-                  type='button'
-                />
-              </div>
             )}
-
-            <form className={style.inLoteForm}>
-              <div className={style.inputUp}>
-                <label htmlFor='table' className={style.choose_btn}>
-                  {fileName != ""
-                    ? `Arquivo selecionado: ${fileName}`
-                    : "Escolher arquivo"}
-                </label>
-                <input
-                  accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-                  id='table'
-                  name='table'
-                  type='file'
-                  multiple={false}
-                  onChange={handleFileChange}
-                  onKeyDown={handleKeypress}
-                />
-                {fileSelected && (
-                  <button onClick={onCancelFile}>Cancelar</button>
-                )}
-                <Button
-                  plusClass={style.modelButton}
-                  handleSubmit={downloadModel}
-                  sending={downloading}
-                  text='Baixar tabela modelo'
-                  type='button'
-                />
-              </div>
-              <Button
-                handleSubmit={handleSubmit}
-                sending={sending}
-                text='Enviar'
-                id='endButton'
-                type='submit'
-              />
-            </form>
-          </>
+          </div>
         )}
         {error && (
           <span id='error' className={style.errorMessage}>

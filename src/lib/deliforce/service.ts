@@ -51,6 +51,7 @@ async function post(url: string, data: any, key: string): Promise<Response> {
     }).then(function (response) {
         result.content = response.data;
     }).catch(function (error) {
+        console.log("🚀 ~ file: service.ts:54 ~ post ~ error", error)
         result.error = error?.response?.data || error
     });
     return result;
