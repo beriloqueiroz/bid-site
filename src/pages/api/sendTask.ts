@@ -2,7 +2,6 @@ import { sendTask } from "@/lib/deliforce/service";
 import { SendTask } from "@/lib/types/SendTask";
 import { dateByDeliveryType } from "@/lib/util/rules";
 import { randomInt } from "crypto";
-import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
 
@@ -42,6 +41,8 @@ const handler = async (
   const driver = process.env['DRIVER_' + prefixCompany] as string;
   const team = process.env['TEAM_' + prefixCompany] as string;
   const rule = process.env['RULE_' + prefixCompany] as string;
+  const template = process.env['TEMPLATE_' + prefixCompany] as string;
+  const address = process.env['ADDRESS_' + prefixCompany] as string;
 
   if (!generalAuth || !rule || !driver || !team) return null;
 
@@ -77,10 +78,11 @@ const handler = async (
       ruleID: rule,
       teamID: team,
 
-      description: prefixCompany.toString(),
+      description: prefixCompany.toString()+"-"+address,
       email: "sender@bid.log.br",
       orderNumber: orderNumber,
-
+      templateID: template,
+      collectionAddress: address
     };
     const key = keys[0]
     const response = await sendTask(data, key);

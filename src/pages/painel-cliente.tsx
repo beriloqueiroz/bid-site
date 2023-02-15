@@ -11,6 +11,7 @@ import { isNumber } from "util";
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendingLogin, setSendingLogin] = useState(false);
   const [sendingIndividual, setSendingIndividual] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(false);
@@ -36,7 +37,6 @@ export default function CustomerPanel() {
   const [deliveryType, setDeliveryType] = useState("");
 
   const [requiredError, setRequiredError] = useState(false);
-  const [disableOnchange, setDisableOnchange] = useState(false);
   const [isLogged, setLogged] = useState(false);
   const [inLote, setInLote] = useState(false);
   const [optionsSelect, setOptionsSelect] = useState<OptionSelect[]>([
@@ -56,6 +56,7 @@ export default function CustomerPanel() {
     if (e) e.preventDefault();
 
     try {
+      setSendingLogin(true);
       if (prefix == "" || password == "") {
         setError(true);
         throw new Error("Credenciais não informadas");
@@ -89,6 +90,7 @@ export default function CustomerPanel() {
       setError(true);
       handleMessageError("Erro, ao fazer login, entre em contato! " + error);
     }
+    setSendingLogin(false);
   };
 
   const logout = async (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -401,7 +403,7 @@ export default function CustomerPanel() {
           />
           <Button
             handleSubmit={!isLogged ? login : logout}
-            sending={sendingIndividual}
+            sending={sendingLogin}
             text={!isLogged ? "Entrar" : "Sair"}
             id='login'
             type='submit'

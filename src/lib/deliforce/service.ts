@@ -93,7 +93,7 @@ export async function getTaskByOrder(orderNumber: string, key: string): Promise<
 
 
 export async function sendTask(
-    { name, email, address, orderNumber, value, description, startDate, endDate, phone, complement, reference, driverID, teamID, ruleID }: SendTask, key: string
+    { name, email, address, orderNumber, value, description, startDate, endDate, phone, complement, reference, driverID, teamID, ruleID, templateID, collectionAddress }: SendTask, key: string
 ): Promise<any> {
     const urlbase = process.env.URL_BASE_DELIFORCE;
 
@@ -119,6 +119,18 @@ export async function sendTask(
         driverType: 1,
         transportType: [1],
         pricingOrEarningRules: [ruleID],
+        templateName: "coleta",
+        templateId: templateID,
+        templateData: [
+            {
+                fieldName: "Endereço de coleta",
+                fieldValue: collectionAddress,
+                dataType: "text",
+                mandatoryFields: "Mandatory",
+                permitAgent: "Read",
+                order: 0
+            }
+        ]
     };
     const responseData = await post(urlbase + "/task", data, key);
     return responseData;

@@ -14,4 +14,6 @@ export type SendTask = {
     driverID: string
     teamID: string
     ruleID: string
+    templateID: string
+    collectionAddress?: string
 }
