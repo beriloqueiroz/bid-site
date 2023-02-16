@@ -148,7 +148,9 @@ export default function CustomerPanel() {
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
   ) => {
     if (!isNumber(e.target.value.slice(-1)) && e.target.value.length > 0) {
-      console.log("teste");
+      return;
+    }
+    if (e.target.value.length >= 9) {
       return;
     }
     setCep(e.target.value);

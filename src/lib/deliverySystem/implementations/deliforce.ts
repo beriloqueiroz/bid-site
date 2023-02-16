@@ -1,4 +1,4 @@
-import { countValidDays } from "@/lib/util/rules";
+import { dateByDeliveryType } from "@/lib/util/rules";
 import { ResponseDefault } from "@/lib/types/Response";
 import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
 import { TaskStatus } from "@/lib/types/TaskStatus";
@@ -117,6 +117,8 @@ async function getTaskLog(taskId: string, auth: string): Promise<TaskLog[]> {
 async function getTaskByOrder(orderNumber: string, auth: string): Promise<Task | null> {
     const urlbase = process.env.URL_BASE_DELIFORCE;
     let responseData = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, auth);
+
+    console.log("🚀 ~ file: deliforce.ts:121 ~ getTaskByOrder ~ responseData", JSON.stringify(responseData.content))
     if (!responseData)
         throw new Error("Erro interno!")
     if (!responseData.content)
@@ -167,7 +169,7 @@ async function sendTask(
         driverId: driverID,
         teamId: teamID,
         customerNotes: reference,
-        description: description + account.toString() + "-" + collectionAddress,
+        description: description + "-" + collectionAddress,
         jobAmount: value,
         driverType: 1,
         transportType: [1],
@@ -216,6 +218,10 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
         const order = await getTaskByOrder(orderNumber, key);
 
         if (!order) return null;
+        let deliveryType = "D+1";
+
+        if (order.name.includes("|"))
+            deliveryType = order.name.split("|")[0]
 
         const histories = await getTaskLog(order.taskId, key);
         const historyResponse: TaskLogDTO = {
@@ -223,10 +229,10 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
             task: {
                 ...order,
                 name: order?.name || "",
-                date: moment(order?.date).format(
+                date: moment(order?.date).subtract(3, "hours").format(
                     "DD/MM/YYYY hh:mm:ss A"
                 ) || "",
-                endDate: moment(order?.endDate).format(
+                endDate: moment(order?.endDate).subtract(3, "hours").format(
                     "DD/MM/YYYY hh:mm:ss A"
                 ) || "",
                 orderId: order?.orderId || "",
@@ -235,21 +241,14 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
                     ...order?.address,
                     formatted_address: order?.address.formatted_address || "",
                 },
-                forecast: countValidDays(order?.date || now().toString(), getForecast("NORMAL"))
+                forecast: dateByDeliveryType(deliveryType).format(
+                    "DD/MM/YYYY hh:mm:ss A"
+                )
             }
         };
         return historyResponse;
     }
     return null;
-}
-
-function getForecast(type: string): number {
-    let ret = 1;
-    if (type == "EXPRESSO")
-        ret = 0;
-    if (type == "LENTO")
-        ret = 2;
-    return ret;
 }
 
 function getDescStatus(taskStatus: string, notes?: string, imageArry?: string[]): TaskStatus {

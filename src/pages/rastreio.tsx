@@ -181,7 +181,7 @@ export default function Rastreio() {
           <div className={style.result}>
             <div className={style.generalOrderInfo}>
               <p>
-                <strong>Descrição:</strong> {response?.task.name}
+                <strong>Destinatário:</strong> {response?.task.name}
               </p>
               <p>
                 <strong>Pedido:</strong> {response.task.orderId}

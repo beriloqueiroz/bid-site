@@ -1,6 +1,6 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 
-export function countValidDays(startDate: string, forecast: Number, subHour = 0, validWeekDays: number[] = [1, 2, 3, 4, 5]): string {
+export function countValidDays(startDate: string, forecast: Number, validWeekDays: number[] = [1, 2, 3, 4, 5]): Moment {
     let count = 0;
     let forecastDate = moment(startDate);
     while (count < forecast) {
@@ -10,27 +10,10 @@ export function countValidDays(startDate: string, forecast: Number, subHour = 0,
             count++;
         }
     }
-    return forecastDate.set({ h: 20, m: 0 }).subtract(subHour, "hours").format(
-        "DD/MM/YYYY hh:mm:ss A"
-    );
+    return forecastDate.set({ h: 20, m: 0 });
 }
 
-export function countValidDaysV2(startDate: string, forecast: Number, subHour = 0, validWeekDays: number[] = [1, 2, 3, 4, 5]): string {
-    let count = 0;
-    let forecastDate = moment(startDate);
-    while (count < forecast) {
-        forecastDate = forecastDate.add(1, "days");
-        const weekday = forecastDate.isoWeekday();
-        if (validWeekDays.includes(weekday)) {
-            count++;
-        }
-    }
-    return forecastDate.set({ h: 20, m: 0 }).subtract(subHour, "hours").format(
-        "YYYY-MM-DDThh:mm:ss"
-    );
-}
-
-export function dateByDeliveryType(type: string, subHour?: number) {
+export function dateByDeliveryType(type: string): Moment {
     let forecast = 1;
     if (type == "D") forecast = 0;
     if (type.includes("+")) {
@@ -40,7 +23,7 @@ export function dateByDeliveryType(type: string, subHour?: number) {
         }
     }
     const now = moment();
-    return countValidDaysV2(now.toISOString(), forecast, 1);
+    return countValidDays(now.toISOString(), forecast);
 }
 
 export function isNumber(value: string) {

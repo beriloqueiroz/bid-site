@@ -58,10 +58,14 @@ const handler = async (
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
       complement: complement,
       phone: phone,
-      name: `${orderNumber} - ${recipient}`,
+      name: `${deliveryType}|[${orderNumber}]-${recipient}`,
       value: "10.00",
-      startDate: dateByDeliveryType(deliveryType, 1),
-      endDate: dateByDeliveryType(deliveryType),
+      startDate: dateByDeliveryType(deliveryType).format(
+        "YYYY-MM-DDThh:mm:ss"
+      ),
+      endDate: dateByDeliveryType(deliveryType).add(1, "hour").format(
+        "YYYY-MM-DDThh:mm:ss"
+      ),
       reference: reference,
 
       description: "",
@@ -70,6 +74,7 @@ const handler = async (
 
       account: prefixCompany.toString()
     };
+    console.log("🚀 ~ file: sendTask.ts:73 ~ data", data)
     const response = await deliveryService.sendTask(data);
     if (response?.error) {
       res.status(500).json({ status: 500, error: response.error.toString() });
