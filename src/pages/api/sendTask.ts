@@ -39,6 +39,8 @@ const handler = async (
     return;
   }
 
+  const collectionAddress = process.env['ADDRESS_' + prefixCompany.toString()] as string;
+
   const {
     street,
     number,
@@ -56,9 +58,9 @@ const handler = async (
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: complement,
+      complement: complement + " " + reference,
       phone: phone,
-      name: `${deliveryType}|[${orderNumber}]-${recipient}`,
+      name: `[${orderNumber}] ${recipient}`,
       value: "10.00",
       startDate: dateByDeliveryType(deliveryType).format(
         "YYYY-MM-DDThh:mm:ss"
@@ -68,13 +70,12 @@ const handler = async (
       ),
       reference: reference,
 
-      description: "",
+      description: collectionAddress,
       email: "sender@bid.log.br",
       orderNumber: orderNumber,
 
       account: prefixCompany.toString()
     };
-    console.log("🚀 ~ file: sendTask.ts:73 ~ data", data)
     const response = await deliveryService.sendTask(data);
     if (response?.error) {
       res.status(500).json({ status: 500, error: response.error.toString() });

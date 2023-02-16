@@ -19,8 +19,8 @@ export default async function handler(
   res.status(200).json(history)
 }
 function parseRecipient(value: string) {
-  if (value.includes("]-")) {
-    return value.split("]-")[1];
+  if (value.includes("")) {
+    return value.split("]")[1];
   }
   return value;
 }

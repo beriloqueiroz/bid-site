@@ -89,7 +89,6 @@ async function post(url: string, data: any, key: string): Promise<ResponseDefaul
     }).then(function (response) {
         result.content = response.data;
     }).catch(function (error) {
-        console.log("🚀 ~ file: service.ts:54 ~ post ~ error", error)
         result.error = error?.response?.data || error
     });
     return result;
@@ -118,7 +117,6 @@ async function getTaskByOrder(orderNumber: string, auth: string): Promise<Task |
     const urlbase = process.env.URL_BASE_DELIFORCE;
     let responseData = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, auth);
 
-    console.log("🚀 ~ file: deliforce.ts:121 ~ getTaskByOrder ~ responseData", JSON.stringify(responseData.content))
     if (!responseData)
         throw new Error("Erro interno!")
     if (!responseData.content)
@@ -145,8 +143,6 @@ async function sendTask(
     const driverID = process.env['DRIVER_' + account] as string;
     const teamID = process.env['TEAM_' + account] as string;
     const ruleID = process.env['RULE_' + account] as string;
-    const templateID = process.env['TEMPLATE_' + account] as string;
-    const collectionAddress = process.env['ADDRESS_' + account] as string;
 
     if (!ruleID || !driverID || !teamID) return { content: null, error: "erro ao buscar infos deliforce" };
 
@@ -169,23 +165,11 @@ async function sendTask(
         driverId: driverID,
         teamId: teamID,
         customerNotes: reference,
-        description: description + "-" + collectionAddress,
+        description: description,
         jobAmount: value,
         driverType: 1,
         transportType: [1],
-        pricingOrEarningRules: [ruleID],
-        templateName: "coleta",
-        templateId: templateID,
-        templateData: [
-            {
-                fieldName: "Endereço de coleta",
-                fieldValue: collectionAddress,
-                dataType: "text",
-                mandatoryFields: "Mandatory",
-                permitAgent: "Read",
-                order: 0
-            }
-        ]
+        pricingOrEarningRules: [ruleID]
     };
     try {
         const response = await post(urlbase + "/task", data, key);
@@ -229,10 +213,10 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
             task: {
                 ...order,
                 name: order?.name || "",
-                date: moment(order?.date).subtract(3, "hours").format(
+                date: moment(order?.date).subtract(3, "hour").format(
                     "DD/MM/YYYY hh:mm:ss A"
                 ) || "",
-                endDate: moment(order?.endDate).subtract(3, "hours").format(
+                endDate: moment(order?.endDate).subtract(3, "hour").format(
                     "DD/MM/YYYY hh:mm:ss A"
                 ) || "",
                 orderId: order?.orderId || "",
@@ -241,9 +225,9 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
                     ...order?.address,
                     formatted_address: order?.address.formatted_address || "",
                 },
-                forecast: dateByDeliveryType(deliveryType).format(
+                forecast: moment(order?.endDate).subtract(3, "hour").format(
                     "DD/MM/YYYY hh:mm:ss A"
-                )
+                ) || ""
             }
         };
         return historyResponse;
