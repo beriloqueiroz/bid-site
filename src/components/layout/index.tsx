@@ -15,9 +15,9 @@ export default function Layout(props: Props) {
     <>
       <Head>
         <title>bid</title>
-        <meta name='description' content='bid site' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <link rel='icon' href='/favicon.svg' />
+        <meta name="description" content="bid site" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.svg" />
         <GoogleAnalytics />
       </Head>
       <Header />

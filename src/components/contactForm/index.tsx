@@ -47,61 +47,54 @@ export default function ContactForm() {
   };
 
   return (
-    <section className={styles.container} id='contato'>
+    <section className={styles.container} id="contato">
       <div>
         <h1 className={styles.title}>Fale conosco</h1>
         <form className={styles.form}>
           <InputForm
-            label='Nome'
-            type='text'
-            name='name'
-            id='name'
-            placeholder='João da Silva'
+            label="Nome"
+            type="text"
+            name="name"
+            id="name"
+            placeholder="João da Silva"
             isRequired={true}
             setOnChange={setName}
             value={name}
           />
           <InputForm
-            label='E-mail'
-            type='email'
-            name='email'
-            id='email'
-            placeholder='email@gmail.com'
+            label="E-mail"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="email@gmail.com"
             isRequired={true}
             setOnChange={setEmail}
             value={email}
           />
           <InputForm
-            label='Telefone'
-            type='tel'
-            name='phone'
-            id='phone'
-            placeholder='(85) 88888888'
+            label="Telefone"
+            type="tel"
+            name="phone"
+            id="phone"
+            placeholder="(85) 88888888"
             isRequired={true}
             setOnChange={setPhone}
             value={phone}
           />
           <InputForm
-            label='Mensagem'
-            name='mensagem'
-            id='message'
-            placeholder='Olá, gostaria de solicitar uma ...'
+            label="Mensagem"
+            name="mensagem"
+            id="message"
+            placeholder="Olá, gostaria de solicitar uma ..."
             setOnChange={setMessage}
             value={message}
             isTextArea={true}
           />
-          <Button sending={sending} handleSubmit={handleSubmit} type="submit"/>
+          <Button sending={sending} handleSubmit={handleSubmit} type="submit" />
           {!sending && error && (
-            <span className={styles.errorMessage}>
-              Desculpe Erro ao enviar mensagem, tente por outro canal (Whatsapp,
-              telefone)
-            </span>
+            <span className={styles.errorMessage}>Desculpe Erro ao enviar mensagem, tente por outro canal (Whatsapp, telefone)</span>
           )}
-          {submitted && !error && (
-            <span className={styles.successMessage}>
-              Sucesso ao enviar informações. Bm breve entraremos em contato.
-            </span>
-          )}
+          {submitted && !error && <span className={styles.successMessage}>Sucesso ao enviar informações. Bm breve entraremos em contato.</span>}
         </form>
       </div>
     </section>

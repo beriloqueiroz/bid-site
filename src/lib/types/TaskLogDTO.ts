@@ -1,8 +1,7 @@
-import { Task } from "./Task"
-import { TaskLog } from "./TaskLog"
-
+import { Task } from "./Task";
+import { TaskLog } from "./TaskLog";
 
 export interface TaskLogDTO {
-    task: Task
-    history: TaskLog[]
+  task: Task;
+  history: TaskLog[];
 }

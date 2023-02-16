@@ -29,17 +29,12 @@ export default function PrivacyModal() {
   }
   if (!showModal) return null;
   return (
-    <div className={style.container} id='cookieBar'>
+    <div className={style.container} id="cookieBar">
       <div className={style.text}>
-        <p>
-          Nós usamos cookies e outras tecnologias semelhantes para melhorar a
-          sua experiência em nossos serviços.
-        </p>
+        <p>Nós usamos cookies e outras tecnologias semelhantes para melhorar a sua experiência em nossos serviços.</p>
         <p>
           Ao utilizar nossos serviços, você concorda com nossa{" "}
-          <span onClick={() => router.push("/politica-privacidade-cookies")}>
-            políticas de privacidade
-          </span>
+          <span onClick={() => router.push("/politica-privacidade-cookies")}>políticas de privacidade</span>
         </p>
       </div>
       <button onClick={() => acceptCookies()}>Prosseguir</button>

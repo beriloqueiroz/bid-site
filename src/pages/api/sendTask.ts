@@ -2,19 +2,17 @@ import { SendTask } from "@/lib/types/SendTask";
 import { dateByDeliveryType } from "@/lib/util/rules";
 import { randomInt } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { deliveryService } from "@/lib/deliverySystem/IDeliveryService"
+import { deliveryService } from "@/lib/deliverySystem/IDeliveryService";
 import { loginImplementation } from "@/lib/login/implementations/enviroment";
+import moment from "moment";
 
 export type ResponseSendTaskApi = {
-  status: number
-  error: string | null
-  content?: string
-}
+  status: number;
+  error: string | null;
+  content?: string;
+};
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseSendTaskApi | null>
-) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTaskApi | null>) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).json({
@@ -25,7 +23,7 @@ const handler = async (
   }
 
   const prefixCompany = req.headers["x-company"];
-  const passCompany = req.headers["x-authentication"]
+  const passCompany = req.headers["x-authentication"];
 
   if (!prefixCompany || !passCompany) {
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
@@ -39,20 +37,9 @@ const handler = async (
     return;
   }
 
-  const collectionAddress = process.env['ADDRESS_' + prefixCompany.toString()] as string;
+  const collectionAddress = process.env["ADDRESS_" + prefixCompany.toString()] as string;
 
-  const {
-    street,
-    number,
-    neighborhood,
-    city,
-    state,
-    cep,
-    complement,
-    reference,
-    phone,
-    recipient,
-    deliveryType } = JSON.parse(req.body);
+  const { street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, deliveryType } = JSON.parse(req.body);
 
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
@@ -62,26 +49,22 @@ const handler = async (
       phone: phone,
       name: `[${orderNumber}] ${recipient}`,
       value: "10.00",
-      startDate: dateByDeliveryType(deliveryType).format(
-        "YYYY-MM-DDThh:mm:ss"
-      ),
-      endDate: dateByDeliveryType(deliveryType).add(1, "hour").format(
-        "YYYY-MM-DDThh:mm:ss"
-      ),
+      startDate: moment().format("YYYY-MM-DDThh:mm:ss"),
+      endDate: dateByDeliveryType(deliveryType).format("YYYY-MM-DDThh:mm:ss"),
       reference: reference,
 
       description: collectionAddress,
       email: "sender@bid.log.br",
       orderNumber: orderNumber,
 
-      account: prefixCompany.toString()
+      account: prefixCompany.toString(),
     };
     const response = await deliveryService.sendTask(data);
     if (response?.error) {
       res.status(500).json({ status: 500, error: response.error.toString() });
       return;
     }
-    res.status(200).json({ status: 200, error: null, content: orderNumber })
+    res.status(200).json({ status: 200, error: null, content: orderNumber });
   } catch (e) {
     console.error(e);
     res.status(500).json({ status: 500, error: "Erro interno" });

@@ -6,12 +6,7 @@ import { ReactElement, useEffect, useState } from "react";
 import style from "../styles/rastreio.module.scss";
 import { useRouter } from "next/router";
 import { FaMotorcycle, FaCheckCircle } from "react-icons/fa";
-import {
-  MdNoteAdd,
-  MdOutlineSmsFailed,
-  MdOutlineGetApp,
-  MdCancelPresentation,
-} from "react-icons/md";
+import { MdNoteAdd, MdOutlineSmsFailed, MdOutlineGetApp, MdCancelPresentation } from "react-icons/md";
 import { RiImageAddFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
 import { GoPackage } from "react-icons/go";
@@ -87,15 +82,12 @@ export default function Rastreio() {
       setSending(true);
       setError(false);
       setIsPrivate(!!router.query["private"]);
-      const responseApi = await axios.get(
-        `/api/tracking?order=${orderTrackApi}`,
-        {
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const responseApi = await axios.get(`/api/tracking?order=${orderTrackApi}`, {
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      });
       if (responseApi.status === 200) {
         setSubmitted(true);
         setResponse(responseApi.data);
@@ -149,31 +141,18 @@ export default function Rastreio() {
       <section className={style.section}>
         <form>
           <InputForm
-            label='código de rastreio'
-            type='text'
-            name='order'
-            id='order'
-            placeholder='PREFX-12365478'
+            label="código de rastreio"
+            type="text"
+            name="order"
+            id="order"
+            placeholder="PREFX-12365478"
             isRequired={true}
             setOnChange={setOrder}
             value={orderTrack}
           />
-          <Button
-            handleSubmit={handleSubmit}
-            sending={sending}
-            text='Buscar'
-            type='submit'
-          />
-          {!sending && error && (
-            <span className={style.errorMessage}>
-              Desculpe, Erro ao buscar, tente novamente ou entre em contato.
-            </span>
-          )}
-          {submitted && !error && (
-            <span className={style.successMessage}>
-              Sucesso ao buscar informações.
-            </span>
-          )}
+          <Button handleSubmit={handleSubmit} sending={sending} text="Buscar" type="submit" />
+          {!sending && error && <span className={style.errorMessage}>Desculpe, Erro ao buscar, tente novamente ou entre em contato.</span>}
+          {submitted && !error && <span className={style.successMessage}>Sucesso ao buscar informações.</span>}
         </form>
         {!response ? (
           submitted && <p className={style.warn}>Nenhum pacote encontrado</p>
@@ -187,12 +166,10 @@ export default function Rastreio() {
                 <strong>Pedido:</strong> {response.task.orderId}
               </p>
               <p>
-                <strong>Endereço:</strong>{" "}
-                {response.task.address.formatted_address}
+                <strong>Endereço:</strong> {response.task.address.formatted_address}
               </p>
               <p>
-                <strong>Previsão de entrega:</strong>{" "}
-                {response.task.forecast.slice(0, 10)}
+                <strong>Previsão de entrega:</strong> {response.task.forecast.slice(0, 10)}
               </p>
               <p>
                 <strong>Último Status:</strong> {response.task.taskDescStatus}
@@ -211,50 +188,34 @@ export default function Rastreio() {
                           <p>{`${task.taskDescStatus}`}</p>
                           <div className={style.statusInfo}>
                             <p>{task.created_at}</p>
-                            <p className={style.reason}>
-                              {task.reason ? task.reason : ""}
-                            </p>
-                            {!isPrivate &&
-                              (task.notes || task.imageArry?.length) && (
-                                <p
-                                  className={style.more_detail}
-                                  onClick={() => showDetail(task._id)}>
-                                  mais detalhes
-                                </p>
-                              )}
+                            <p className={style.reason}>{task.reason ? task.reason : ""}</p>
+                            {!isPrivate && (task.notes || task.imageArry?.length) && (
+                              <p className={style.more_detail} onClick={() => showDetail(task._id)}>
+                                mais detalhes
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
-                      {isShowDetail.includes(task._id) &&
-                        (task.notes || task.imageArry?.length) && (
-                          <div className={style.detail}>
-                            {task.notes && (
-                              <p>
-                                <strong>Notas:</strong> {task.notes}
-                              </p>
-                            )}
-                            {task.imageArry?.length > 0 && (
-                              <div>
-                                <strong>Imagens:</strong>
-                                {task.imageArry.map((img, i) => (
-                                  <a
-                                    className={style.imagem}
-                                    key={i}
-                                    href={img}
-                                    target='_blank'
-                                    rel='noopener noreferrer'>
-                                    <img
-                                      src={img}
-                                      alt={`Imagem ${i + 1}`}
-                                      width='50px'
-                                      height='50px'
-                                    />
-                                  </a>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )}
+                      {isShowDetail.includes(task._id) && (task.notes || task.imageArry?.length) && (
+                        <div className={style.detail}>
+                          {task.notes && (
+                            <p>
+                              <strong>Notas:</strong> {task.notes}
+                            </p>
+                          )}
+                          {task.imageArry?.length > 0 && (
+                            <div>
+                              <strong>Imagens:</strong>
+                              {task.imageArry.map((img, i) => (
+                                <a className={style.imagem} key={i} href={img} target="_blank" rel="noopener noreferrer">
+                                  <img src={img} alt={`Imagem ${i + 1}`} width="50px" height="50px" />
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </li>
                   )
               )}

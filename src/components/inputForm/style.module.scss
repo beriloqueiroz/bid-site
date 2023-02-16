@@ -1,42 +1,42 @@
 .container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  .input,
+  .textarea {
+    background: #f8f8f8;
+    border: 1px solid #ececec;
+    box-sizing: border-box;
+    border-radius: 8px;
     width: 100%;
-    position: relative;
-    .input,
-    .textarea {
-        background: #f8f8f8;
-        border: 1px solid #ececec;
-        box-sizing: border-box;
-        border-radius: 8px;
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        option {
-            background: #f8f8f8;
-            border: 1px solid #ececec;
-            box-sizing: border-box;
-            border-radius: 8px;
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-        }
+    padding: 10px;
+    font-size: 14px;
+    option {
+      background: #f8f8f8;
+      border: 1px solid #ececec;
+      box-sizing: border-box;
+      border-radius: 8px;
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
     }
-    input[type="text"]:disabled {
-        background: var(--color-light-4);
-    }
-    .textarea {
-        height: 100px;
-    }
-    .label {
-        font-size: 18px;
-        padding: 0.5rem 0.5rem;
-    }
-    .alertRequired {
-        border: 2px solid var(--color-error);
-    }
-    .alertRequired:focus {
-        border: 2px solid var(--color-error);
-        background-color: var(--color-error);
-    }
+  }
+  input[type="text"]:disabled {
+    background: var(--color-light-4);
+  }
+  .textarea {
+    height: 100px;
+  }
+  .label {
+    font-size: 18px;
+    padding: 0.5rem 0.5rem;
+  }
+  .alertRequired {
+    border: 2px solid var(--color-error);
+  }
+  .alertRequired:focus {
+    border: 2px solid var(--color-error);
+    background-color: var(--color-error);
+  }
 }

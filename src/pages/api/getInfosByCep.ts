@@ -2,25 +2,22 @@ import { ceps } from "@/lib/util/ceps";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export type ResponseCepApi = {
-  status: number
-  error: string | null
+  status: number;
+  error: string | null;
   content?: {
-    rua: string,
-    bairro: string,
-    cidade: string,
-    cep: string,
-    estado: string
-  }
-}
+    rua: string;
+    bairro: string;
+    cidade: string;
+    cep: string;
+    estado: string;
+  };
+};
 
 const getInfosByCEP = async (cep: string) => {
-  const infos = ceps.find(elem => elem.cep === cep);
-  return infos
-}
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseCepApi | null>
-) => {
+  const infos = ceps.find((elem) => elem.cep === cep);
+  return infos;
+};
+const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi | null>) => {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     res.status(405).json({
@@ -31,7 +28,7 @@ const handler = async (
   }
 
   const prefixCompany = req.headers["x-company"];
-  const passCompany = req.headers["x-authentication"]
+  const passCompany = req.headers["x-authentication"];
 
   if (!prefixCompany || !passCompany) {
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
@@ -46,7 +43,7 @@ const handler = async (
   try {
     const param = req.query;
     const infos = await getInfosByCEP(`${param["cep"]}`);
-    res.status(200).json({ status: 200, error: null, content: infos })
+    res.status(200).json({ status: 200, error: null, content: infos });
   } catch (e) {
     console.error(e);
     res.status(500).json({ status: 500, error: "Erro interno" });

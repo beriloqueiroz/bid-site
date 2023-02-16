@@ -1,222 +1,222 @@
 .section {
-    padding: 100px 1rem;
-    @media (min-width: 768px) {
-        padding-top: 150px;
+  padding: 100px 1rem;
+  @media (min-width: 768px) {
+    padding-top: 150px;
+  }
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 1rem;
+  }
+  .forms {
+    margin: 1rem;
+    border: 1px solid var(--color-primary-2);
+    .chooseForm {
+      display: flex;
+      gap: 2rem;
+      margin: 2rem 0;
+      justify-content: center;
+      .titleChoose {
+        text-align: center;
+        color: var(--color-light-4);
+      }
+      .titleSelected {
+        font-weight: 700;
+        color: var(--color-primary-2);
+      }
     }
-    .loginForm {
+
+    .individualForm {
+      padding: 1rem 1rem;
+      margin: 2rem 0;
+      background-color: var(--color-light-4);
+      button {
+        width: 100%;
+      }
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1%;
+      .i1 {
+        width: 24%;
+        order: 1;
+      }
+      .i2 {
+        width: 100%;
+        order: 4;
+      }
+      .i3 {
+        width: 100%;
+        order: 3;
+      }
+      .i4 {
+        width: 75%;
+        order: 2;
+      }
+      .i5 {
+        width: 30%;
+        order: 5;
+      }
+      .i6 {
+        width: 69%;
+        order: 6;
+      }
+      .i7 {
+        width: 100%;
+        order: 7;
+      }
+      .i8 {
+        width: 100%;
+        order: 8;
+      }
+      .i9 {
+        width: 100%;
+        order: 9;
+      }
+      .i10 {
+        width: 100%;
+        order: 10;
+      }
+      @media (min-width: 768px) {
+        .i1 {
+          width: 24%;
+          order: 1;
+        }
+        .i2 {
+          width: 75%;
+          order: 2;
+        }
+        .i3 {
+          width: 31%;
+          order: 3;
+        }
+        .i4 {
+          width: 24%;
+          order: 4;
+        }
+        .i5 {
+          width: 20%;
+          order: 5;
+        }
+        .i6 {
+          width: 22%;
+          order: 6;
+        }
+        .i7 {
+          width: 49.5%;
+          order: 7;
+        }
+        .i8 {
+          width: 49.5%;
+          order: 8;
+        }
+        .i9 {
+          width: 49.5%;
+          order: 9;
+        }
+        .i10 {
+          width: 100%;
+          order: 10;
+        }
+      }
+    }
+    .resultIndividualForm {
+      padding: 1rem 1rem;
+      margin: 2rem 0;
+      background-color: var(--color-primary-3);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+      text-align: center;
+      color: var(--color-light-1);
+      div {
+        font-size: 24px;
+        strong {
+          font-size: 30px;
+        }
+      }
+      span {
+        font-size: 18px;
+        font-style: italic;
+      }
+      .resultButton {
+        height: auto;
+        margin: auto;
+      }
+    }
+    .inLoteForm {
+      padding: 1rem 1rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: var(--color-light-4);
+      .inputUp {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 0 1rem;
-    }
-    .forms {
-        margin: 1rem;
-        border: 1px solid var(--color-primary-2);
-        .chooseForm {
-            display: flex;
-            gap: 2rem;
-            margin: 2rem 0;
-            justify-content: center;
-            .titleChoose {
-                text-align: center;
-                color: var(--color-light-4);
-            }
-            .titleSelected {
-                font-weight: 700;
-                color: var(--color-primary-2);
-            }
+        justify-content: baseline;
+        input[type="file"] {
+          display: none;
         }
+        .choose_btn {
+          background-color: var(--color-primary-1);
+          color: var(--color-light-1);
+          border-radius: 5px;
+          padding: 0.5rem;
+          width: fit-content;
+          width: -moz-fit-content;
+          cursor: pointer;
+        }
+        .choose_btn:hover {
+          background-color: var(--color-primary-3);
+        }
+        button,
+        .modelButton {
+          margin-left: 0.5rem;
+          background-color: var(--color-primary-2);
+          border: 2px solid var(--color-warn);
+          color: var(--color-light-1);
+          border-radius: 5px;
+          padding: 0.5rem;
+          width: 180px;
+          cursor: pointer;
+          height: 35px;
+          margin-top: auto;
+          font-size: 16px;
+          div {
+            width: 16px;
+            height: 16px;
+            border: 0.2rem var(--color-light-1) dashed;
+          }
+        }
+        button:hover {
+          background-color: var(--color-primary-3);
+        }
+        .modelButton:hover {
+          background-color: var(--color-primary-3);
+        }
+      }
 
-        .individualForm {
-            padding: 1rem 1rem;
-            margin: 2rem 0;
-            background-color: var(--color-light-4);
-            button {
-                width: 100%;
-            }
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1%;
-            .i1 {
-                width: 24%;
-                order: 1;
-            }
-            .i2 {
-                width: 100%;
-                order: 4;
-            }
-            .i3 {
-                width: 100%;
-                order: 3;
-            }
-            .i4 {
-                width: 75%;
-                order: 2;
-            }
-            .i5 {
-                width: 30%;
-                order: 5;
-            }
-            .i6 {
-                width: 69%;
-                order: 6;
-            }
-            .i7 {
-                width: 100%;
-                order: 7;
-            }
-            .i8 {
-                width: 100%;
-                order: 8;
-            }
-            .i9 {
-                width: 100%;
-                order: 9;
-            }
-            .i10 {
-                width: 100%;
-                order: 10;
-            }
-            @media (min-width: 768px) {
-                .i1 {
-                    width: 24%;
-                    order: 1;
-                }
-                .i2 {
-                    width: 75%;
-                    order: 2;
-                }
-                .i3 {
-                    width: 31%;
-                    order: 3;
-                }
-                .i4 {
-                    width: 24%;
-                    order: 4;
-                }
-                .i5 {
-                    width: 20%;
-                    order: 5;
-                }
-                .i6 {
-                    width: 22%;
-                    order: 6;
-                }
-                .i7 {
-                    width: 49.5%;
-                    order: 7;
-                }
-                .i8 {
-                    width: 49.5%;
-                    order: 8;
-                }
-                .i9 {
-                    width: 49.5%;
-                    order: 9;
-                }
-                .i10 {
-                    width: 100%;
-                    order: 10;
-                }
-            }
-        }
-        .resultIndividualForm {
-            padding: 1rem 1rem;
-            margin: 2rem 0;
-            background-color: var(--color-primary-3);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            justify-content: center;
-            text-align: center;
-            color: var(--color-light-1);
-            div {
-                font-size: 24px;
-                strong {
-                    font-size: 30px;
-                }
-            }
-            span {
-                font-size: 18px;
-                font-style: italic;
-            }
-            .resultButton {
-                height: auto;
-                margin: auto;
-            }
-        }
-        .inLoteForm {
-            padding: 1rem 1rem;
-            margin: 2rem 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background-color: var(--color-light-4);
-            .inputUp {
-                display: flex;
-                justify-content: baseline;
-                input[type="file"] {
-                    display: none;
-                }
-                .choose_btn {
-                    background-color: var(--color-primary-1);
-                    color: var(--color-light-1);
-                    border-radius: 5px;
-                    padding: 0.5rem;
-                    width: fit-content;
-                    width: -moz-fit-content;
-                    cursor: pointer;
-                }
-                .choose_btn:hover {
-                    background-color: var(--color-primary-3);
-                }
-                button,
-                .modelButton {
-                    margin-left: 0.5rem;
-                    background-color: var(--color-primary-2);
-                    border: 2px solid var(--color-warn);
-                    color: var(--color-light-1);
-                    border-radius: 5px;
-                    padding: 0.5rem;
-                    width: 180px;
-                    cursor: pointer;
-                    height: 35px;
-                    margin-top: auto;
-                    font-size: 16px;
-                    div {
-                        width: 16px;
-                        height: 16px;
-                        border: 0.2rem var(--color-light-1) dashed;
-                    }
-                }
-                button:hover {
-                    background-color: var(--color-primary-3);
-                }
-                .modelButton:hover {
-                    background-color: var(--color-primary-3);
-                }
-            }
+      button {
+        width: 100%;
+      }
+    }
+  }
 
-            button {
-                width: 100%;
-            }
-        }
-    }
-
-    .successMessage {
-        margin: 1rem 0;
-        padding: 1rem;
-        font-size: 20px;
-        text-align: center;
-        color: var(--color-success-1);
-        font-weight: 700;
-    }
-    .errorMessage {
-        margin: 1rem 0;
-        padding: 1rem;
-        font-size: 20px;
-        text-align: center;
-        color: var(--color-error);
-        font-weight: 700;
-    }
+  .successMessage {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-size: 20px;
+    text-align: center;
+    color: var(--color-success-1);
+    font-weight: 700;
+  }
+  .errorMessage {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-size: 20px;
+    text-align: center;
+    color: var(--color-error);
+    font-weight: 700;
+  }
 }

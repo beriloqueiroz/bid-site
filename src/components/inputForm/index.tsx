@@ -23,12 +23,7 @@ export default function InputForm({
   selectOnChange,
   optionsSelect,
 }: Props) {
-  function setChange(
-    e:
-      | ChangeEvent<HTMLInputElement>
-      | ChangeEvent<HTMLTextAreaElement>
-      | ChangeEvent<HTMLSelectElement>
-  ) {
+  function setChange(e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLSelectElement>) {
     setOnChange && setOnChange(e.target.value);
   }
   function InputTextArea() {
@@ -37,15 +32,7 @@ export default function InputForm({
         <label className={style.label} htmlFor={name}>
           {label}
         </label>
-        <textarea
-          className={style.textarea}
-          name={name}
-          id={id}
-          placeholder={placeholder}
-          onChange={setChange}
-          value={value}
-          disabled={disable}
-        />
+        <textarea className={style.textarea} name={name} id={id} placeholder={placeholder} onChange={setChange} value={value} disabled={disable} />
       </div>
     );
   }
@@ -61,14 +48,13 @@ export default function InputForm({
         <select
           name={name}
           id={id}
-          className={`${style.input} ${
-            alertRequired ? style.alertRequired : ""
-          }`}
+          className={`${style.input} ${alertRequired ? style.alertRequired : ""}`}
           placeholder={placeholder}
           required={isRequired}
           onChange={selectOnChange || setChange}
           value={value}
-          disabled={disable}>
+          disabled={disable}
+        >
           {optionsSelect?.map((option) => (
             <option key={option.value} value={option.value}>
               {option.content}

@@ -1,48 +1,48 @@
-.burger {    
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 30px;
-    padding: 2px; 
-    .burgerLayer {        
-        width: 100%;      
-        height: 3px;
-        background-color: var(--background-color-1);
-        border: 0;
-        transition-property: background-color, transform;
-        transition-duration: .3s;
-        position: relative;
-    }
-    .burgerLayer::after {        
-        width: 100%;   
-        height: 3px;
-        background-color: var(--background-color-1);
-        border: 0;  
-        position: absolute;
-        content: "";
-        top:.5rem;  
-    }
-    .burgerLayer::before {        
-        width: 100%; 
-        height: 3px;
-        background-color: var(--background-color-1);
-        border: 0;  
-        position: absolute;
-        content: "";
-        top:-.5rem;  
-    }
-    .active::before {
-        transform: translateY(.5rem) rotate(45deg);
-        transition-property: background-color, transform;
-        transition-duration: .3s;
-    }
-    .active::after {
-        transform: translateY(-.5rem) rotate(-45deg);
-        transition-property: background-color, transform;
-        transition-duration: .3s;
-    }
-    .burgerLayer.active {
-        background-color: transparent;
-    }
+.burger {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 30px;
+  padding: 2px;
+  .burgerLayer {
+    width: 100%;
+    height: 3px;
+    background-color: var(--background-color-1);
+    border: 0;
+    transition-property: background-color, transform;
+    transition-duration: 0.3s;
+    position: relative;
+  }
+  .burgerLayer::after {
+    width: 100%;
+    height: 3px;
+    background-color: var(--background-color-1);
+    border: 0;
+    position: absolute;
+    content: "";
+    top: 0.5rem;
+  }
+  .burgerLayer::before {
+    width: 100%;
+    height: 3px;
+    background-color: var(--background-color-1);
+    border: 0;
+    position: absolute;
+    content: "";
+    top: -0.5rem;
+  }
+  .active::before {
+    transform: translateY(0.5rem) rotate(45deg);
+    transition-property: background-color, transform;
+    transition-duration: 0.3s;
+  }
+  .active::after {
+    transform: translateY(-0.5rem) rotate(-45deg);
+    transition-property: background-color, transform;
+    transition-duration: 0.3s;
+  }
+  .burgerLayer.active {
+    background-color: transparent;
+  }
 }

@@ -4,10 +4,7 @@ export default function GoogleAnalytics() {
   return (
     <>
       {/* Global Site Tag (gtag.js) - Google Analytics */}
-      <script
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-      />
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
       <script
         dangerouslySetInnerHTML={{
           __html: `

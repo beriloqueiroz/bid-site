@@ -4,15 +4,12 @@ import nodemailer from "nodemailer";
 import { loginImplementation } from "@/lib/login/implementations/enviroment";
 
 export type ResponseUploadApi = {
-  status: number
-  error: string | null
-  content?: any
-}
+  status: number;
+  error: string | null;
+  content?: any;
+};
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseUploadApi | null>
-) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi | null>) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).json({
@@ -23,7 +20,7 @@ const handler = async (
   }
 
   const prefixCompany = req.headers["x-company"];
-  const passCompany = req.headers["x-authentication"]
+  const passCompany = req.headers["x-authentication"];
 
   if (!prefixCompany || !passCompany) {
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
@@ -36,7 +33,6 @@ const handler = async (
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
     return;
   }
-
 
   try {
     const { files } = await parseForm(req);
@@ -54,7 +50,7 @@ const handler = async (
         user: "sender@bid.log.br",
         pass: "Sender@bid#123",
       },
-      logger: true
+      logger: true,
     });
 
     const mailData = {
@@ -62,23 +58,22 @@ const handler = async (
       to: "tabelas@bid.log.br",
       subject: `${prefixCompany} - Tabela pelo formulário do site`,
       text: `Em anexo`,
-      headers: { 'x-myheader': 'test header' },
+      headers: { "x-myheader": "test header" },
       attachments: [
         {
           filename: name.toString(),
-          path: url.toString()
-        }
-      ]
-    }
+          path: url.toString(),
+        },
+      ],
+    };
 
     transporter.sendMail(mailData, function (err, info) {
       if (err) {
-        res.status(500).json({ status: 500, error: "Erro ao enviar e-mail" })
+        res.status(500).json({ status: 500, error: "Erro ao enviar e-mail" });
+      } else {
+        res.status(200).json({ status: 200, error: null });
       }
-      else {
-        res.status(200).json({ status: 200, error: null })
-      }
-    })
+    });
   } catch (e) {
     if (e instanceof FormidableError) {
       res.status(e.httpCode || 400).json({ status: 400, error: e.message });

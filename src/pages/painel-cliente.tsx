@@ -18,9 +18,7 @@ export default function CustomerPanel() {
   const [sendingIndividual, setSendingIndividual] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(false);
-  const [messageError, setMessageError] = useState(
-    " Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato."
-  );
+  const [messageError, setMessageError] = useState(" Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato.");
   const [fileName, setFileName] = useState("");
   const [prefix, setPrefix] = useState("");
   const [password, setPassword] = useState("");
@@ -144,9 +142,7 @@ export default function CustomerPanel() {
     }
   }
 
-  const getInfosByCep = async (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const getInfosByCep = async (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
     if (!isNumber(e.target.value.slice(-1)) && e.target.value.length > 0) {
       return;
     }
@@ -156,16 +152,13 @@ export default function CustomerPanel() {
     setCep(e.target.value);
     if (e.target.value.length >= 8) {
       try {
-        const res = await fetch(
-          "/api/getInfosByCep" + "?cep=" + e.target.value,
-          {
-            method: "GET",
-            headers: {
-              "X-Company": prefix,
-              "X-Authentication": password,
-            },
-          }
-        );
+        const res = await fetch("/api/getInfosByCep" + "?cep=" + e.target.value, {
+          method: "GET",
+          headers: {
+            "X-Company": prefix,
+            "X-Authentication": password,
+          },
+        });
 
         const { status, error, content }: ResponseCepApi = await res.json();
 
@@ -190,9 +183,7 @@ export default function CustomerPanel() {
     }
   };
 
-  const individualHandleSubmit = async (
-    e?: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const individualHandleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
     setRequiredError(false);
 
@@ -202,20 +193,10 @@ export default function CustomerPanel() {
         throw new Error("Credenciais não informadas");
       }
 
-      if (
-        street == "" ||
-        number == "" ||
-        neighborhood == "" ||
-        city == "" ||
-        state == "" ||
-        cep == "" ||
-        deliveryType == ""
-      ) {
+      if (street == "" || number == "" || neighborhood == "" || city == "" || state == "" || cep == "" || deliveryType == "") {
         setError(true);
         setRequiredError(true);
-        throw new Error(
-          `preencha todos os campos obrigatórios, os campos obrigatórios possuem *`
-        );
+        throw new Error(`preencha todos os campos obrigatórios, os campos obrigatórios possuem *`);
       }
 
       setSendingIndividual(true);
@@ -368,11 +349,11 @@ export default function CustomerPanel() {
       <section className={style.section}>
         <form className={style.loginForm}>
           <InputForm
-            label='Prefixo'
-            type='text'
-            name='prefix'
-            id='prefix'
-            placeholder='PREFX'
+            label="Prefixo"
+            type="text"
+            name="prefix"
+            id="prefix"
+            placeholder="PREFX"
             isRequired={true}
             alertRequired={requiredError && prefix == ""}
             setOnChange={setPrefix}
@@ -380,52 +361,36 @@ export default function CustomerPanel() {
             disable={isLogged}
           />
           <InputForm
-            label='Senha'
-            type='password'
-            name='password'
-            id='password'
-            placeholder='*********'
+            label="Senha"
+            type="password"
+            name="password"
+            id="password"
+            placeholder="*********"
             isRequired={true}
             alertRequired={requiredError && password == ""}
             setOnChange={setPassword}
             value={password}
             disable={isLogged}
           />
-          <Button
-            handleSubmit={!isLogged ? login : logout}
-            sending={sendingLogin}
-            text={!isLogged ? "Entrar" : "Sair"}
-            id='login'
-            type='submit'
-          />
+          <Button handleSubmit={!isLogged ? login : logout} sending={sendingLogin} text={!isLogged ? "Entrar" : "Sair"} id="login" type="submit" />
         </form>
         {isLogged && (
           <div className={style.forms}>
             <div className={style.chooseForm}>
-              <h1
-                className={`${style.titleChoose} ${
-                  !inLote ? style.titleSelected : ""
-                }`}>
-                Individual
-              </h1>
+              <h1 className={`${style.titleChoose} ${!inLote ? style.titleSelected : ""}`}>Individual</h1>
               <ToggleButton handle={() => setInLote(!inLote)} />
-              <h1
-                className={`${style.titleChoose} ${
-                  inLote ? style.titleSelected : ""
-                }`}>
-                Em lote
-              </h1>
+              <h1 className={`${style.titleChoose} ${inLote ? style.titleSelected : ""}`}>Em lote</h1>
             </div>
             {!inLote ? (
               <>
                 {order == "" ? (
                   <form className={style.individualForm}>
                     <InputForm
-                      label='CEP *'
-                      type='text'
-                      name='cep'
-                      id='cep'
-                      placeholder='60123456'
+                      label="CEP *"
+                      type="text"
+                      name="cep"
+                      id="cep"
+                      placeholder="60123456"
                       isRequired={true}
                       alertRequired={requiredError && cep == ""}
                       onChange={getInfosByCep}
@@ -434,11 +399,11 @@ export default function CustomerPanel() {
                       classPlus={style.i1}
                     />
                     <InputForm
-                      label='Rua'
-                      type='text'
-                      name='street'
-                      id='street'
-                      placeholder=''
+                      label="Rua"
+                      type="text"
+                      name="street"
+                      id="street"
+                      placeholder=""
                       isRequired={true}
                       alertRequired={requiredError && street == ""}
                       setOnChange={setStreet}
@@ -448,11 +413,11 @@ export default function CustomerPanel() {
                       classPlus={style.i2}
                     />
                     <InputForm
-                      label='Bairro'
-                      type='text'
-                      name='neighborhood'
-                      id='neighborhood'
-                      placeholder=''
+                      label="Bairro"
+                      type="text"
+                      name="neighborhood"
+                      id="neighborhood"
+                      placeholder=""
                       isRequired={true}
                       alertRequired={requiredError && neighborhood == ""}
                       setOnChange={setNeighborhood}
@@ -462,11 +427,11 @@ export default function CustomerPanel() {
                       classPlus={style.i3}
                     />
                     <InputForm
-                      label='Estado'
-                      type='text'
-                      name='state'
-                      id='state'
-                      placeholder=''
+                      label="Estado"
+                      type="text"
+                      name="state"
+                      id="state"
+                      placeholder=""
                       isRequired={true}
                       alertRequired={requiredError && state == ""}
                       setOnChange={setState}
@@ -476,11 +441,11 @@ export default function CustomerPanel() {
                       classPlus={style.i4}
                     />
                     <InputForm
-                      label='Número *'
-                      type='text'
-                      name='number'
-                      id='number'
-                      placeholder='123'
+                      label="Número *"
+                      type="text"
+                      name="number"
+                      id="number"
+                      placeholder="123"
                       isRequired={true}
                       alertRequired={requiredError && number == ""}
                       setOnChange={setNumber}
@@ -489,11 +454,11 @@ export default function CustomerPanel() {
                       classPlus={style.i5}
                     />
                     <InputForm
-                      label='Telefone *'
-                      type='text'
-                      name='phone'
-                      id='phone'
-                      placeholder='85 989888888'
+                      label="Telefone *"
+                      type="text"
+                      name="phone"
+                      id="phone"
+                      placeholder="85 989888888"
                       isRequired={true}
                       alertRequired={requiredError && phone == ""}
                       setOnChange={setPhone}
@@ -502,11 +467,11 @@ export default function CustomerPanel() {
                       classPlus={style.i6}
                     />
                     <InputForm
-                      label='Complemento'
-                      type='text'
-                      name='complement'
-                      id='complement'
-                      placeholder='Casa | Apartamento | ap 14'
+                      label="Complemento"
+                      type="text"
+                      name="complement"
+                      id="complement"
+                      placeholder="Casa | Apartamento | ap 14"
                       isRequired={false}
                       setOnChange={setComplement}
                       value={complement}
@@ -514,11 +479,11 @@ export default function CustomerPanel() {
                       classPlus={style.i7}
                     />
                     <InputForm
-                      label='Ponto de referência'
-                      type='text'
-                      name='reference'
-                      id='reference'
-                      placeholder='próximo ao bar do seu zé'
+                      label="Ponto de referência"
+                      type="text"
+                      name="reference"
+                      id="reference"
+                      placeholder="próximo ao bar do seu zé"
                       isRequired={false}
                       setOnChange={setReference}
                       value={reference}
@@ -526,11 +491,11 @@ export default function CustomerPanel() {
                       classPlus={style.i8}
                     />
                     <InputForm
-                      label='Destinatário *'
-                      type='text'
-                      name='recipient'
-                      id='recipient'
-                      placeholder='josé da silva'
+                      label="Destinatário *"
+                      type="text"
+                      name="recipient"
+                      id="recipient"
+                      placeholder="josé da silva"
                       isRequired={true}
                       setOnChange={setRecipient}
                       value={recipient}
@@ -539,11 +504,11 @@ export default function CustomerPanel() {
                       alertRequired={requiredError && recipient == ""}
                     />
                     <InputForm
-                      label='Modalidade *'
-                      type='text'
-                      name='deliveryType'
-                      id='deliveryType'
-                      placeholder='Selecione'
+                      label="Modalidade *"
+                      type="text"
+                      name="deliveryType"
+                      id="deliveryType"
+                      placeholder="Selecione"
                       isRequired={true}
                       setOnChange={setDeliveryType}
                       value={deliveryType}
@@ -555,9 +520,9 @@ export default function CustomerPanel() {
                     <Button
                       handleSubmit={individualHandleSubmit}
                       sending={sendingIndividual}
-                      text='Enviar'
-                      id='endButton'
-                      type='submit'
+                      text="Enviar"
+                      id="endButton"
+                      type="submit"
                       plusClass={style.i10}
                     />
                   </form>
@@ -571,8 +536,8 @@ export default function CustomerPanel() {
                       plusClass={style.resultButton}
                       handleSubmit={() => setOrder("")}
                       sending={downloading}
-                      text='Inserir outro'
-                      type='button'
+                      text="Inserir outro"
+                      type="button"
                     />
                   </div>
                 )}
@@ -580,50 +545,38 @@ export default function CustomerPanel() {
             ) : (
               <form className={style.inLoteForm}>
                 <div className={style.inputUp}>
-                  <label htmlFor='table' className={style.choose_btn}>
-                    {fileName != ""
-                      ? `Arquivo selecionado: ${fileName}`
-                      : "Escolher arquivo"}
+                  <label htmlFor="table" className={style.choose_btn}>
+                    {fileName != "" ? `Arquivo selecionado: ${fileName}` : "Escolher arquivo"}
                   </label>
                   <input
-                    accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-                    id='table'
-                    name='table'
-                    type='file'
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    id="table"
+                    name="table"
+                    type="file"
                     multiple={false}
                     onChange={handleFileChange}
                     onKeyDown={handleKeypress}
                   />
-                  {fileSelected && (
-                    <button onClick={onCancelFile}>Cancelar</button>
-                  )}
+                  {fileSelected && <button onClick={onCancelFile}>Cancelar</button>}
                   <Button
                     plusClass={style.modelButton}
                     handleSubmit={downloadModel}
                     sending={downloading}
-                    text='Baixar tabela modelo'
-                    type='button'
+                    text="Baixar tabela modelo"
+                    type="button"
                   />
                 </div>
-                <Button
-                  handleSubmit={handleSubmit}
-                  sending={sending}
-                  text='Enviar'
-                  id='endButton'
-                  type='submit'
-                />
+                <Button handleSubmit={handleSubmit} sending={sending} text="Enviar" id="endButton" type="submit" />
               </form>
             )}
           </div>
         )}
         {error && (
-          <span id='error' className={style.errorMessage}>
+          <span id="error" className={style.errorMessage}>
             {messageError}
           </span>
         )}
-        {submitted && !error && (
-          <span className={style.successMessage}>Sucesso ao enviar.</span>
-        )}
+        {submitted && !error && <span className={style.successMessage}>Sucesso ao enviar.</span>}
       </section>
     </Layout>
   );

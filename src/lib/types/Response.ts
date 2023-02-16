@@ -1,4 +1,4 @@
 export interface ResponseDefault {
-    content: any,
-    error: any
+  content: any;
+  error: any;
 }

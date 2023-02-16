@@ -17,20 +17,14 @@ export default function Presentation() {
           <Video />
         </div>
         <p className={styles.presentationDescription}>
-          A bid é entrega sem complicação, de forma <strong>rápida</strong> e{" "}
-          <strong>inteligente</strong>. Reunimos e treinamos entregadores de
-          confiança para proporcionar um <strong>preço</strong> justo, pra não
-          dizer <strong>barato</strong>, e uma entrega rápida.
+          A bid é entrega sem complicação, de forma <strong>rápida</strong> e <strong>inteligente</strong>. Reunimos e treinamos entregadores de
+          confiança para proporcionar um <strong>preço</strong> justo, pra não dizer <strong>barato</strong>, e uma entrega rápida.
         </p>
         <div className={styles.buttons}>
-          <button
-            className={styles.buttonAbout}
-            onClick={() => router.push("/#contato")}>
+          <button className={styles.buttonAbout} onClick={() => router.push("/#contato")}>
             ENTRE EM CONTATO
           </button>
-          <button
-            className={styles.buttonAbout}
-            onClick={() => router.push("/#sobre")}>
+          <button className={styles.buttonAbout} onClick={() => router.push("/#sobre")}>
             MAIS SOBRE NÓS
           </button>
         </div>

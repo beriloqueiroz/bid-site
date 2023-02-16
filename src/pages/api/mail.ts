@@ -1,15 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
 
 type Data = {
-  status: string
-}
+  status: string;
+};
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const transporter = nodemailer.createTransport({
     host: "smtp.hostinger.com",
     port: 465,
@@ -19,7 +16,7 @@ export default async function handler(
       user: "sender@bid.log.br",
       pass: "Sender@bid#123",
     },
-    logger: true
+    logger: true,
   });
 
   const body = req.body;
@@ -33,20 +30,18 @@ export default async function handler(
     </br>  
     <p>${body.email}</p>
     </br> <p>${body.message}</p>`,
-    headers: { 'x-myheader': 'test header' }
-  }
+    headers: { "x-myheader": "test header" },
+  };
 
   if (!body.email || body.email == "") {
-    res.status(500).json({ status: 'Nok' })
+    res.status(500).json({ status: "Nok" });
   }
 
   transporter.sendMail(mailData, function (err, info) {
     if (err) {
-      res.status(500).json({ status: 'Nok' })
+      res.status(500).json({ status: "Nok" });
+    } else {
+      res.status(200).json({ status: "Ok" });
     }
-    else {
-      res.status(200).json({ status: 'Ok' })
-    }
-  })
-
+  });
 }
