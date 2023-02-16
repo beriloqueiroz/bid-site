@@ -61,7 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       deliveryType: deliveryType,
     };
     const response = await deliveryService.sendTask(data);
-    if (response?.error) {
+    if (response?.error || !response?.content) {
       res.status(500).json({ status: 500, error: response.error.toString() });
       return;
     }

@@ -150,8 +150,9 @@ async function sendTask({
   const driverID = process.env["DRIVER_" + account] as string;
   const teamID = process.env["TEAM_" + account] as string;
   const ruleID = process.env["RULE_" + account] as string;
+  const templateID = process.env["MODEL_TYPE_" + account] as string;
 
-  if (!ruleID || !driverID || !teamID) return { content: null, error: "erro ao buscar infos deliforce" };
+  if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: "erro ao buscar infos deliforce" };
 
   const key = JSON.parse(generalAuth) as string;
 
@@ -177,19 +178,25 @@ async function sendTask({
     driverType: 1,
     transportType: [1],
     pricingOrEarningRules: [ruleID],
+    templateId: templateID,
+    templateName: "Envio",
     templateData: [
       {
-        fieldName: "Envio",
+        fieldName: "tipo",
         fieldValue: deliveryType,
-        // dataType: "text",
-        // mandatoryFields: "Mandatory",
-        // permitAgent: "Read and Write",
-        // order: 0
+        dataType: "text",
+        mandatoryFields: "Mandatory",
+        permitAgent: "Read",
+        order: 0,
       },
     ],
   };
+  console.log("🚀 ~ file: deliforce.ts:193 ~ data", data);
   try {
     const response = await post(urlbase + "/task", data, key);
+    if (!response?.content || response?.error) {
+      return { content: null, error: response?.error };
+    }
     return {
       content: response,
       error: null,
@@ -219,9 +226,6 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
     const order = await getTaskByOrder(orderNumber, key);
 
     if (!order) return null;
-    let deliveryType = "D+1";
-
-    if (order.name.includes("|")) deliveryType = order.name.split("|")[0];
 
     const histories = await getTaskLog(order.taskId, key);
     const historyResponse: TaskLogDTO = {
