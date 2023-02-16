@@ -185,14 +185,16 @@ async function sendTask({
         fieldName: "tipo",
         fieldValue: deliveryType,
         dataType: "text",
-        mandatoryFields: "Mandatory",
-        permitAgent: "Read",
+        mandatoryFields: "Not-Mandatory",
+        permitAgent: "Read Only",
         order: 0,
       },
     ],
   };
+  console.log("🚀 ~ file: deliforce.ts:194 ~ data", data);
   try {
     const response = await post(urlbase + "/task", data, key);
+    console.log("🚀 ~ file: deliforce.ts:196 ~ response", response);
     if (!response?.content || response?.error) {
       return { content: null, error: response?.error };
     }
