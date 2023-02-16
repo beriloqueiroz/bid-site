@@ -12,4 +12,5 @@ export type SendTask = {
   value: string;
 
   account: string;
+  deliveryType: string;
 };

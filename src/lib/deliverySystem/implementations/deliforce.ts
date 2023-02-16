@@ -1,9 +1,8 @@
-import { dateByDeliveryType } from "@/lib/util/rules";
 import { ResponseDefault } from "@/lib/types/Response";
 import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
 import { TaskStatus } from "@/lib/types/TaskStatus";
 import axios from "axios";
-import moment, { now } from "moment";
+import moment from "moment";
 import { SendTask } from "../../types/SendTask";
 
 type TaskLog = {
@@ -138,6 +137,7 @@ async function sendTask({
   complement,
   reference,
   account,
+  deliveryType,
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
@@ -177,6 +177,16 @@ async function sendTask({
     driverType: 1,
     transportType: [1],
     pricingOrEarningRules: [ruleID],
+    templateData: [
+      {
+        fieldName: "Envio",
+        fieldValue: deliveryType,
+        // dataType: "text",
+        // mandatoryFields: "Mandatory",
+        // permitAgent: "Read and Write",
+        // order: 0
+      },
+    ],
   };
   try {
     const response = await post(urlbase + "/task", data, key);

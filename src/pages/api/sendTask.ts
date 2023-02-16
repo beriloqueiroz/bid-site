@@ -45,12 +45,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: complement + " " + reference,
+      complement: complement + ", " + reference,
       phone: phone,
       name: `[${orderNumber}] ${recipient}`,
       value: "10.00",
-      startDate: moment().format("YYYY-MM-DDThh:mm:ss"),
-      endDate: dateByDeliveryType(deliveryType).format("YYYY-MM-DDThh:mm:ss"),
+      startDate: dateByDeliveryType(deliveryType).format("YYYY-MM-DDThh:mm:ss"),
+      endDate: dateByDeliveryType(deliveryType).add(1, "hour").format("YYYY-MM-DDThh:mm:ss"),
       reference: reference,
 
       description: collectionAddress,
@@ -58,6 +58,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       orderNumber: orderNumber,
 
       account: prefixCompany.toString(),
+      deliveryType: deliveryType,
     };
     const response = await deliveryService.sendTask(data);
     if (response?.error) {
