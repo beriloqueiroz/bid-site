@@ -1,10 +1,10 @@
 import { ceps } from "@/lib/util/ceps";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
+export type ResponseCepApi = {
   status: number
   error: string | null
-  infos?: {
+  content?: {
     rua: string,
     bairro: string,
     cidade: string,
@@ -19,7 +19,7 @@ const getInfosByCEP = async (cep: string) => {
 }
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<Data | null>
+  res: NextApiResponse<ResponseCepApi | null>
 ) => {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -46,7 +46,7 @@ const handler = async (
   try {
     const param = req.query;
     const infos = await getInfosByCEP(`${param["cep"]}`);
-    res.status(200).json({ status: 200, error: null, infos: infos })
+    res.status(200).json({ status: 200, error: null, content: infos })
   } catch (e) {
     console.error(e);
     res.status(500).json({ status: 500, error: "Erro interno" });

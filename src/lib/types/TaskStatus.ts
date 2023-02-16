@@ -1,0 +1,15 @@
+export enum TaskStatus {
+    FILE_CHECK = 'Arquivo de transporte recebido',
+    PACKAGE_ACCEPTED = 'Pacote aceito pelo Entregador',
+    PACKAGE_ON_DELIVERY_ROUTE = 'Pacote em rota de entrega',
+    PACKAGE_IS_NEAR = 'O Entregador está próximo ao endereço de destino',
+    DELIVERY_SUCCESSFULLY = 'Pacote entregue com sucesso',
+    DELIVERY_FAILURE = 'Falha na Entrega',
+    DELIVERY_ABORTED = 'Entrega abortada',
+    DELIVERY_CANCELLED = 'Entrega cancelada',
+    PACKAGE_PICKED = 'Pacote coletado pelo Entregador',
+    UPDATED_DELIVERY_DATA = 'Dados de entrega atualizados - Nova tentativa de entrega',
+    DELIVERY_NOTE_ADDED = 'Nota de entrega adicionada',
+    DELIVERY_PROTOCOL_ADDED = 'Protocolo de entrega adicionado',
+    UNDEFINED = ''
+}

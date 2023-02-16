@@ -16,56 +16,57 @@ import { RiImageAddFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
 import { GoPackage } from "react-icons/go";
 import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
+import { TaskStatus } from "@/lib/types/TaskStatus";
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
     {
       out: <MdOutlineGetApp />,
-      in: "Arquivo de transporte recebido",
+      in: TaskStatus.FILE_CHECK,
     },
     {
       out: <GoPackage />,
-      in: "Pacote coletado pelo Entregador",
+      in: TaskStatus.PACKAGE_PICKED,
     },
     {
       out: <FaMotorcycle />,
-      in: "Pacote aceito pelo Entregador",
+      in: TaskStatus.PACKAGE_ACCEPTED,
     },
     {
       out: <FaMotorcycle />,
-      in: "Pacote em rota de entrega",
+      in: TaskStatus.PACKAGE_ON_DELIVERY_ROUTE,
     },
     {
       out: <FaMotorcycle />,
-      in: "O Entregador está próximo ao endereço de destino",
+      in: TaskStatus.PACKAGE_IS_NEAR,
     },
     {
       out: <FaCheckCircle />,
-      in: "Pacote entregue com sucesso",
+      in: TaskStatus.DELIVERY_SUCCESSFULLY,
     },
     {
       out: <MdOutlineSmsFailed />,
-      in: "Falha na Entrega",
+      in: TaskStatus.DELIVERY_FAILURE,
     },
     {
       out: <MdCancelPresentation />,
-      in: "Entrega abortada",
+      in: TaskStatus.DELIVERY_ABORTED,
     },
     {
       out: <MdCancelPresentation />,
-      in: "Entrega cancelada",
+      in: TaskStatus.DELIVERY_CANCELLED,
     },
     {
       out: <RiImageAddFill />,
-      in: "Protocolo de entrega adicionado",
+      in: TaskStatus.DELIVERY_PROTOCOL_ADDED,
     },
     {
       out: <TfiReload />,
-      in: "Dados de entrega atualizados - Nova tentativa de entrega",
+      in: TaskStatus.UPDATED_DELIVERY_DATA,
     },
     {
       out: <MdNoteAdd />,
-      in: "Nota de entrega adicionada",
+      in: TaskStatus.DELIVERY_NOTE_ADDED,
     },
   ].find((s) => s.in == status);
   return st?.out || <></>;

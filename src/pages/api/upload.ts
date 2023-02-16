@@ -1,16 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { parseForm, FormidableError } from "../../lib/parse-form";
+import { parseForm, FormidableError } from "../../lib/util/parse-form";
 import nodemailer from "nodemailer";
+import { loginImplementation } from "@/lib/login/implementations/enviroment";
 
-
-type Data = {
+export type ResponseUploadApi = {
   status: number
   error: string | null
+  content?: any
 }
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<Data | null>
+  res: NextApiResponse<ResponseUploadApi | null>
 ) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -29,10 +30,13 @@ const handler = async (
     return;
   }
 
-  if (process.env[prefixCompany.toString()] != passCompany) {
+  const token = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
+
+  if (token != "12365478") {
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
     return;
   }
+
 
   try {
     const { files } = await parseForm(req);

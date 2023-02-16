@@ -6,7 +6,10 @@ import { ChangeEvent, KeyboardEvent, useState } from "react";
 import style from "../styles/painel-cliente.module.scss";
 import { OptionSelect } from "@/components/inputForm/props";
 import ToggleButton from "@/components/toggleButton";
-import { isNumber } from "util";
+import { ResponseCepApi } from "./api/getInfosByCep";
+import { ResponseUploadApi } from "./api/upload";
+import { ResponseSendTaskApi } from "./api/sendTask";
+import { ResponseLoginApi } from "./api/login";
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
@@ -72,13 +75,7 @@ export default function CustomerPanel() {
         },
       });
 
-      const {
-        status,
-        error,
-      }: {
-        status: number;
-        error: string | null;
-      } = await res.json();
+      const { status, error }: ResponseLoginApi = await res.json();
 
       if (status !== 200) {
         setError(true);
@@ -99,6 +96,20 @@ export default function CustomerPanel() {
       setLogged(false);
       setPrefix("");
       setPassword("");
+      setError(false);
+      setSubmitted(false);
+      setCep("");
+      setStreet("");
+      setNumber("");
+      setComplement("");
+      setReference("");
+      setPhone("");
+      setCity("");
+      setNeighborhood("");
+      setCity("");
+      setOrder("");
+      setDeliveryType("");
+      setRecipient("");
     } catch (error) {
       setError(true);
       handleMessageError("Erro, fazer login " + error);
@@ -154,31 +165,17 @@ export default function CustomerPanel() {
           }
         );
 
-        const {
-          status,
-          error,
-          infos,
-        }: {
-          status: number;
-          error: string | null;
-          infos?: {
-            rua: string;
-            bairro: string;
-            cidade: string;
-            cep: string;
-            estado: string;
-          };
-        } = await res.json();
+        const { status, error, content }: ResponseCepApi = await res.json();
 
-        if (!infos) {
+        if (!content) {
           setError(true);
           throw new Error(error + ", entre em contato conosco!");
         }
 
-        setStreet(infos.rua);
-        setNeighborhood(infos.bairro);
-        setCity(infos.cidade);
-        setState(infos.estado);
+        setStreet(content.rua);
+        setNeighborhood(content.bairro);
+        setCity(content.cidade);
+        setState(content.estado);
       } catch (error) {
         setError(true);
         handleMessageError("Erro, ao buscar informações, " + error);
@@ -244,13 +241,9 @@ export default function CustomerPanel() {
         },
       });
 
-      const response: {
-        status: number;
-        error: string | null;
-        orderNumber?: string;
-      } = await res.json();
+      const response: ResponseSendTaskApi = await res.json();
 
-      if (!response.orderNumber) {
+      if (!response.content) {
         setError(true);
         setSendingIndividual(false);
         throw new Error("Erro ao enviar pacote");
@@ -266,8 +259,9 @@ export default function CustomerPanel() {
       setCity("");
       setNeighborhood("");
       setCity("");
-      setOrder(response.orderNumber);
+      setOrder(response.content);
       setDeliveryType("");
+      setRecipient("");
     } catch (error) {
       setError(true);
       handleMessageError("Erro, ao enviar informações, " + error);
@@ -304,13 +298,7 @@ export default function CustomerPanel() {
         },
       });
 
-      const {
-        status,
-        error,
-      }: {
-        status: number;
-        error: string | null;
-      } = await res.json();
+      const { status, error }: ResponseUploadApi = await res.json();
 
       if (error && status == 401) {
         setError(true);

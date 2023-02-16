@@ -1,19 +1,19 @@
-import { sendTask } from "@/lib/deliforce/service";
 import { SendTask } from "@/lib/types/SendTask";
 import { dateByDeliveryType } from "@/lib/util/rules";
 import { randomInt } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
-import nodemailer from "nodemailer";
+import { deliveryService } from "@/lib/deliverySystem/IDeliveryService"
+import { loginImplementation } from "@/lib/login/implementations/enviroment";
 
-type Data = {
+export type ResponseSendTaskApi = {
   status: number
   error: string | null
-  orderNumber?: string
+  content?: string
 }
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<Data | null>
+  res: NextApiResponse<ResponseSendTaskApi | null>
 ) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -32,21 +32,12 @@ const handler = async (
     return;
   }
 
-  if (process.env[prefixCompany.toString()] != passCompany) {
+  const token = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
+
+  if (token != "12365478") {
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
     return;
   }
-
-  const generalAuth = process.env['CONFIG_' + prefixCompany] as string;
-  const driver = process.env['DRIVER_' + prefixCompany] as string;
-  const team = process.env['TEAM_' + prefixCompany] as string;
-  const rule = process.env['RULE_' + prefixCompany] as string;
-  const template = process.env['TEMPLATE_' + prefixCompany] as string;
-  const address = process.env['ADDRESS_' + prefixCompany] as string;
-
-  if (!generalAuth || !rule || !driver || !team) return null;
-
-  const keys = JSON.parse(generalAuth) as string[];
 
   const {
     street,
@@ -61,7 +52,6 @@ const handler = async (
     recipient,
     deliveryType } = JSON.parse(req.body);
 
-  console.log(req.body)
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const data: SendTask = {
@@ -74,63 +64,22 @@ const handler = async (
       endDate: dateByDeliveryType(deliveryType),
       reference: reference,
 
-      driverID: driver,
-      ruleID: rule,
-      teamID: team,
-
-      description: prefixCompany.toString()+"-"+address,
+      description: "",
       email: "sender@bid.log.br",
       orderNumber: orderNumber,
-      templateID: template,
-      collectionAddress: address
+
+      account: prefixCompany.toString()
     };
-    const key = keys[0]
-    const response = await sendTask(data, key);
-    console.log("🚀 ~ file: sendTask.ts:87 ~ response", response)
+    const response = await deliveryService.sendTask(data);
     if (response?.error) {
-      res.status(500).json({ status: 500, error: response });
+      res.status(500).json({ status: 500, error: response.error.toString() });
       return;
     }
-    // sendEmail(req, res, prefixCompany.toString())
-    res.status(200).json({ status: 200, error: null, orderNumber: orderNumber })
+    res.status(200).json({ status: 200, error: null, content: orderNumber })
   } catch (e) {
     console.error(e);
     res.status(500).json({ status: 500, error: "Erro interno" });
   }
 };
-
-const sendEmail = (req: NextApiRequest,
-  res: NextApiResponse<Data | null>, prefixCompany: string) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.hostinger.com",
-    port: 465,
-    secure: true,
-    requireTLS: true,
-    auth: {
-      user: "sender@bid.log.br",
-      pass: "Sender@bid#123",
-    },
-    logger: true
-  });
-
-  const body = req.body;
-
-  const mailData = {
-    from: `"Tabelas (bid.log.br)" <sender@bid.log.br>`,
-    to: "tabelas@bid.log.br",
-    subject: `${prefixCompany} - task inserida do site`,
-    text: `${body.street},${body.number},${body.cep},${prefixCompany}`,
-    headers: { 'x-myheader': 'test header' },
-  }
-
-  transporter.sendMail(mailData, function (err, info) {
-    if (err) {
-      res.status(500).json({ status: 500, error: "Erro ao enviar e-mail" })
-    }
-    else {
-      res.status(200).json({ status: 200, error: null })
-    }
-  })
-}
 
 export default handler;

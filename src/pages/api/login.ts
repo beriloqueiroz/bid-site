@@ -1,12 +1,15 @@
+import { loginImplementation } from "@/lib/login/implementations/enviroment";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
+export type ResponseLoginApi = {
   status: number
   error: string | null
+  content?: any
 }
+
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<Data | null>
+  res: NextApiResponse<ResponseLoginApi | null>
 ) => {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -25,13 +28,15 @@ const handler = async (
     return;
   }
 
-  if (process.env[prefixCompany.toString()] != passCompany) {
+  const token = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
+
+  if (token != "12365478") {
     res.status(401).json({ status: 401, error: "Credenciais inválidas" });
     return;
   }
 
   try {
-    res.status(200).json({ status: 200, error: null})
+    res.status(200).json({ status: 200, error: null, content: token })
   } catch (e) {
     console.error(e);
     res.status(500).json({ status: 500, error: "Erro interno" });

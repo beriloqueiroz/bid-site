@@ -11,9 +11,5 @@ export type SendTask = {
     description: string
     value: string
 
-    driverID: string
-    teamID: string
-    ruleID: string
-    templateID: string
-    collectionAddress?: string
+    account: string
 }
