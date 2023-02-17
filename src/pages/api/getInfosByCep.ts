@@ -1,3 +1,4 @@
+import { loginImplementation } from '@/lib/login/implementations/enviroment';
 import { ceps } from '@/lib/util/ceps';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -29,13 +30,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi 
 
   const prefixCompany = req.headers['x-company'];
   const passCompany = req.headers['x-authentication'];
+  const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !passCompany) {
+  if (!prefixCompany || !passCompany || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  if (process.env[prefixCompany.toString()] != passCompany) {
+  const token = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
+
+  if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }

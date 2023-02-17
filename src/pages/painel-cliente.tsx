@@ -75,7 +75,13 @@ export default function CustomerPanel() {
         },
       });
 
-      const { status, error }: ResponseLoginApi = await res.json();
+      const { status, error, content }: ResponseLoginApi = await res.json();
+
+      if (status === 401) {
+        setError(true);
+        setLogged(false);
+        throw new Error(error + '');
+      }
 
       if (status !== 200) {
         setError(true);
@@ -83,6 +89,7 @@ export default function CustomerPanel() {
       }
 
       setLogged(true);
+      window.sessionStorage.setItem('token', content);
     } catch (error) {
       setError(true);
       handleMessageError('Erro, ao fazer login, entre em contato! ' + error);
@@ -159,10 +166,19 @@ export default function CustomerPanel() {
           headers: {
             'X-Company': prefix,
             'X-Authentication': password,
+            'x-token': window.sessionStorage.getItem('token') || '',
           },
         });
 
         const { status, error, content }: ResponseCepApi = await res.json();
+
+        if (status === 401) {
+          setError(true);
+          setLogged(false);
+          setPrefix('');
+          setPassword('');
+          throw new Error(error + '');
+        }
 
         if (!content) {
           setError(true);
@@ -223,10 +239,19 @@ export default function CustomerPanel() {
         headers: {
           'X-Company': prefix,
           'X-Authentication': password,
+          'x-token': window.sessionStorage.getItem('token') || '',
         },
       });
 
       const response: ResponseSendTaskApi = await res.json();
+
+      if (response.status === 401) {
+        setError(true);
+        setLogged(false);
+        setPrefix('');
+        setPassword('');
+        throw new Error(error + '');
+      }
 
       if (!response.content) {
         setError(true);
@@ -281,12 +306,22 @@ export default function CustomerPanel() {
         headers: {
           'X-Company': prefix,
           'X-Authentication': password,
+          'x-token': window.sessionStorage.getItem('token') || '',
         },
       });
 
       const { status, error }: ResponseUploadApi = await res.json();
 
-      if (error && status == 401) {
+      if (status === 401) {
+        setError(true);
+        setLogged(false);
+        setSending(false);
+        setPrefix('');
+        setPassword('');
+        throw new Error(error + '');
+      }
+
+      if (error) {
         setError(true);
         setSending(false);
         throw new Error(error + 'entre em contato conosco!');
@@ -317,6 +352,7 @@ export default function CustomerPanel() {
         headers: {
           'X-Company': prefix,
           'X-Authentication': password,
+          'x-token': window.sessionStorage.getItem('token') || '',
         },
       });
 
@@ -327,6 +363,14 @@ export default function CustomerPanel() {
         status: number;
         error: string | null;
       } = await res.json();
+
+      if (status === 401) {
+        setError(true);
+        setLogged(false);
+        setPrefix('');
+        setPassword('');
+        throw new Error(error + '');
+      }
 
       if (status != 200) {
         setError(true);
@@ -444,7 +488,7 @@ export default function CustomerPanel() {
                       classPlus={style.i4}
                     />
                     <InputForm
-                      label="Número *"
+                      label="Núm *"
                       type="text"
                       name="number"
                       id="number"

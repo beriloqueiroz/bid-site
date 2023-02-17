@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginAp
 
   const token = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
 
-  if (token != '12365478') {
+  if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }

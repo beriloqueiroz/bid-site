@@ -23,15 +23,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
 
   const prefixCompany = req.headers['x-company'];
   const passCompany = req.headers['x-authentication'];
+  const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !passCompany) {
+  if (!prefixCompany || !passCompany || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const token = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
+  const token = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
 
-  if (token != '12365478') {
+  if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
