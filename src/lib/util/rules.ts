@@ -1,4 +1,5 @@
-import moment, { Moment } from "moment";
+// import moment, { Moment } from "moment";
+import moment, { Moment } from "moment-timezone";
 
 export function countValidDays(startDate: string, forecast: Number, validWeekDays: number[] = [1, 2, 3, 4, 5]): Moment {
   let count = 0;
@@ -22,7 +23,7 @@ export function dateByDeliveryType(type: string): Moment {
       forecast = parseInt(numb);
     }
   }
-  const now = moment();
+  const now = moment().tz("America/Fortaleza");
   return countValidDays(now.toISOString(), forecast);
 }
 
