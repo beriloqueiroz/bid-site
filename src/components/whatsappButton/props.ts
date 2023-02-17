@@ -1,4 +1,4 @@
 export interface WhatsappProps {
-    whatsappMessage: string;
-    whatsPhone: string;
+  whatsappMessage: string;
+  whatsPhone: string;
 }

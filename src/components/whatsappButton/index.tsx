@@ -1,13 +1,14 @@
-import whatsStyles from "@/components/whatsappButton/style.module.scss";
-import * as ga4 from "../google/ga4lib";
+import whatsStyles from '@/components/whatsappButton/style.module.scss';
+
+import * as ga4 from '../google/ga4lib';
 
 export default function WhatsappButton() {
-  const whatsPhone = "5585997492562";
-  const whatsappMessage = "Olá, estou interessado nos serviços da bid e gostaria de mais informações.";
+  const whatsPhone = '5585997492562';
+  const whatsappMessage = 'Olá, estou interessado nos serviços da bid e gostaria de mais informações.';
 
   function goWhatsapp() {
-    ga4.event({ action: "lead_whatsapp", params: {} });
-    window.open(`https://api.whatsapp.com/send/?phone=${whatsPhone}&text=${whatsappMessage}&type=phone_number&app_absent=0`, "_blank");
+    ga4.event({ action: 'lead_whatsapp', params: {} });
+    window.open(`https://api.whatsapp.com/send/?phone=${whatsPhone}&text=${whatsappMessage}&type=phone_number&app_absent=0`, '_blank');
   }
 
   return (

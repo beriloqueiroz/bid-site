@@ -1,56 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap');
 
 :root {
-    --max-width: 1100px;
-    --border-radius: 12px;
-    --font-mono: 'Barlow', Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-        'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-        'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
-    --background-color-1: white;
-    --background-color-dark: #333333;
-    --color-primary-1: #f60;
-    --color-primary-2: #F2873D;
-    --color-secondary-1: #fec44a;
-    --color-secondary-2: #9A7A5B;
-    --color-dark-1: #777777;
-    --color-dark-2: black;
-    --color-success-1: #00ff00;
-    --color-success-2: green;
-    --color-light-1: white;
-    --color-light-2: #ECECEC;
-    --color-light-3: #F8F8F8;
+  --max-width: 1100px;
+  --border-radius: 12px;
+  --font-mono: 'Barlow', Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono', 'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  --background-color-1: white;
+  --background-color-dark: #333333;
+  --color-primary-1: #f60;
+  --color-primary-2: #f2873d;
+  --color-secondary-1: #fec44a;
+  --color-secondary-2: #9a7a5b;
+  --color-dark-1: #777777;
+  --color-dark-2: black;
+  --color-success-1: #00ff00;
+  --color-success-2: green;
+  --color-light-1: white;
+  --color-light-2: #ececec;
+  --color-light-3: #f8f8f8;
 }
 
 * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    font-family: var(--font-mono);
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-mono);
 }
 
 html,
 body {
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 body {
-    background: var(--background-color-1);
+  background: var(--background-color-1);
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 #__next {
-    height: 100%;
+  height: 100%;
 }
 
 .active {
-    box-shadow: 0 0.2rem 0.7rem rgba(0, 0, 0, 0.3);
-    background-color: var(--color-primary-2);
-    height: auto;
+  box-shadow: 0 0.2rem 0.7rem rgba(0, 0, 0, 0.3);
+  background-color: var(--color-primary-2);
+  height: auto;
 }

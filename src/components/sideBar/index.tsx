@@ -1,22 +1,23 @@
-import style from "@/components/sideBar/style.module.scss";
-import { useRouter } from "next/router";
-import { SideBarProps } from "./props";
+import style from '@/components/sideBar/style.module.scss';
+import { useRouter } from 'next/router';
+
+import { SideBarProps } from './props';
 export default function SideBar({ active, setActive }: SideBarProps) {
   const router = useRouter();
   const closeAndAbout = () => {
-    router.push("/#sobre");
+    router.push('/#sobre');
     setActive(true);
   };
   const closeAndContact = () => {
-    router.push("/#contato");
+    router.push('/#contato');
     setActive(true);
   };
   const closeAndTracking = () => {
-    router.push("/rastreio");
+    router.push('/rastreio');
     setActive(true);
   };
   const closeAndPanel = () => {
-    router.push("/painel-cliente");
+    router.push('/painel-cliente');
     setActive(true);
   };
   return (

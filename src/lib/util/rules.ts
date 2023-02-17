@@ -1,10 +1,10 @@
-import moment, { Moment } from "moment";
+import moment, { Moment } from 'moment';
 
-export function countValidDays(startDate: string, forecast: Number, validWeekDays: number[] = [1, 2, 3, 4, 5]): Moment {
+export function countValidDays(startDate: string, forecast: number, validWeekDays: number[] = [1, 2, 3, 4, 5]): Moment {
   let count = 0;
   let forecastDate = moment(startDate);
   while (count < forecast) {
-    forecastDate = forecastDate.add(1, "days");
+    forecastDate = forecastDate.add(1, 'days');
     const weekday = forecastDate.isoWeekday();
     if (validWeekDays.includes(weekday)) {
       count++;
@@ -15,9 +15,9 @@ export function countValidDays(startDate: string, forecast: Number, validWeekDay
 
 export function dateByDeliveryType(type: string): Moment {
   let forecast = 1;
-  if (type == "D") forecast = 0;
-  if (type.includes("+")) {
-    const numb = type.split("+")[1];
+  if (type == 'D') forecast = 0;
+  if (type.includes('+')) {
+    const numb = type.split('+')[1];
     if (isNumber(numb)) {
       forecast = parseInt(numb);
     }
@@ -30,12 +30,12 @@ export function dateByDeliveryType(type: string): Moment {
     }
   }
 
-  now = now.subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), "hours");
+  now = now.subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
   return countValidDays(now.toISOString(), forecast);
 }
 
 export function isNumber(value: string) {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return !isNaN(parseInt(value));
   }
 }

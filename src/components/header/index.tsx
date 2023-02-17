@@ -1,7 +1,8 @@
-import styles from "@/components/header/style.module.scss";
-import { useRouter } from "next/router";
-import BurgerButton from "../burgerButton";
-import Logo from "../logo";
+import styles from '@/components/header/style.module.scss';
+import { useRouter } from 'next/router';
+
+import BurgerButton from '../burgerButton';
+import Logo from '../logo';
 
 export default function Header() {
   const router = useRouter();
@@ -16,10 +17,10 @@ export default function Header() {
         <div className={styles.links}>
           <nav>
             <ul>
-              <li onClick={() => router.push("/#sobre")}>FAZEMOS SUAS ENTREGAS</li>
-              <li onClick={() => router.push("/#contato")}>CONTATO</li>
-              <li onClick={() => router.push("/rastreio")}>RASTREIO</li>
-              <li onClick={() => router.push("/painel-cliente")}>PAINEL</li>
+              <li onClick={() => router.push('/#sobre')}>FAZEMOS SUAS ENTREGAS</li>
+              <li onClick={() => router.push('/#contato')}>CONTATO</li>
+              <li onClick={() => router.push('/rastreio')}>RASTREIO</li>
+              <li onClick={() => router.push('/painel-cliente')}>PAINEL</li>
             </ul>
           </nav>
         </div>

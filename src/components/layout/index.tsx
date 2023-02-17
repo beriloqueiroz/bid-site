@@ -1,9 +1,11 @@
-import Head from "next/head";
-import { ReactNode } from "react";
-import Footer from "../footer";
-import GoogleAnalytics from "../google/ga4Tag";
-import Header from "../header";
-import styles from "./style.module.scss";
+import { ReactNode } from 'react';
+
+import Head from 'next/head';
+
+import Footer from '../footer';
+import GoogleAnalytics from '../google/ga4Tag';
+import Header from '../header';
+import styles from './style.module.scss';
 
 interface Props {
   children: ReactNode;

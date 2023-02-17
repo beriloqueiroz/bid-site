@@ -1,15 +1,16 @@
-import styles from "@/components/contactForm/style.module.scss";
-import { useState } from "react";
-import * as ga4 from "../google/ga4lib";
-import InputForm from "../inputForm";
+import { useState } from 'react';
 
-import Button from "../button";
+import styles from '@/components/contactForm/style.module.scss';
+
+import Button from '../button';
+import * as ga4 from '../google/ga4lib';
+import InputForm from '../inputForm';
 
 export default function ContactForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
@@ -18,27 +19,27 @@ export default function ContactForm() {
     e.preventDefault();
     setSending(true);
     setError(false);
-    let data = {
+    const data = {
       name,
       email,
       message,
       phone,
     };
-    fetch("/api/mail", {
-      method: "POST",
+    fetch('/api/mail', {
+      method: 'POST',
       headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     }).then((res) => {
       if (res.status === 200) {
         setSubmitted(true);
-        setName("");
-        setEmail("");
-        setMessage("");
-        setPhone("");
-        ga4.event({ action: "lead_form", params: {} });
+        setName('');
+        setEmail('');
+        setMessage('');
+        setPhone('');
+        ga4.event({ action: 'lead_form', params: {} });
       } else {
         setError(true);
       }

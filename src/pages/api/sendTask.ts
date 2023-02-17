@@ -1,9 +1,9 @@
-import { SendTask } from "@/lib/types/SendTask";
-import { dateByDeliveryType } from "@/lib/util/rules";
-import { randomInt } from "crypto";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { deliveryService } from "@/lib/deliverySystem/IDeliveryService";
-import { loginImplementation } from "@/lib/login/implementations/enviroment";
+import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
+import { loginImplementation } from '@/lib/login/implementations/enviroment';
+import { SendTask } from '@/lib/types/SendTask';
+import { dateByDeliveryType } from '@/lib/util/rules';
+import { randomInt } from 'crypto';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -12,31 +12,31 @@ export type ResponseSendTaskApi = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTaskApi | null>) => {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
     res.status(405).json({
       status: 405,
-      error: "Method Not Allowed",
+      error: 'Method Not Allowed',
     });
     return;
   }
 
-  const prefixCompany = req.headers["x-company"];
-  const passCompany = req.headers["x-authentication"];
+  const prefixCompany = req.headers['x-company'];
+  const passCompany = req.headers['x-authentication'];
 
   if (!prefixCompany || !passCompany) {
-    res.status(401).json({ status: 401, error: "Credenciais inválidas" });
+    res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
   const token = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
 
-  if (token != "12365478") {
-    res.status(401).json({ status: 401, error: "Credenciais inválidas" });
+  if (token != '12365478') {
+    res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const collectionAddress = process.env["ADDRESS_" + prefixCompany.toString()] as string;
+  const collectionAddress = process.env['ADDRESS_' + prefixCompany.toString()] as string;
 
   const { street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, deliveryType } = JSON.parse(req.body);
 
@@ -44,16 +44,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: complement + ", " + reference,
+      complement: complement + ', ' + reference,
       phone: phone,
       name: `[${orderNumber}] ${recipient}`,
-      value: "10.00",
-      startDate: dateByDeliveryType(deliveryType).format("YYYY-MM-DDThh:mm:ss"),
-      endDate: dateByDeliveryType(deliveryType).add(1, "hour").format("YYYY-MM-DDThh:mm:ss"),
+      value: '10.00',
+      startDate: dateByDeliveryType(deliveryType).format('YYYY-MM-DDThh:mm:ss'),
+      endDate: dateByDeliveryType(deliveryType).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
       reference: reference,
 
       description: collectionAddress,
-      email: "sender@bid.log.br",
+      email: 'sender@bid.log.br',
       orderNumber: orderNumber,
 
       account: prefixCompany.toString(),

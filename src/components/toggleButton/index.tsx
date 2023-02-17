@@ -1,5 +1,5 @@
-import Props from "./props";
-import style from "./style.module.scss";
+import { Props } from './props';
+import style from './style.module.scss';
 export default function ToggleButton({ handle }: Props) {
   return (
     <label className={style.switch}>

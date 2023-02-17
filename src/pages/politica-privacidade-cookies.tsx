@@ -1,5 +1,6 @@
-import Layout from "@/components/layout";
-import style from "../styles/privacy.module.scss";
+import Layout from '@/components/layout';
+
+import style from '../styles/privacy.module.scss';
 export default function PrivacyPolicyAndCookies() {
   return (
     <Layout simpleHeader={true}>
@@ -12,17 +13,17 @@ export default function PrivacyPolicyAndCookies() {
           </p>
           <p>
             Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e
-            legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.{" "}
+            legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.{' '}
           </p>
           <p>
             Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos
-            dentro de meios comercialmente aceitáveis ​​para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não
+            dentro de meios comercialmente aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não
             autorizados.
           </p>
           <p>Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
           <p>
             O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e
-            práticas desses sites e não podemos aceitar responsabilidade por suas respectivas{" "}
+            práticas desses sites e não podemos aceitar responsabilidade por suas respectivas{' '}
             <a href="https://politicaprivacidade.com" target="_blank" rel="noopener noreferrer">
               políticas de privacidade.
             </a>
@@ -47,7 +48,7 @@ export default function PrivacyPolicyAndCookies() {
           <p>
             Utilizamos cookies por vários motivos, detalhados abaixo. Infelizmente, na maioria dos casos, não existem opções padrão do setor para
             desativar os cookies sem desativar completamente a funcionalidade e os recursos que eles adicionam a este site. É recomendável que você
-            deixe todos os cookies se não tiver certeza se precisa ou não deles, caso sejam usados ​​para fornecer um serviço que você usa.
+            deixe todos os cookies se não tiver certeza se precisa ou não deles, caso sejam usados para fornecer um serviço que você usa.
           </p>
           <h3>Desativar cookies</h3>
           <p>
@@ -59,44 +60,44 @@ export default function PrivacyPolicyAndCookies() {
           <h3>Cookies que definimos</h3>
           <ul>
             <li>
-              {" "}
+              {' '}
               Cookies relacionados à conta Se você criar uma conta conosco, usaremos cookies para o gerenciamento do processo de inscrição e
               administração geral. Esses cookies geralmente serão excluídos quando você sair do sistema, porém, em alguns casos, eles poderão
-              permanecer posteriormente para lembrar as preferências do seu site ao sair.{" "}
+              permanecer posteriormente para lembrar as preferências do seu site ao sair.{' '}
             </li>
             <li>
-              {" "}
+              {' '}
               Cookies relacionados ao login Utilizamos cookies quando você está logado, para que possamos lembrar dessa ação. Isso evita que você
               precise fazer login sempre que visitar uma nova página. Esses cookies são normalmente removidos ou limpos quando você efetua logout para
-              garantir que você possa acessar apenas a recursos e áreas restritas ao efetuar login.{" "}
+              garantir que você possa acessar apenas a recursos e áreas restritas ao efetuar login.{' '}
             </li>
             <li>
-              {" "}
+              {' '}
               Cookies relacionados a boletins por e-mail Este site oferece serviços de assinatura de boletim informativo ou e-mail e os cookies podem
-              ser usados ​​para lembrar se você já está registrado e se deve mostrar determinadas notificações válidas apenas para usuários inscritos
-              / não inscritos.{" "}
+              ser usados para lembrar se você já está registrado e se deve mostrar determinadas notificações válidas apenas para usuários inscritos /
+              não inscritos.{' '}
             </li>
             <li>
-              {" "}
+              {' '}
               Pedidos processando cookies relacionados Este site oferece facilidades de comércio eletrônico ou pagamento e alguns cookies são
-              essenciais para garantir que seu pedido seja lembrado entre as páginas, para que possamos processá-lo adequadamente.{" "}
+              essenciais para garantir que seu pedido seja lembrado entre as páginas, para que possamos processá-lo adequadamente.{' '}
             </li>
             <li>
-              {" "}
+              {' '}
               Cookies relacionados a pesquisas Periodicamente, oferecemos pesquisas e questionários para fornecer informações interessantes,
               ferramentas úteis ou para entender nossa base de usuários com mais precisão. Essas pesquisas podem usar cookies para lembrar quem já
-              participou numa pesquisa ou para fornecer resultados precisos após a alteração das páginas.{" "}
+              participou numa pesquisa ou para fornecer resultados precisos após a alteração das páginas.{' '}
             </li>
             <li>
-              {" "}
+              {' '}
               Cookies relacionados a formulários Quando você envia dados por meio de um formulário como os encontrados nas páginas de contacto ou nos
-              formulários de comentários, os cookies podem ser configurados para lembrar os detalhes do usuário para correspondência futura.{" "}
+              formulários de comentários, os cookies podem ser configurados para lembrar os detalhes do usuário para correspondência futura.{' '}
             </li>
             <li>
-              {" "}
+              {' '}
               Cookies de preferências do site Para proporcionar uma ótima experiência neste site, fornecemos a funcionalidade para definir suas
               preferências de como esse site é executado quando você o usa. Para lembrar suas preferências, precisamos definir cookies para que essas
-              informações possam ser chamadas sempre que você interagir com uma página for afetada por suas preferências.{" "}
+              informações possam ser chamadas sempre que você interagir com uma página for afetada por suas preferências.{' '}
             </li>
           </ul>
           <h3>Cookies de Terceiros</h3>
@@ -106,28 +107,28 @@ export default function PrivacyPolicyAndCookies() {
           </p>
           <ul>
             <li>
-              {" "}
-              Este site usa o Google Analytics, que é uma das soluções de análise mais difundidas e confiáveis ​​da Web, para nos ajudar a entender
-              como você usa o site e como podemos melhorar sua experiência. Esses cookies podem rastrear itens como quanto tempo você gasta no site e
-              as páginas visitadas, para que possamos continuar produzindo conteúdo atraente.{" "}
+              {' '}
+              Este site usa o Google Analytics, que é uma das soluções de análise mais difundidas e confiáveis da Web, para nos ajudar a entender como
+              você usa o site e como podemos melhorar sua experiência. Esses cookies podem rastrear itens como quanto tempo você gasta no site e as
+              páginas visitadas, para que possamos continuar produzindo conteúdo atraente.{' '}
             </li>
           </ul>
           <p>Para mais informações sobre cookies do Google Analytics, consulte a página oficial do Google Analytics.</p>
           <ul>
             <li>
-              {" "}
+              {' '}
               As análises de terceiros são usadas para rastrear e medir o uso deste site, para que possamos continuar produzindo conteúdo atrativo.
               Esses cookies podem rastrear itens como o tempo que você passa no site ou as páginas visitadas, o que nos ajuda a entender como podemos
               melhorar o site para você.
             </li>
             <li>
-              {" "}
+              {' '}
               Periodicamente, testamos novos recursos e fazemos alterações subtis na maneira como o site se apresenta. Quando ainda estamos testando
-              novos recursos, esses cookies podem ser usados ​​para garantir que você receba uma experiência consistente enquanto estiver no site,
+              novos recursos, esses cookies podem ser usados para garantir que você receba uma experiência consistente enquanto estiver no site,
               enquanto entendemos quais otimizações os nossos usuários mais apreciam.
             </li>
             <li>
-              {" "}
+              {' '}
               À medida que vendemos produtos, é importante entendermos as estatísticas sobre quantos visitantes de nosso site realmente compram e,
               portanto, esse é o tipo de dados que esses cookies rastrearão. Isso é importante para você, pois significa que podemos fazer previsões
               de negócios com precisão que nos permitem analizar nossos custos de publicidade e produtos para garantir o melhor preço possível.

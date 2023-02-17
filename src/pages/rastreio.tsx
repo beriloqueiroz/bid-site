@@ -1,17 +1,19 @@
-import InputForm from "@/components/inputForm";
-import Layout from "@/components/layout";
-import Button from "@/components/button";
-import axios from "axios";
-import { ReactElement, useEffect, useState } from "react";
-import style from "../styles/rastreio.module.scss";
-import { useRouter } from "next/router";
-import { FaMotorcycle, FaCheckCircle } from "react-icons/fa";
-import { MdNoteAdd, MdOutlineSmsFailed, MdOutlineGetApp, MdCancelPresentation } from "react-icons/md";
-import { RiImageAddFill } from "react-icons/ri";
-import { TfiReload } from "react-icons/tfi";
-import { GoPackage } from "react-icons/go";
-import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
-import { TaskStatus } from "@/lib/types/TaskStatus";
+import { ReactElement, useEffect, useState } from 'react';
+import { FaMotorcycle, FaCheckCircle } from 'react-icons/fa';
+import { GoPackage } from 'react-icons/go';
+import { MdNoteAdd, MdOutlineSmsFailed, MdOutlineGetApp, MdCancelPresentation } from 'react-icons/md';
+import { RiImageAddFill } from 'react-icons/ri';
+import { TfiReload } from 'react-icons/tfi';
+
+import Button from '@/components/button';
+import InputForm from '@/components/inputForm';
+import Layout from '@/components/layout';
+import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
+import { TaskStatus } from '@/lib/types/TaskStatus';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+
+import style from '../styles/rastreio.module.scss';
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
@@ -68,24 +70,24 @@ function ReactIcon({ status }: { status: string }): ReactElement {
 }
 
 export default function Rastreio() {
-  const [orderTrack, setOrder] = useState("");
+  const [orderTrack, setOrder] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
-  const [isShowDetail, setShowDetail] = useState([""]);
+  const [isShowDetail, setShowDetail] = useState(['']);
   const [response, setResponse] = useState<TaskLogDTO | null>(null);
   const [isPrivate, setIsPrivate] = useState(true);
-  var router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const tracking = async (orderTrackApi: string) => {
       setSending(true);
       setError(false);
-      setIsPrivate(!!router.query["private"]);
+      setIsPrivate(!!router.query['private']);
       const responseApi = await axios.get(`/api/tracking?order=${orderTrackApi}`, {
         headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
         },
       });
       if (responseApi.status === 200) {
@@ -96,8 +98,8 @@ export default function Rastreio() {
       }
       setSending(false);
     };
-    if (!!router.query["order"]) {
-      tracking(router.query["order"].toString());
+    if (router.query['order']) {
+      tracking(router.query['order'].toString());
     }
   }, [router.query]);
 
@@ -114,11 +116,11 @@ export default function Rastreio() {
     }
     setSending(true);
     setError(false);
-    setIsPrivate(!!router.query["private"]);
+    setIsPrivate(!!router.query['private']);
     const responseApi = await axios.get(`/api/tracking?order=${orderTrack}`, {
       headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
       },
     });
     if (responseApi.status === 200) {
@@ -178,7 +180,7 @@ export default function Rastreio() {
             <ul className={style.ul}>
               {response.history.map(
                 (task, i) =>
-                  task.taskStatus != "0" && (
+                  task.taskStatus != '0' && (
                     <li key={task._id}>
                       <div className={style.init}>
                         <div className={style.icon}>
@@ -188,7 +190,7 @@ export default function Rastreio() {
                           <p>{`${task.taskDescStatus}`}</p>
                           <div className={style.statusInfo}>
                             <p>{task.created_at}</p>
-                            <p className={style.reason}>{task.reason ? task.reason : ""}</p>
+                            <p className={style.reason}>{task.reason ? task.reason : ''}</p>
                             {!isPrivate && (task.notes || task.imageArry?.length) && (
                               <p className={style.more_detail} onClick={() => showDetail(task._id)}>
                                 mais detalhes

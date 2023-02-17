@@ -1,6 +1,6 @@
-import { ChangeEventHandler, Dispatch, KeyboardEventHandler, ReactNode, SetStateAction } from "react";
+import { ChangeEventHandler, Dispatch, KeyboardEventHandler, ReactNode, SetStateAction } from 'react';
 
-export default interface Props {
+export interface Props {
   name: string;
   type?: string;
   id: string;

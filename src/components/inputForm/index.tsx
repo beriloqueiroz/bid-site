@@ -1,6 +1,7 @@
-import { ChangeEvent, ChangeEventHandler, Dispatch } from "react";
-import Props from "./props";
-import style from "./style.module.scss";
+import { ChangeEvent } from 'react';
+
+import { Props } from './props';
+import style from './style.module.scss';
 
 export default function InputForm({
   name,
@@ -15,7 +16,7 @@ export default function InputForm({
   label,
   onKeyDown,
   disable = false,
-  classPlus = "",
+  classPlus = '',
   alertRequired = false,
   pattern,
   children,
@@ -48,7 +49,7 @@ export default function InputForm({
         <select
           name={name}
           id={id}
-          className={`${style.input} ${alertRequired ? style.alertRequired : ""}`}
+          className={`${style.input} ${alertRequired ? style.alertRequired : ''}`}
           placeholder={placeholder}
           required={isRequired}
           onChange={selectOnChange || setChange}
@@ -70,7 +71,7 @@ export default function InputForm({
         {label}
       </label>
       <input
-        className={`${style.input} ${alertRequired ? style.alertRequired : ""}`}
+        className={`${style.input} ${alertRequired ? style.alertRequired : ''}`}
         type={type}
         name={name}
         id={id}

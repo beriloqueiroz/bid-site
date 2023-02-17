@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
-import cookies from "js-cookie";
-import style from "./style.module.scss";
-import { useRouter } from "next/router";
+import { useEffect, useState } from 'react';
+
+import cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+
+import style from './style.module.scss';
 export default function PrivacyModal() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const acceptedCookie = cookies.get("bid-cookie-bar");
-    if (acceptedCookie === "true") {
-      const expireAcceptedCookie = cookies.get("expires");
+    const acceptedCookie = cookies.get('bid-cookie-bar');
+    if (acceptedCookie === 'true') {
+      const expireAcceptedCookie = cookies.get('expires');
       if (expireAcceptedCookie) {
         if (Date.parse(expireAcceptedCookie) < Date.now()) {
           setShowModal(true);
@@ -21,10 +23,10 @@ export default function PrivacyModal() {
   }, []);
 
   function acceptCookies() {
-    let expireDate = new Date();
+    const expireDate = new Date();
     expireDate.setDate(expireDate.getDate() + 7);
-    cookies.set("bid-cookie-bar", "true");
-    cookies.set("expires", expireDate.toString());
+    cookies.set('bid-cookie-bar', 'true');
+    cookies.set('expires', expireDate.toString());
     setShowModal(false);
   }
   if (!showModal) return null;
@@ -33,8 +35,8 @@ export default function PrivacyModal() {
       <div className={style.text}>
         <p>Nós usamos cookies e outras tecnologias semelhantes para melhorar a sua experiência em nossos serviços.</p>
         <p>
-          Ao utilizar nossos serviços, você concorda com nossa{" "}
-          <span onClick={() => router.push("/politica-privacidade-cookies")}>políticas de privacidade</span>
+          Ao utilizar nossos serviços, você concorda com nossa{' '}
+          <span onClick={() => router.push('/politica-privacidade-cookies')}>políticas de privacidade</span>
         </p>
       </div>
       <button onClick={() => acceptCookies()}>Prosseguir</button>

@@ -1,5 +1,5 @@
-import { MouseEventHandler } from "react"
+import { MouseEventHandler } from 'react';
 
-export default interface Props {
-    handle: MouseEventHandler<HTMLInputElement>
+export interface Props {
+  handle: MouseEventHandler<HTMLInputElement>;
 }

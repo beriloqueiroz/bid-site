@@ -1,9 +1,10 @@
-import { ResponseDefault } from "@/lib/types/Response";
-import { TaskLogDTO } from "@/lib/types/TaskLogDTO";
-import { TaskStatus } from "@/lib/types/TaskStatus";
-import axios from "axios";
-import moment from "moment";
-import { SendTask } from "../../types/SendTask";
+import { ResponseDefault } from '@/lib/types/Response';
+import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
+import { TaskStatus } from '@/lib/types/TaskStatus';
+import axios from 'axios';
+import moment from 'moment';
+
+import { SendTask } from '../../types/SendTask';
 
 type TaskLog = {
   _id: string;
@@ -47,16 +48,16 @@ type Task = {
 };
 
 async function get(url: string, auth: string): Promise<ResponseDefault> {
-  var result = {
+  const result = {
     content: null,
     error: null,
   };
   const headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     apiKey: auth,
   };
   await axios({
-    method: "get",
+    method: 'get',
     url: url,
     headers: {
       ...headers,
@@ -72,16 +73,16 @@ async function get(url: string, auth: string): Promise<ResponseDefault> {
 }
 
 async function post(url: string, data: any, key: string): Promise<ResponseDefault> {
-  var result = {
+  const result = {
     content: null,
     error: null,
   };
   const headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     apiKey: key,
   };
   await axios({
-    method: "post",
+    method: 'post',
     url: url,
     headers: {
       ...headers,
@@ -99,27 +100,27 @@ async function post(url: string, data: any, key: string): Promise<ResponseDefaul
 
 async function getTaskLog(taskId: string, auth: string): Promise<TaskLog[]> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
-  let responseData = await get(urlbase + `/task/tasklog?taskId=${taskId}`, auth);
-  if (!responseData) throw new Error("Erro interno!");
-  if (!responseData.content) throw new Error("Erro interno!" + JSON.stringify(responseData?.error || "{}"));
+  const responseData = await get(urlbase + `/task/tasklog?taskId=${taskId}`, auth);
+  if (!responseData) throw new Error('Erro interno!');
+  if (!responseData.content) throw new Error('Erro interno!' + JSON.stringify(responseData?.error || '{}'));
   const logs = responseData.content as TaskLog[];
   if (!logs.length) return [];
   return logs.map((hist) => ({
     ...hist,
-    created_at: moment(hist.created_at).format("DD/MM/YYYY hh:mm:ss A") || "",
+    created_at: moment(hist.created_at).format('DD/MM/YYYY hh:mm:ss A') || '',
     taskDescStatus: getDescStatus(hist.taskStatus, hist.notes, hist.imageArry),
   }));
 }
 
 async function getTaskByOrder(orderNumber: string, auth: string): Promise<Task | null> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
-  let responseData = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, auth);
+  const responseData = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, auth);
 
-  if (!responseData) throw new Error("Erro interno!");
-  if (!responseData.content) throw new Error("Erro interno!" + JSON.stringify(responseData?.error || "{}"));
+  if (!responseData) throw new Error('Erro interno!');
+  if (!responseData.content) throw new Error('Erro interno!' + JSON.stringify(responseData?.error || '{}'));
   const tasks = responseData.content as Task[];
   if (!tasks.length) return null;
-  let task = tasks.find((resp) => !resp.isDeleted);
+  const task = tasks.find((resp) => !resp.isDeleted);
   if (!task) return null;
   return task;
 }
@@ -141,18 +142,18 @@ async function sendTask({
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
-  const prefix = orderNumber.slice(0, orderNumber.indexOf("-"));
+  const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env["CONFIG_" + prefix] as string;
+  const generalAuth = process.env['CONFIG_' + prefix] as string;
 
-  if (!generalAuth) return { content: null, error: "erro ao buscar empresa" };
+  if (!generalAuth) return { content: null, error: 'erro ao buscar empresa' };
 
-  const driverID = process.env["DRIVER_" + account] as string;
-  const teamID = process.env["TEAM_" + account] as string;
-  const ruleID = process.env["RULE_" + account] as string;
-  const templateID = process.env["MODEL_TYPE_" + account] as string;
+  const driverID = process.env['DRIVER_' + account] as string;
+  const teamID = process.env['TEAM_' + account] as string;
+  const ruleID = process.env['RULE_' + account] as string;
+  const templateID = process.env['MODEL_TYPE_' + account] as string;
 
-  if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: "erro ao buscar infos deliforce" };
+  if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: 'erro ao buscar infos deliforce' };
 
   const key = JSON.parse(generalAuth) as string;
 
@@ -161,15 +162,15 @@ async function sendTask({
     email: email,
     date: startDate,
     endDate: endDate,
-    lastName: " ",
+    lastName: ' ',
     FlatNo: complement,
     address: address,
-    phone: "+55 " + (!phone || phone == "" ? "8888888888" : phone.replace(/\D/g, "")),
+    phone: '+55 ' + (!phone || phone == '' ? '8888888888' : phone.replace(/\D/g, '')),
     isPickup: true,
     manual: true,
     businessType: 2,
     orderId: orderNumber,
-    timezone: "America/Fortaleza",
+    timezone: 'America/Fortaleza',
     driverId: driverID,
     teamId: teamID,
     customerNotes: reference,
@@ -182,22 +183,20 @@ async function sendTask({
     isRepeat: false,
     isDriverTemplateRepeat: false,
     templateId: templateID,
-    templateName: "Envio",
+    templateName: 'Envio',
     templateData: [
       {
-        fieldName: "tipo",
+        fieldName: 'tipo',
         fieldValue: deliveryType,
-        dataType: "text",
-        mandatoryFields: "Not-Mandatory",
-        permitAgent: "Read Only",
+        dataType: 'text',
+        mandatoryFields: 'Not-Mandatory',
+        permitAgent: 'Read Only',
         order: 0,
       },
     ],
   };
-  console.log("🚀 ~ file: deliforce.ts:194 ~ data", data);
   try {
-    const response = await post(urlbase + "/task", data, key);
-    console.log("🚀 ~ file: deliforce.ts:196 ~ response", response);
+    const response = await post(urlbase + '/task', data, key);
     if (!response?.content || response?.error) {
       return { content: null, error: response?.error };
     }
@@ -214,13 +213,13 @@ async function sendTask({
 }
 
 async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | null> {
-  if (orderNumber.indexOf("-") < 0) {
+  if (orderNumber.indexOf('-') < 0) {
     return null;
   }
 
-  const prefix = orderNumber.slice(0, orderNumber.indexOf("-"));
+  const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env["CONFIG_" + prefix] as string;
+  const generalAuth = process.env['CONFIG_' + prefix] as string;
 
   if (!generalAuth) return null;
 
@@ -228,7 +227,6 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
 
   for (const key of keys) {
     const order = await getTaskByOrder(orderNumber, key);
-    console.log("🚀 ~ file: deliforce.ts:228 ~ getTrackingHistory ~ order", order);
 
     if (!order) return null;
 
@@ -237,16 +235,16 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
       history: histories,
       task: {
         ...order,
-        name: order?.name || "",
-        date: moment(order?.date).subtract(3, "hour").format("DD/MM/YYYY hh:mm:ss A") || "",
-        endDate: moment(order?.endDate).subtract(3, "hour").format("DD/MM/YYYY hh:mm:ss A") || "",
-        orderId: order?.orderId || "",
-        taskDescStatus: getDescStatus(order?.taskStatus || ""),
+        name: order?.name || '',
+        date: moment(order?.date).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        endDate: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        orderId: order?.orderId || '',
+        taskDescStatus: getDescStatus(order?.taskStatus || ''),
         address: {
           ...order?.address,
-          formatted_address: order?.address.formatted_address || "",
+          formatted_address: order?.address.formatted_address || '',
         },
-        forecast: moment(order?.endDate).subtract(3, "hour").format("DD/MM/YYYY hh:mm:ss A") || "",
+        forecast: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
       },
     };
     return historyResponse;
@@ -261,43 +259,43 @@ function getDescStatus(taskStatus: string, notes?: string, imageArry?: string[])
 
   const st = [
     {
-      in: "2",
+      in: '2',
       out: TaskStatus.FILE_CHECK,
     },
     {
-      in: "3",
+      in: '3',
       out: TaskStatus.PACKAGE_ACCEPTED,
     },
     {
-      in: "4",
+      in: '4',
       out: TaskStatus.PACKAGE_ON_DELIVERY_ROUTE,
     },
     {
-      in: "5",
+      in: '5',
       out: TaskStatus.PACKAGE_IS_NEAR,
     },
     {
-      in: "6",
+      in: '6',
       out: TaskStatus.DELIVERY_SUCCESSFULLY,
     },
     {
-      in: "7",
+      in: '7',
       out: TaskStatus.DELIVERY_FAILURE,
     },
     {
-      in: "8",
+      in: '8',
       out: TaskStatus.DELIVERY_ABORTED,
     },
     {
-      in: "9",
+      in: '9',
       out: TaskStatus.DELIVERY_CANCELLED,
     },
     {
-      in: "10",
+      in: '10',
       out: TaskStatus.PACKAGE_PICKED,
     },
     {
-      in: "18",
+      in: '18',
       out: TaskStatus.UPDATED_DELIVERY_DATA,
     },
   ];
