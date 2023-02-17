@@ -229,7 +229,7 @@ export default function CustomerPanel() {
       if (!response.content) {
         setError(true);
         setSendingIndividual(false);
-        throw new Error("Erro ao enviar pacote");
+        throw new Error("Erro ao enviar pacote " + response?.error);
       }
 
       setSubmitted(true);
@@ -246,6 +246,7 @@ export default function CustomerPanel() {
       setDeliveryType("");
       setRecipient("");
     } catch (error) {
+      console.log("🚀 ~ file: painel-cliente.tsx:249 ~ individualHandleSubmit ~ error", error);
       setError(true);
       handleMessageError("Erro, ao enviar informações, " + error);
     }

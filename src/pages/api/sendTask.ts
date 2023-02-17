@@ -4,11 +4,10 @@ import { randomInt } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { deliveryService } from "@/lib/deliverySystem/IDeliveryService";
 import { loginImplementation } from "@/lib/login/implementations/enviroment";
-import moment from "moment";
 
 export type ResponseSendTaskApi = {
   status: number;
-  error: string | null;
+  error: any;
   content?: string;
 };
 
@@ -68,7 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     res.status(200).json({ status: 200, error: null, content: orderNumber });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ status: 500, error: "Erro interno" });
+    res.status(500).json({ status: 500, error: `${e}` });
   }
 };
 
