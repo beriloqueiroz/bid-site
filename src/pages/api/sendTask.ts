@@ -7,7 +7,7 @@ import { loginImplementation } from "@/lib/login/implementations/enviroment";
 
 export type ResponseSendTaskApi = {
   status: number;
-  error: any;
+  error: string | null;
   content?: string;
 };
 
