@@ -10,7 +10,6 @@ function authenticate(user: string, password: string, token: string): Promise<st
   if (process.env[user] != password) return getNull();
   if (!isNumber(token)) return getNull();
   if (parseInt(token) < moment().valueOf()) return getNull();
-  console.log('🚀 ~ file: enviroment.ts:15 ~ authenticate ~ parseInt(token)', parseInt(token), moment().valueOf());
   return getToken();
 }
 

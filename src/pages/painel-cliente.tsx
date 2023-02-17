@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 
 import Button from '@/components/button';
 import InputForm from '@/components/inputForm';
@@ -47,6 +47,12 @@ export default function CustomerPanel() {
     { value: 'D+1', content: 'ENTREGA NO PRÓXIMO DIA ÚTIL' },
     { value: 'D', content: 'ENTREGA NO MESMO DIA' },
   ]);
+
+  useEffect(()=>{
+    if (window.sessionStorage.getItem('token')){
+      setLogged(true);
+    }
+  },[])
 
   const router = useRouter();
 
