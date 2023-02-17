@@ -178,6 +178,9 @@ async function sendTask({
     driverType: 1,
     transportType: [1],
     pricingOrEarningRules: [ruleID],
+
+    isRepeat: false,
+    isDriverTemplateRepeat: false,
     templateId: templateID,
     templateName: "Envio",
     templateData: [
@@ -225,6 +228,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
 
   for (const key of keys) {
     const order = await getTaskByOrder(orderNumber, key);
+    console.log("🚀 ~ file: deliforce.ts:228 ~ getTrackingHistory ~ order", order);
 
     if (!order) return null;
 
