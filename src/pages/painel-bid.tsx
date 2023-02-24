@@ -99,6 +99,7 @@ export default function CustomerPanel() {
       setPassword('');
       setError(false);
       setSubmitted(false);
+      setResultLog([]);
     } catch (error) {
       setError(true);
       handleMessageError('Erro, fazer login ' + error);
@@ -148,6 +149,7 @@ export default function CustomerPanel() {
 
     setSending(true);
     setError(false);
+    setResultLog([]);
 
     try {
       const formData = new FormData();
