@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import style from '../styles/painel-bid.module.scss';
 import { ResponseLoginApi } from './api/login';
 import { ResponseUploadApi } from './api/upload';
+import { OptionSelect } from '@/components/inputForm/props';
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
@@ -24,6 +25,16 @@ export default function CustomerPanel() {
   const [requiredError, setRequiredError] = useState(false);
   const [resultLog, setResultLog] = useState<ResponseUploadApi[]>([]);
   const [isLogged, setLogged] = useState(false);
+
+  const [accountEmail, setAccountEmail] = useState('');
+  const [optionsSelect, setOptionsSelect] = useState<OptionSelect[]>([
+    { value: '', content: 'SELECIONE' },
+    { content: 'Conta 1', value: 'bid.entregas1' },
+    { content: 'Conta 2', value: 'bid.entregas2' },
+    { content: 'Conta 3', value: 'bid.entregas3' },
+    { content: 'Conta 4', value: 'bid.entregas4' },
+    { content: 'Master', value: 'bid.entregas' },
+  ]);
 
   useEffect(()=>{
     if (window.sessionStorage.getItem('token')){
@@ -129,6 +140,12 @@ export default function CustomerPanel() {
       throw new Error('Credenciais não informadas');
     }
 
+    if (accountEmail == '') {
+      setError(true);
+      setRequiredError(true);
+      throw new Error(`preencha todos os campos obrigatórios, os campos obrigatórios possuem *`);
+    }
+
     setSending(true);
     setError(false);
 
@@ -142,6 +159,7 @@ export default function CustomerPanel() {
         headers: {
           'X-Company': prefix,
           'X-Authentication': password,
+          'x-account': accountEmail,
           'x-token': window.sessionStorage.getItem('token') || '',
         },
       });
@@ -285,6 +303,19 @@ export default function CustomerPanel() {
                     type="button"
                   />
                 </div>
+                <InputForm
+                      label="Conta *"
+                      type="text"
+                      name="accountEmail"
+                      id="accountEmail"
+                      placeholder="Selecione"
+                      isRequired={true}
+                      setOnChange={setAccountEmail}
+                      value={accountEmail}
+                      isSelect={true}
+                      optionsSelect={optionsSelect}
+                      alertRequired={requiredError && accountEmail == ''}
+                    />
                 <Button handleSubmit={handleSubmit} sending={sending} text="Enviar" id="endButton" type="submit" />
               </form>
             
@@ -299,10 +330,10 @@ export default function CustomerPanel() {
         {submitted && !error && <span className={style.successMessage}>Resultado detalhado:</span>}
         <div className={style.resultLog}>
           {resultLog.length > 0 && (
-            resultLog.map((resultLog, i)=><div className={style.resultLogItem} key={i}>
+            resultLog.map((resultLog, i)=><div className={`${style.resultLogItem} ${!resultLog?.error ? style.successLog : ''}`} key={i}>
               <div>número do pedido: {resultLog.content}</div>
-              <div>erro: {resultLog.error}</div>
-              <div>status do erro: {resultLog.status}</div>
+              {resultLog?.error && <div>erro: {resultLog.error}</div>}
+              <div>status: {resultLog.status}</div>
             </div>)
           )}
         </div>

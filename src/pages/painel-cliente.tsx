@@ -279,7 +279,6 @@ export default function CustomerPanel() {
       setDeliveryType('');
       setRecipient('');
     } catch (error) {
-      console.log('🚀 ~ file: painel-cliente.tsx:249 ~ individualHandleSubmit ~ error', error);
       setError(true);
       handleMessageError('Erro, ao enviar informações, ' + error);
     }

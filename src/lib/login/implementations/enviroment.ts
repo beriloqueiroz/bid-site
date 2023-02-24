@@ -3,13 +3,9 @@ import moment from 'moment';
 import { authResponse } from '../ILogin';
 
 async function login(user: string, password: string): Promise<authResponse> {
-  console.log("🚀 ~ file: enviroment.ts:6 ~ login ~ user:", user)
   if (process.env[user] != password) return getNull();
   const token = await getToken();
-  console.log("🚀 ~ file: enviroment.ts:8 ~ login ~ token:", {
-    token,
-    isAdmin: process.env['ADMIN_USERS']?.includes(user)
-  })
+
   return {
     token,
     isAdmin: process.env['ADMIN_USERS']?.includes(user)

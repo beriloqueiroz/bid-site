@@ -13,37 +13,15 @@ export type ResponseUploadApi = {
 };
 type Template =
   {
-    Task_id: number,
     Name: string,
     Phone_number: string,
-    Email_id: string,
     FlatNo: string,
-    Area: string,
     Address: string,
-    Pincode: string,
     Description: string,
-    Agent: string,
-    Team: string,
     Order_id: string,
-    Task_Type: string,
-    Distance: string,
-    Task_status: string,
-    Latitude: number,
-    Longitude: number,
-    Rating: string,
-    Comment: string,
     notes: string,
-    barcode: string,
-    signature: string,
-    Images: string,
-    Ref_Image: string,
-    Delay: string,
     Start_Before: string,
     Complete_Before: string,
-    Started_Time: string,
-    Completion_Time: string,
-    Total_Time_Taken: number,
-    Created_By: string,
     "Categoria de envio": string,
     Reentrega: boolean,
     Devolução: boolean
@@ -62,8 +40,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
   const prefixCompany = req.headers['x-company'];
   const passCompany = req.headers['x-authentication'];
   const tokenSession = req.headers['x-token'];
+  const accountEmail = req.headers['x-account'];
 
-  if (!prefixCompany || !passCompany || !tokenSession) {
+  if (!prefixCompany || !passCompany || !tokenSession || !accountEmail) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
@@ -80,21 +59,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-let responses: ResponseUploadApi[]=[];
+  let responses: ResponseUploadApi[] = [];
 
   try {
     const { files } = await parseForm(req);
 
     const file = files.media;
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
-    console.log("🚀 ~ file: uploadDirect.ts:90 ~ handler ~ url:", url)
 
     const tasks = await csvToJson(url.toString()) as Template[];
-    console.log("🚀 ~ file: uploadDirect.ts:92 ~ handler ~ tasks:", tasks)
     for (const task of tasks) {
       try {
         const orderNumber = task.Order_id;
-        const prefix = orderNumber.split('-')[0];
         const data: SendTask = {
           address: task.Address,
           complement: task.FlatNo,
@@ -109,12 +85,14 @@ let responses: ResponseUploadApi[]=[];
           email: 'sender@bid.log.br',
           orderNumber: orderNumber,
 
-          account: prefix.toString(),
+          account: accountEmail?.toString(),
           deliveryType: task['Categoria de envio'],
+
+          dynamicKey: accountEmail?.toString()
         };
         const response = await deliveryService.sendTask(data);
-        if (response?.error || !response?.content) {          
-          responses.push({ status: 500, error: response.error.toString() })
+        if (response?.error || !response?.content) {
+          responses.push({ content: orderNumber, status: 500, error: JSON.stringify(response.error) })
           continue;
         }
         responses.push({ status: 200, error: null, content: orderNumber });
@@ -123,12 +101,12 @@ let responses: ResponseUploadApi[]=[];
         responses.push({ status: 500, error: `${e}` });
       }
     }
-    
+
     const hasSuccess = !!responses.find(r => r.status == 200);
     if (hasSuccess)
       res.status(200).json(responses);
-    
-    res.status(500).json(responses);
+    else
+      res.status(500).json(responses);
   } catch (e) {
     if (e instanceof FormidableError) {
       res.status(e.httpCode || 400).json({ status: 400, error: e.message });
@@ -136,6 +114,7 @@ let responses: ResponseUploadApi[]=[];
       console.error(e);
       res.status(500).json({ status: 500, error: 'Erro interno' });
     }
+    res.status(500).json({ status: 500, error: 'Erro interno' });
   }
 };
 

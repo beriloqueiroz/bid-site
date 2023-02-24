@@ -98,6 +98,10 @@
       text-align: center;
       color: var(--color-error);
       font-weight: 700;
+      border: 1px solid var(--color-primary-1);
+    }
+    .successLog {
+      color: var(--color-success-2) !important;
     }
   }
 }

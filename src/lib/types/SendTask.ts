@@ -13,4 +13,6 @@ export type SendTask = {
 
   account: string;
   deliveryType: string;
+
+  dynamicKey?: string;
 };

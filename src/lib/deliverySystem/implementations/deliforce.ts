@@ -139,12 +139,13 @@ async function sendTask({
   reference,
   account,
   deliveryType,
+  dynamicKey
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
   const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env['CONFIG_' + prefix] as string;
+  const generalAuth = process.env['SEND_' + prefix] as string;
 
   if (!generalAuth) return { content: null, error: 'erro ao buscar empresa' };
 
@@ -152,10 +153,15 @@ async function sendTask({
   const teamID = process.env['TEAM_' + account] as string;
   const ruleID = process.env['RULE_' + account] as string;
   const templateID = process.env['MODEL_TYPE_' + account] as string;
+  const keyForce = dynamicKey ?  process.env[`SEND_${dynamicKey}`] : null;
 
   if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: 'erro ao buscar infos deliforce' };
 
-  const key = JSON.parse(generalAuth) as string;
+  let key = JSON.parse(generalAuth) as string;
+
+  if (keyForce){
+    key = keyForce;
+  }
 
   const data = {
     name: name,
@@ -219,7 +225,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
 
   const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env['CONFIG_' + prefix] as string;
+  const generalAuth = process.env['TRACKING_' + prefix] as string;
 
   if (!generalAuth) return null;
 
