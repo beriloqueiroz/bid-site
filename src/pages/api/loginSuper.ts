@@ -1,24 +1,13 @@
 import { loginImplementation } from '@/lib/login/implementations/enviroment';
-import { ceps } from '@/lib/util/ceps';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export type ResponseCepApi = {
+export type ResponseLoginApi = {
   status: number;
   error: string | null;
-  content?: {
-    rua: string;
-    bairro: string;
-    cidade: string;
-    cep: string;
-    estado: string;
-  };
+  content?: any;
 };
 
-const getInfosByCEP = async (cep: string) => {
-  const infos = ceps.find((elem) => elem.cep === cep);
-  return infos;
-};
-const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi | null>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginApi | null>) => {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     res.status(405).json({
@@ -30,24 +19,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi 
 
   const prefixCompany = req.headers['x-company'];
   const passCompany = req.headers['x-authentication'];
-  const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !passCompany || !tokenSession) {
+  if (!prefixCompany || !passCompany) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token } = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
+  const { token, isAdmin } = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
+  if (!isAdmin) {
+    res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
+    return;
+  }
+
   try {
-    const param = req.query;
-    const infos = await getInfosByCEP(`${param['cep']}`);
-    res.status(200).json({ status: 200, error: null, content: infos });
+    res.status(200).json({ status: 200, error: null, content: token });
   } catch (e) {
     console.error(e);
     res.status(500).json({ status: 500, error: 'Erro interno' });

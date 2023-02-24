@@ -1,0 +1,103 @@
+.section {
+  padding: 100px 1rem;
+  @media (min-width: 768px) {
+    padding-top: 150px;
+  }
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 1rem;
+  }
+  .forms {
+    margin: 1rem;
+    border: 1px solid var(--color-primary-2);
+
+    .inLoteForm {
+      padding: 1rem 1rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: var(--color-light-4);
+      .inputUp {
+        display: flex;
+        justify-content: baseline;
+        input[type='file'] {
+          display: none;
+        }
+        .choose_btn {
+          background-color: var(--color-primary-1);
+          color: var(--color-light-1);
+          border-radius: 5px;
+          padding: 0.5rem;
+          width: fit-content;
+          width: -moz-fit-content;
+          cursor: pointer;
+        }
+        .choose_btn:hover {
+          background-color: var(--color-primary-3);
+        }
+        button,
+        .modelButton {
+          margin-left: 0.5rem;
+          background-color: var(--color-primary-2);
+          border: 2px solid var(--color-warn);
+          color: var(--color-light-1);
+          border-radius: 5px;
+          padding: 0.5rem;
+          width: 180px;
+          cursor: pointer;
+          height: 35px;
+          margin-top: auto;
+          font-size: 16px;
+          div {
+            width: 16px;
+            height: 16px;
+            border: 0.2rem var(--color-light-1) dashed;
+          }
+        }
+        button:hover {
+          background-color: var(--color-primary-3);
+        }
+        .modelButton:hover {
+          background-color: var(--color-primary-3);
+        }
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .successMessage {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-size: 20px;
+    text-align: center;
+    color: var(--color-success-1);
+    font-weight: 700;
+  }
+  .errorMessage {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-size: 20px;
+    text-align: center;
+    color: var(--color-error);
+    font-weight: 700;
+  }
+  .resultLog{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .resultLogItem {
+      margin: 1rem 0;
+      padding: 1rem;
+      font-size: 20px;
+      text-align: center;
+      color: var(--color-error);
+      font-weight: 700;
+    }
+  }
+}

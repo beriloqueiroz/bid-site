@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-  const token = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
+  const { token } = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
