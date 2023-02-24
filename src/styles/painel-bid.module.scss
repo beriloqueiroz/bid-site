@@ -22,9 +22,17 @@
       background-color: var(--color-light-4);
       .inputUp {
         display: flex;
-        justify-content: baseline;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
         input[type='file'] {
           display: none;
+        }
+        @media (min-width: 768px) {
+          flex-direction: row;
+          justify-content: baseline;
+          gap: 0.5rem;
+
         }
         .choose_btn {
           background-color: var(--color-primary-1);
@@ -34,13 +42,13 @@
           width: fit-content;
           width: -moz-fit-content;
           cursor: pointer;
+          overflow-wrap: anywhere;
         }
         .choose_btn:hover {
           background-color: var(--color-primary-3);
         }
         button,
         .modelButton {
-          margin-left: 0.5rem;
           background-color: var(--color-primary-2);
           border: 2px solid var(--color-warn);
           color: var(--color-light-1);
