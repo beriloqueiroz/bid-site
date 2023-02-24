@@ -53,7 +53,6 @@ export async function csvToJson(csvParh: string): Promise<any[]> {
     let obj: Obj = {}
 
     let properties = array[i].split(";")
-    console.log("🚀 ~ file: convertions.ts:54 ~ csvToJson ~ properties.length:", properties.length, headers.length)
 
     if (properties.length != headers.length) {
       throw new Error("headers length is not equal to properties length")

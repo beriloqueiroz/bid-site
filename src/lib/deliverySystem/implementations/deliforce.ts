@@ -163,6 +163,15 @@ async function sendTask({
     key = keyForce;
   }
 
+  const order = await getTaskByOrder(orderNumber, key);
+
+  if (order) {
+    return {
+      content: null,
+      error: "Pedido já existe",
+    };
+  }
+
   const data = {
     name: name,
     email: email,
