@@ -152,14 +152,14 @@ async function sendTask({
   const driverID = process.env['DRIVER_' + account] as string;
   const teamID = process.env['TEAM_' + account] as string;
   const ruleID = process.env['RULE_' + account] as string;
-  const templateID = process.env['MODEL_TYPE_' + account] as string;
-  const keyForce = dynamicKey ?  process.env[`SEND_${dynamicKey}`] : null;
+  const templateID = process.env['MODEL_' + account] as string;
+  const keyForce = dynamicKey ? process.env[`SEND_${dynamicKey}`] : null;
 
   if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: 'erro ao buscar infos deliforce' };
 
-  let key = JSON.parse(generalAuth) as string;
+  let key = generalAuth as string;
 
-  if (keyForce){
+  if (keyForce) {
     key = keyForce;
   }
 

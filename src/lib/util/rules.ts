@@ -25,7 +25,6 @@ export function dateByDeliveryType(type: string): Moment {
   let now = moment().subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
   if (isNumber(`${process.env.LIMIT_HOUR}`)) {
     if (now.hour() >= parseInt(`${process.env.LIMIT_HOUR}`)) {
-      // now = now.add(1, "days").set({ h: 17, m: 0 });
       throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);
     }
   }

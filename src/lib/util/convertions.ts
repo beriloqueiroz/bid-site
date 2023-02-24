@@ -41,6 +41,10 @@ export async function csvToJson(csvParh: string): Promise<any[]> {
 
   var array = csv.toString().split("\n");
 
+  if (csv.toString().includes("\r")) {
+    array = csv.toString().replaceAll("\r", "").split("\n");
+  }
+
   let result = [];
 
   let headers = array[0].split(";")
@@ -49,10 +53,16 @@ export async function csvToJson(csvParh: string): Promise<any[]> {
     let obj: Obj = {}
 
     let properties = array[i].split(";")
+    console.log("🚀 ~ file: convertions.ts:54 ~ csvToJson ~ properties.length:", properties.length, headers.length)
+
     if (properties.length != headers.length) {
-      console.log("headers length is not equal to properties length")
       throw new Error("headers length is not equal to properties length")
     }
+
+    if (!properties[0] || properties[0] == '') {
+      break;
+    }
+
     for (let j in headers) {
       obj[headers[j]] = properties[j]
     }
