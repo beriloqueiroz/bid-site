@@ -1,6 +1,6 @@
 import moment, { Moment } from 'moment';
 
-export function countValidDays(startDate: string, forecast: number, validWeekDays: number[] = [1, 2, 3, 4, 5]): Moment {
+export function countValidDays(startDate: string, forecast: number, validWeekDays: number[] = [1, 2, 3, 4, 5, 6]): Moment {
   let count = 0;
   let forecastDate = moment(startDate);
   while (count < forecast) {
@@ -22,7 +22,7 @@ export function dateByDeliveryType(type: string): Moment {
       forecast = parseInt(numb);
     }
   }
-  let now = moment();
+  let now = moment().subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
   if (isNumber(`${process.env.LIMIT_HOUR}`)) {
     if (now.hour() >= parseInt(`${process.env.LIMIT_HOUR}`)) {
       // now = now.add(1, "days").set({ h: 17, m: 0 });
@@ -30,7 +30,6 @@ export function dateByDeliveryType(type: string): Moment {
     }
   }
 
-  now = now.subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
   return countValidDays(now.toISOString(), forecast);
 }
 
