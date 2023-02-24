@@ -29,11 +29,11 @@ export default function CustomerPanel() {
   const [accountEmail, setAccountEmail] = useState('');
   const [optionsSelect, setOptionsSelect] = useState<OptionSelect[]>([
     { value: '', content: 'SELECIONE' },
-    { content: 'Conta 1', value: 'bid.entregas1' },
-    { content: 'Conta 2', value: 'bid.entregas2' },
-    { content: 'Conta 3', value: 'bid.entregas3' },
-    { content: 'Conta 4', value: 'bid.entregas4' },
-    { content: 'Master', value: 'bid.entregas' },
+    { content: 'Conta 1', value: 'bid_entregas1' },
+    { content: 'Conta 2', value: 'bid_entregas2' },
+    { content: 'Conta 3', value: 'bid_entregas3' },
+    { content: 'Conta 4', value: 'bid_entregas4' },
+    { content: 'Master', value: 'bid_entregas' },
   ]);
 
   useEffect(()=>{
