@@ -240,7 +240,10 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
 
   const keys = JSON.parse(generalAuth) as string[];
 
-  for (const key of keys) {
+
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
     const order = await getTaskByOrder(orderNumber, key);
 
     if (!order) return null;
@@ -261,6 +264,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
         },
         forecast: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
       },
+      origin: `${i + 1}`
     };
     return historyResponse;
   }

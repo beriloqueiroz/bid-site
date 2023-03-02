@@ -176,6 +176,9 @@ export default function Rastreio() {
               <p>
                 <strong>Último Status:</strong> {response.task.taskDescStatus}
               </p>
+              <p>
+                <strong>Origem interna (bid):</strong> conta {response.origin}
+              </p>
             </div>
             <ul className={style.ul}>
               {response.history.map(

@@ -4,4 +4,5 @@ import { TaskLog } from './TaskLog';
 export interface TaskLogDTO {
   task: Task;
   history: TaskLog[];
+  origin: string;
 }
