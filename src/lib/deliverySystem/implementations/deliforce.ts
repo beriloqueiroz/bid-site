@@ -172,6 +172,15 @@ async function sendTask({
     };
   }
 
+  let now = moment().subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
+
+  if (moment(startDate).isBefore(now) || moment(endDate).isBefore(now)) {
+    return {
+      content: null,
+      error: "Pedido com data antes de hoje",
+    };
+  }
+
   const data = {
     name: name,
     email: email,
