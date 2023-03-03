@@ -7,6 +7,10 @@ export async function csvToJsonVirgulas(csvParh: string): Promise<any[]> {
 
   var array = csv.toString().split("\n");
 
+  if (csv.toString().includes("\r")) {
+    array = csv.toString().replaceAll("\r", "").split("\n");
+  }
+
   let result = [];
 
   let headers = array[0].split(",")
@@ -37,6 +41,8 @@ export async function csvToJsonVirgulas(csvParh: string): Promise<any[]> {
 
 export async function csvToJson(csvParh: string, separator: string): Promise<any[]> {
 
+  if (separator == ",") return await csvToJsonVirgulas(csvParh);
+
   const csv = await fs.promises.readFile(csvParh)
 
   var array = csv.toString().split("\n");
@@ -48,6 +54,7 @@ export async function csvToJson(csvParh: string, separator: string): Promise<any
   let result = [];
 
   let headers = array[0].split(";")
+  console.log("🚀 ~ file: convertions.ts:51 ~ csvToJson ~ headers:", headers)
 
   for (let i = 1; i < array.length; i++) {
     let obj: Obj = {}
@@ -67,6 +74,7 @@ export async function csvToJson(csvParh: string, separator: string): Promise<any
     }
     result.push(obj)
   }
+  console.log("🚀 ~ file: convertions.ts:70 ~ csvToJson ~ result:", result)
   return result;
 }
 
