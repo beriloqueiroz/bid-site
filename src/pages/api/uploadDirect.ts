@@ -24,7 +24,7 @@ type Template =
     Complete_Before: string,
     "Categoria de envio": string,
     Reentrega: boolean,
-    Devolução: boolean
+    "Devolução": boolean
   }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi | ResponseUploadApi[]>) => {
@@ -75,6 +75,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
       tasks = await csvToJson(url.toString(), ",") as Template[];
     }
     for (const task of tasks) {
+      console.log("🚀 ~ file: uploadDirect.ts:78 ~ handler ~ task:", task)
+
       try {
         const orderNumber = task.Order_id;
         const data: SendTask = {
