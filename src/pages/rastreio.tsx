@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 
 import style from '../styles/rastreio.module.scss';
+import moment from 'moment';
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
@@ -192,7 +193,7 @@ export default function Rastreio() {
                         <div className={style.status}>
                           <p>{`${task.taskDescStatus}`}</p>
                           <div className={style.statusInfo}>
-                            <p>{task.created_at}</p>
+                            <p>{moment(task.created_at).subtract(3, 'hours').format('DD/MM/YYYY hh:mm:ss A')}</p>
                             <p className={style.reason}>{task.reason ? task.reason : ''}</p>
                             {!isPrivate && (task.notes || task.imageArry?.length) && (
                               <p className={style.more_detail} onClick={() => showDetail(task._id)}>

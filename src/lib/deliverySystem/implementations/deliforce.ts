@@ -265,7 +265,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
         name: order?.name || '',
         date: moment(order?.date).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
         endDate: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
-        created_at: moment(order?.created_at).subtract(6, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        created_at: moment(order?.created_at).format('DD/MM/YYYY hh:mm:ss A') || '',
         orderId: order?.orderId || '',
         taskDescStatus: getDescStatus(order?.taskStatus || ''),
         address: {
@@ -276,6 +276,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
       },
       origin: `${i + 1}`
     };
+    console.log("🚀 ~ file: deliforce.ts:279 ~ getTrackingHistory ~ historyResponse:", historyResponse)
     return historyResponse;
   }
   return null;
