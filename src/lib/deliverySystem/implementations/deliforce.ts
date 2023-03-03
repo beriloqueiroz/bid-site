@@ -172,9 +172,9 @@ async function sendTask({
     };
   }
 
-  let now = moment().subtract(3, 'hours');
+  let now = moment().format("YYYY-MM-DD");
 
-  if (moment(startDate).isBefore(now) || moment(endDate).isBefore(now)) {
+  if (moment(startDate).isBefore(moment(now)) || moment(endDate).isBefore(moment(now))) {
     return {
       content: null,
       error: "Pedido com data antes de hoje",
