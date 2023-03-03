@@ -66,7 +66,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
 
     const file = files.media;
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
-    console.log("🚀 ~ file: uploadDirect.ts:69 ~ handler ~ url:", url)
 
     let tasks = [];
 
@@ -76,8 +75,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
       tasks = await csvToJson(url.toString(), ",") as Template[];
     }
     for (const task of tasks) {
-      console.log("🚀 ~ file: uploadDirect.ts:78 ~ handler ~ task:", task)
-
       try {
         const orderNumber = task.Order_id;
         const data: SendTask = {
@@ -87,7 +84,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           name: task.Name,
           value: '10.00',
           startDate: moment(task.Start_Before).format('YYYY-MM-DD') + 'T08:00:00.830Z',
-          endDate: moment(task.Complete_Before).format('YYYY-MM-DD') + 'T20:00:00.830Z',
+          endDate: moment(task.Complete_Before).format('YYYY-MM-DD') + 'T23:00:00.830Z',
           reference: task.notes,
 
           description: task.Description,
