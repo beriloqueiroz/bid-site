@@ -219,6 +219,7 @@ async function sendTask({
       },
     ],
   };
+  console.log("🚀 ~ file: deliforce.ts:222 ~ data:", data)
   try {
     const response = await post(urlbase + '/task', data, key);
     if (!response?.content || response?.error) {

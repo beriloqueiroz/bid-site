@@ -66,6 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
 
     const file = files.media;
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
+    console.log("🚀 ~ file: uploadDirect.ts:69 ~ handler ~ url:", url)
 
     let tasks = [];
 
@@ -85,8 +86,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           phone: task.Phone_number,
           name: task.Name,
           value: '10.00',
-          startDate: moment(task.Start_Before).format('YYYY-MM-DDThh:mm:ss aa'),
-          endDate: moment(task.Complete_Before).format('YYYY-MM-DDThh:mm:ss aa'),
+          startDate: moment(task.Start_Before).format('YYYY-MM-DDThh:mm:ss'),
+          endDate: moment(task.Complete_Before).format('YYYY-MM-DDThh:mm:ss'),
           reference: task.notes,
 
           description: task.Description,
