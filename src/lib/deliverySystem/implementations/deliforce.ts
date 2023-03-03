@@ -266,6 +266,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
         name: order?.name || '',
         date: moment(order?.date).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
         endDate: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        created_at: moment(order?.created_at).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
         orderId: order?.orderId || '',
         taskDescStatus: getDescStatus(order?.taskStatus || ''),
         address: {
