@@ -22,7 +22,7 @@ export function dateByDeliveryType(type: string): Moment {
       forecast = parseInt(numb);
     }
   }
-  let now = moment().subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
+  let now = moment().subtract(3, 'hours');
   // if (isNumber(`${process.env.LIMIT_HOUR}`)) {
   //   if (now.hour() >= parseInt(`${process.env.LIMIT_HOUR}`)) {
   //     throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);

@@ -18,7 +18,7 @@ async function authenticate(user: string, password: string, token: string): Prom
   if (parseInt(token) < moment().valueOf()) return getNull();
   const tokenRes = await getToken();
   return {
-    token:tokenRes,
+    token: tokenRes,
     isAdmin: process.env['ADMIN_USERS']?.includes(user)
   }
 }
@@ -31,7 +31,7 @@ async function getNull() {
 
 async function getToken(): Promise<string> {
   return moment()
-    .subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours')
+    .subtract(3, 'hours')
     .add(1, 'days')
     .valueOf()
     .toString();

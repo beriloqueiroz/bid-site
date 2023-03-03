@@ -172,7 +172,7 @@ async function sendTask({
     };
   }
 
-  let now = moment().subtract(parseInt(`${process.env.TZ_DIFERENCE_SUB}`), 'hours');
+  let now = moment().subtract(3, 'hours');
 
   if (moment(startDate).isBefore(now) || moment(endDate).isBefore(now)) {
     return {
@@ -255,7 +255,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
     const key = keys[i];
     const order = await getTaskByOrder(orderNumber, key);
 
-    if (!order) return null;
+    if (!order) continue;
 
     const histories = await getTaskLog(order.taskId, key);
     const historyResponse: TaskLogDTO = {
