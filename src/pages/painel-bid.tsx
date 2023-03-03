@@ -334,12 +334,7 @@ export default function CustomerPanel() {
           {resultLog.length > 0 && (
             resultLog.map((resultLog, i)=><div className={`${style.resultLogItem} ${!resultLog?.error ? style.successLog : ''}`} key={i}>
               <div>número do pedido: {resultLog.content}</div>
-              {resultLog?.error && 
-              <>
-              <div>erro: {resultLog.error}</div>
-              <div>status: {resultLog.status}</div>
-              </>
-              }
+              {resultLog?.error &&  <div>erro: {resultLog.error}</div> }
             </div>)
           )}
         </div>
