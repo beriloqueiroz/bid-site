@@ -67,7 +67,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     const file = files.media;
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
 
-    const tasks = await csvToJson(url.toString()) as Template[];
+    let tasks = [];
+
+    try {
+      tasks = await csvToJson(url.toString(), ";") as Template[];
+    } catch (e) {
+      tasks = await csvToJson(url.toString(), ",") as Template[];
+    }
     for (const task of tasks) {
       try {
         const orderNumber = task.Order_id;

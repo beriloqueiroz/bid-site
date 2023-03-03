@@ -35,7 +35,7 @@ export async function csvToJsonVirgulas(csvParh: string): Promise<any[]> {
   return result;
 }
 
-export async function csvToJson(csvParh: string): Promise<any[]> {
+export async function csvToJson(csvParh: string, separator: string): Promise<any[]> {
 
   const csv = await fs.promises.readFile(csvParh)
 
@@ -52,7 +52,7 @@ export async function csvToJson(csvParh: string): Promise<any[]> {
   for (let i = 1; i < array.length; i++) {
     let obj: Obj = {}
 
-    let properties = array[i].split(";")
+    let properties = array[i].split(separator)
 
     if (properties.length != headers.length) {
       throw new Error("headers length is not equal to properties length")
