@@ -86,8 +86,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           phone: task.Phone_number,
           name: task.Name,
           value: '10.00',
-          startDate: moment(task.Start_Before).format('YYYY-MM-DDThh:mm:ss') + '.830Z',
-          endDate: moment(task.Complete_Before).format('YYYY-MM-DDThh:mm:ss') + '.830Z',
+          startDate: moment(task.Start_Before).format('YYYY-MM-DD') + 'T08:00.830Z',
+          endDate: moment(task.Complete_Before).format('YYYY-MM-DD') + 'T23:00.830Z',
           reference: task.notes,
 
           description: task.Description,
