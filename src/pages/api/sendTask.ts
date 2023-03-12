@@ -60,9 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       account: prefixCompany.toString(),
       deliveryType: deliveryType,
     };
-    console.log("🚀 ~ file: sendTask.ts:63 ~ handler ~ data:", data)
     const response = await deliveryService.sendTask(data);
-    console.log("🚀 ~ file: sendTask.ts:64 ~ handler ~ response:", response)
     if (response?.error || !response?.content) {
       res.status(500).json({ status: 500, error: response.error.toString() });
       return;

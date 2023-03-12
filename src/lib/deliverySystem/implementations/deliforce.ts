@@ -276,7 +276,6 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
       },
       origin: `${i + 1}`
     };
-    console.log("🚀 ~ file: deliforce.ts:279 ~ getTrackingHistory ~ historyResponse:", historyResponse)
     return historyResponse;
   }
   return null;

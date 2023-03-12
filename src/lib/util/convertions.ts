@@ -54,7 +54,6 @@ export async function csvToJson(csvParh: string, separator: string): Promise<any
   let result = [];
 
   let headers = array[0].split(";")
-  console.log("🚀 ~ file: convertions.ts:51 ~ csvToJson ~ headers:", headers)
 
   for (let i = 1; i < array.length; i++) {
     let obj: Obj = {}
@@ -74,7 +73,6 @@ export async function csvToJson(csvParh: string, separator: string): Promise<any
     }
     result.push(obj)
   }
-  console.log("🚀 ~ file: convertions.ts:70 ~ csvToJson ~ result:", result)
   return result;
 }
 

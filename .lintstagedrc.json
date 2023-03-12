@@ -1,0 +1,11 @@
+{
+  "*.{ts,tsx}": [
+    "eslint --fix"
+  ],
+  "*.{css,scss}": [
+    "npx stylelint '**/*.{scss,css}' --fix"
+  ],
+  "*": [
+    "git add"
+  ]
+}
