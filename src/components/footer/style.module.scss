@@ -1,6 +1,7 @@
 .footer {
   background-color: var(--color-primary-2);
-  padding: 2rem 1.5rem 3rem 1.5rem;
+  padding: 2rem 1.5rem 3rem;
+
   .container {
     display: flex;
     flex-direction: column;
@@ -11,6 +12,7 @@
       div {
         cursor: pointer;
       }
+
       div:hover {
         color: var(--color-primary-3);
       }
@@ -24,32 +26,32 @@
       padding: 0 1rem;
       margin: auto;
     }
+
     h1 {
       color: var(--color-light-1);
     }
+
     .aboutUs {
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 1rem;
+
       h1 {
         font-size: 16px;
+
         @media (min-width: 768px) {
           font-size: 26px;
           font-weight: 700;
         }
       }
+
       p {
         cursor: pointer;
         margin-left: 1rem;
       }
-      a {
-        margin-left: 1rem;
-      }
+
       p:hover {
-        color: var(--color-primary-3);
-      }
-      a:hover {
         color: var(--color-primary-3);
       }
     }
@@ -59,19 +61,23 @@
       flex-direction: column;
       justify-content: center;
       gap: 1rem;
+
       h1 {
         font-size: 16px;
+
         @media (min-width: 768px) {
           font-size: 26px;
           font-weight: 700;
         }
       }
-      a:hover {
-        color: var(--color-primary-3);
-      }
-      a {
-        margin-left: 1rem;
-      }
     }
   }
+}
+
+.link {
+  margin-left: 1rem;
+}
+
+.link:hover {
+  color: var(--color-primary-3);
 }

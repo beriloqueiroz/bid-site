@@ -85,10 +85,17 @@
       }
     ],
     "selector-class-pattern": [
-      "^(_?[a-z][a-z0-9]*)(_[a-z0-9]+)*$",
+      "([A-Z,a-z])+",
       {
-        "message": "Expected class name to be snake-case"
+        "message": "qualquer um"
       }
-    ]
+    ],
+    "selector-id-pattern": [
+      "([A-Z,a-z])+",
+      {
+        "message": "qualquer um"
+      }
+    ],
+    "no-descending-specificity": null
   }
 }

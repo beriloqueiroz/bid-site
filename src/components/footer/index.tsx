@@ -18,7 +18,6 @@ export default function Footer() {
           <p>bid transporte inteligente</p>
           <p>bid © 2023. Todos os direitos reservados.</p>
           <div onClick={() => router.push('/politica-privacidade-cookies')}>Política de Privacidade e Cookies</div>
-          {/* <div onClick={() => router.push("/termos")}>Termos de uso</div> */}
         </div>
         <div className={styles.aboutUs}>
           <h1>EMPRESA</h1>
@@ -31,19 +30,24 @@ export default function Footer() {
             href={`https://api.whatsapp.com/send/?phone=${whatsPhone}&text=${whatsappMessage}&type=phone_number&app_absent=0`}
             target="_blank"
             rel="noopener noreferrer"
+            className={styles.link}
           >
-            +55 85 997492562 (Whatsapp)
+            +55 85 997492562
+            {' '}
+            (
+            Whatsapp
+            )
           </a>
-          <a href="mailto:contato@bid.log.br" target="_blank" rel="noopener noreferrer">
+          <a href="mailto:contato@bid.log.br" className={styles.link} target="_blank" rel="noopener noreferrer">
             contato@bid.log.br
           </a>
         </div>
         <div className={styles.social}>
           <h1>REDES SOCIAIS</h1>
-          <a href="https://www.instagram.com/bid.log/" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/bid.log/" className={styles.link} target="_blank" rel="noopener noreferrer">
             Instagram
           </a>
-          <a href="https://www.linkedin.com/company/bid-log" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/company/bid-log" className={styles.link} target="_blank" rel="noopener noreferrer">
             Linkedin
           </a>
         </div>
