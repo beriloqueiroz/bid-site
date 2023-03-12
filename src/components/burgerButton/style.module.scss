@@ -5,6 +5,7 @@
   justify-content: center;
   width: 30px;
   padding: 2px;
+
   .burgerLayer {
     width: 100%;
     height: 3px;
@@ -14,6 +15,7 @@
     transition-duration: 0.3s;
     position: relative;
   }
+
   .burgerLayer::after {
     width: 100%;
     height: 3px;
@@ -23,6 +25,7 @@
     content: "";
     top: 0.5rem;
   }
+
   .burgerLayer::before {
     width: 100%;
     height: 3px;
@@ -32,16 +35,19 @@
     content: "";
     top: -0.5rem;
   }
+
   .active::before {
     transform: translateY(0.5rem) rotate(45deg);
     transition-property: background-color, transform;
     transition-duration: 0.3s;
   }
+
   .active::after {
     transform: translateY(-0.5rem) rotate(-45deg);
     transition-property: background-color, transform;
     transition-duration: 0.3s;
   }
+
   .burgerLayer.active {
     background-color: transparent;
   }

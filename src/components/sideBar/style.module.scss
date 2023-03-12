@@ -8,6 +8,7 @@
   background-color: var(--background-color-1);
   transition: 0.3s;
   transform: translate3d(-100%, 0, 0);
+
   .nav {
     .ul {
       list-style: none;
@@ -15,20 +16,24 @@
       flex-direction: column;
       gap: 25px;
       justify-content: center;
+
       .li {
         font-size: 25px;
         color: var(--color-dark-1);
       }
+
       .liSocial {
         font-size: 20px;
         font-weight: 500;
         color: var(--color-dark-2);
         display: flex;
         width: 50%;
+
         .svg {
           fill: var(--color-primary-2);
           margin-right: 10px;
         }
+
         .li_a {
           margin: auto 0;
         }
@@ -36,6 +41,7 @@
     }
   }
 }
+
 .container.active {
   transform: translate3d(0, 0, 0);
 }

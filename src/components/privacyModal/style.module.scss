@@ -12,6 +12,7 @@
   color: var(--color-light-1);
   gap: 1rem;
   border: 2px var(--color-light-1) dashed;
+
   button {
     border: 2px solid var(--color-light-1);
     transition: 400ms;
@@ -21,10 +22,12 @@
     color: var(--color-light-1);
     cursor: pointer;
   }
+
   button:hover {
     background-color: var(--color-primary-2);
     color: var(--color-light-1);
   }
+
   span {
     color: var(--color-primary-3);
   }

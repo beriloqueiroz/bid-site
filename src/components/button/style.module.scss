@@ -8,23 +8,28 @@
   height: 60px;
   font-size: 23px;
   cursor: pointer;
+
   @media (min-width: 768px) {
     font-size: 23px;
     width: 30%;
   }
+
   .loading {
     width: 2.5rem;
     height: 2.5rem;
     margin: auto;
     animation: loading 3s linear infinite;
+
     @keyframes loading {
       0% {
         transform: rotate(0);
       }
+
       100% {
         transform: rotate(360deg);
       }
     }
+
     border-radius: 50%;
     border: 0.3rem var(--color-light-1) dashed;
     background: transparent;

@@ -5,10 +5,12 @@
   position: fixed;
   bottom: 1rem;
   right: 1rem;
+
   svg {
     height: 100%;
     fill: var(--color-light-1);
   }
+
   svg:hover {
     fill: var(--color-success-1);
   }
