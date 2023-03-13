@@ -1,21 +1,23 @@
-import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
+import {
+  KeyboardEvent, useEffect, useState,
+} from 'react';
 
 import Button from '@/components/button';
 import InputForm from '@/components/inputForm';
 import Layout from '@/components/layout';
 import { useRouter } from 'next/router';
 
+import { OptionSelect } from '@/components/inputForm/props';
 import style from '../styles/painel-bid.module.scss';
 import { ResponseLoginApi } from './api/login';
 import { ResponseUploadApi } from './api/upload';
-import { OptionSelect } from '@/components/inputForm/props';
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendingLogin, setSendingLogin] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [error, setError] = useState(false);
+  const [errorStatus, setErrorStatus] = useState(false);
   const [messageError, setMessageError] = useState(' Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato.');
   const [fileName, setFileName] = useState('');
   const [prefix, setPrefix] = useState('');
@@ -27,7 +29,7 @@ export default function CustomerPanel() {
   const [isLogged, setLogged] = useState(false);
 
   const [accountEmail, setAccountEmail] = useState('');
-  const [optionsSelect, setOptionsSelect] = useState<OptionSelect[]>([
+  const [optionsSelect] = useState<OptionSelect[]>([
     { value: '', content: 'SELECIONE' },
     { content: 'Conta 1', value: 'bid_entregas1' },
     { content: 'Conta 2', value: 'bid_entregas2' },
@@ -36,11 +38,11 @@ export default function CustomerPanel() {
     { content: 'Master', value: 'bid_entregas' },
   ]);
 
-  useEffect(()=>{
-    if (window.sessionStorage.getItem('token')){
+  useEffect(() => {
+    if (window.sessionStorage.getItem('token')) {
       setLogged(true);
     }
-  },[])
+  }, []);
 
   const router = useRouter();
 
@@ -54,12 +56,12 @@ export default function CustomerPanel() {
 
     try {
       setSendingLogin(true);
-      if (prefix == '' || password == '') {
-        setError(true);
+      if (prefix === '' || password === '') {
+        setErrorStatus(true);
         throw new Error('Credenciais não informadas');
       }
 
-      setError(false);
+      setErrorStatus(false);
 
       const res = await fetch('/api/loginSuper', {
         method: 'GET',
@@ -72,21 +74,21 @@ export default function CustomerPanel() {
       const { status, error, content }: ResponseLoginApi = await res.json();
 
       if (status === 401) {
-        setError(true);
+        setErrorStatus(true);
         setLogged(false);
-        throw new Error(error + '');
+        throw new Error(`${error}`);
       }
 
       if (status !== 200) {
-        setError(true);
-        throw new Error(error + ', entre em contato conosco!');
+        setErrorStatus(true);
+        throw new Error(`${error}, entre em contato conosco!`);
       }
 
       setLogged(true);
       window.sessionStorage.setItem('token', content);
-    } catch (error) {
-      setError(true);
-      handleMessageError('Erro, ao fazer login, entre em contato! ' + error);
+    } catch (err) {
+      setErrorStatus(true);
+      handleMessageError(`Erro, ao fazer login, entre em contato! ${err}`);
     }
     setSendingLogin(false);
   };
@@ -97,12 +99,12 @@ export default function CustomerPanel() {
       setLogged(false);
       setPrefix('');
       setPassword('');
-      setError(false);
+      setErrorStatus(false);
       setSubmitted(false);
       setResultLog([]);
-    } catch (error) {
-      setError(true);
-      handleMessageError('Erro, fazer login ' + error);
+    } catch (err) {
+      setErrorStatus(true);
+      handleMessageError(`Erro, fazer login ${err}`);
     }
   };
 
@@ -120,7 +122,7 @@ export default function CustomerPanel() {
     const fileList = e.target.files;
 
     if (!fileList || !fileList[0]) {
-      setError(true);
+      setErrorStatus(true);
       handleMessageError('Erro ao selecionar arquivo!');
       return;
     }
@@ -132,23 +134,23 @@ export default function CustomerPanel() {
     if (e) e.preventDefault();
 
     if (!fileSelected) {
-      setError(true);
+      setErrorStatus(true);
       throw new Error('Arquivo não selecionado!');
     }
 
-    if (prefix == '' || password == '') {
-      setError(true);
+    if (prefix === '' || password === '') {
+      setErrorStatus(true);
       throw new Error('Credenciais não informadas');
     }
 
-    if (accountEmail == '') {
-      setError(true);
+    if (accountEmail === '') {
+      setErrorStatus(true);
       setRequiredError(true);
-      throw new Error(`preencha todos os campos obrigatórios, os campos obrigatórios possuem *`);
+      throw new Error('preencha todos os campos obrigatórios, os campos obrigatórios possuem *');
     }
 
     setSending(true);
-    setError(false);
+    setErrorStatus(false);
     setResultLog([]);
 
     try {
@@ -170,32 +172,32 @@ export default function CustomerPanel() {
 
       if (!response?.length) {
         if (response?.status === 401) {
-          setError(true);
+          setErrorStatus(true);
           setLogged(false);
           setSending(false);
           setPrefix('');
           setPassword('');
-          throw new Error(error + '');
+          throw new Error(`${errorStatus}`);
         }
 
         if (response?.error) {
-          setError(true);
+          setErrorStatus(true);
           setSending(false);
-          throw new Error(error + 'entre em contato conosco!');
+          throw new Error(`${errorStatus}entre em contato conosco!`);
         }
 
-        if (response?.error && response?.status == 500) {
-          setError(true);
+        if (response?.error && response?.status === 500) {
+          setErrorStatus(true);
           setSending(false);
           throw new Error('entre em contato!');
-        }      
+        }
       } else {
         setResultLog(response as ResponseUploadApi[]);
       }
       setSubmitted(true);
     } catch (error) {
-      setError(true);
-      handleMessageError('Erro, ' + error);
+      setErrorStatus(true);
+      handleMessageError(`Erro, ${error}`);
     }
     setSending(false);
     setFileSelected(null);
@@ -224,23 +226,23 @@ export default function CustomerPanel() {
       } = await res.json();
 
       if (status === 401) {
-        setError(true);
+        setErrorStatus(true);
         setLogged(false);
         setPrefix('');
         setPassword('');
-        throw new Error(error + '');
+        throw new Error(`${error}`);
       }
 
-      if (status != 200) {
-        setError(true);
+      if (status !== 200) {
+        setErrorStatus(true);
         setDownloading(false);
         throw new Error('entre em contato conosco!');
       }
-      router.push(`/model_admin.csv`);
+      router.push('/model_admin.csv');
       setDownloading(false);
-    } catch (e) {
-      setError(true);
-      handleMessageError('Erro ao baixar modelo ' + error);
+    } catch (err) {
+      setErrorStatus(true);
+      handleMessageError(`Erro ao baixar modelo ${errorStatus}`);
     }
   }
 
@@ -251,7 +253,7 @@ export default function CustomerPanel() {
   };
 
   return (
-    <Layout simpleHeader={true}>
+    <Layout simpleHeader>
       <section className={style.section}>
         <form className={style.loginForm}>
           <InputForm
@@ -260,8 +262,8 @@ export default function CustomerPanel() {
             name="prefix"
             id="prefix"
             placeholder="PREFX"
-            isRequired={true}
-            alertRequired={requiredError && prefix == ''}
+            isRequired
+            alertRequired={requiredError && prefix === ''}
             setOnChange={setPrefix}
             value={prefix}
             disable={isLogged}
@@ -272,8 +274,8 @@ export default function CustomerPanel() {
             name="password"
             id="password"
             placeholder="*********"
-            isRequired={true}
-            alertRequired={requiredError && password == ''}
+            isRequired
+            alertRequired={requiredError && password === ''}
             setOnChange={setPassword}
             value={password}
             disable={isLogged}
@@ -282,63 +284,73 @@ export default function CustomerPanel() {
         </form>
         {isLogged && (
           <div className={style.forms}>
-              <form className={style.inLoteForm}>
-                <div className={style.inputUp}>
-                  <label htmlFor="table" className={style.choose_btn}>
-                    {fileName != '' ? `Arquivo selecionado: ${fileName}` : 'Escolher arquivo'}
-                  </label>
-                  <input
-                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                    id="table"
-                    name="table"
-                    type="file"
-                    multiple={false}
-                    onChange={handleFileChange}
-                    onKeyDown={handleKeypress}
-                  />
-                  {fileSelected && <button onClick={onCancelFile}>Cancelar</button>}
-                  <Button
-                    plusClass={style.modelButton}
-                    handleSubmit={downloadModel}
-                    sending={downloading}
-                    text="Baixar tabela modelo"
-                    type="button"
-                  />
-                </div>
-                <InputForm
-                      label="Conta *"
-                      type="text"
-                      name="accountEmail"
-                      id="accountEmail"
-                      placeholder="Selecione"
-                      isRequired={true}
-                      setOnChange={setAccountEmail}
-                      value={accountEmail}
-                      isSelect={true}
-                      optionsSelect={optionsSelect}
-                      alertRequired={requiredError && accountEmail == ''}
-                    />
-                <Button handleSubmit={handleSubmit} sending={sending} text="Enviar" id="endButton" type="submit" />
-              </form>
-            
+            <form className={style.inLoteForm}>
+              <div className={style.inputUp}>
+                <label htmlFor="table" className={style.choose_btn}>
+                  {fileName !== '' ? `Arquivo selecionado: ${fileName}` : 'Escolher arquivo'}
+                </label>
+                <input
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  id="table"
+                  name="table"
+                  type="file"
+                  multiple={false}
+                  onChange={handleFileChange}
+                  onKeyDown={handleKeypress}
+                />
+                {fileSelected && <button type="button" onClick={onCancelFile}>Cancelar</button>}
+                <Button
+                  plusClass={style.modelButton}
+                  handleSubmit={downloadModel}
+                  sending={downloading}
+                  text="Baixar tabela modelo"
+                  type="button"
+                />
+              </div>
+              <InputForm
+                label="Conta *"
+                type="text"
+                name="accountEmail"
+                id="accountEmail"
+                placeholder="Selecione"
+                isRequired
+                setOnChange={setAccountEmail}
+                value={accountEmail}
+                isSelect
+                optionsSelect={optionsSelect}
+                alertRequired={requiredError && accountEmail === ''}
+              />
+              <Button handleSubmit={handleSubmit} sending={sending} text="Enviar" id="endButton" type="submit" />
+            </form>
+
           </div>
         )}
-        {error && (
+        {errorStatus && (
           <span id="error" className={style.errorMessage}>
             {messageError}
           </span>
         )}
-        {submitted && !error && <span className={style.successMessage}>Tasks enviadas, verifique o resultado detalhado.</span>}
-        {submitted && !error && <span className={style.successMessage}>Resultado detalhado:</span>}
+        {submitted && !errorStatus && <span className={style.successMessage}>Tasks enviadas, verifique o resultado detalhado.</span>}
+        {submitted && !errorStatus && <span className={style.successMessage}>Resultado detalhado:</span>}
         <div className={style.resultLog}>
           {resultLog.length > 0 && (
-            resultLog.map((resultLog, i)=><div className={`${style.resultLogItem} ${!resultLog?.error ? style.successLog : ''}`} key={i}>
-              <div>número do pedido: {resultLog.content}</div>
-              {resultLog?.error &&  <div>erro: {resultLog.error}</div> }
-            </div>)
+            resultLog.map((resLg) => (
+              <div className={`${style.resultLogItem} ${!resLg?.error ? style.successLog : ''}`} key={resLg.content}>
+                <div>
+                  número do pedido:
+                  {resLg.content}
+                </div>
+                {resLg?.error && (
+                <div>
+                  erro:
+                  {resLg.error}
+                </div>
+                ) }
+              </div>
+            ))
           )}
         </div>
-        
+
       </section>
     </Layout>
   );
