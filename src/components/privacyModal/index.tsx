@@ -4,6 +4,7 @@ import cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
 import style from './style.module.scss';
+
 export default function PrivacyModal() {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
@@ -35,11 +36,12 @@ export default function PrivacyModal() {
       <div className={style.text}>
         <p>Nós usamos cookies e outras tecnologias semelhantes para melhorar a sua experiência em nossos serviços.</p>
         <p>
-          Ao utilizar nossos serviços, você concorda com nossa{' '}
-          <span onClick={() => router.push('/politica-privacidade-cookies')}>políticas de privacidade</span>
+          Ao utilizar nossos serviços, você concorda com nossa
+          {' '}
+          <span onClick={() => router.push('/politica-privacidade-cookies/#politica-inicio')}>políticas de privacidade</span>
         </p>
       </div>
-      <button onClick={() => acceptCookies()}>Prosseguir</button>
+      <button type="button" onClick={() => acceptCookies()}>Prosseguir</button>
     </div>
   );
 }

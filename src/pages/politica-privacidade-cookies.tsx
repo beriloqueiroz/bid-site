@@ -1,19 +1,24 @@
 import Layout from '@/components/layout';
 
 import style from '../styles/privacy.module.scss';
+
 export default function PrivacyPolicyAndCookies() {
   return (
-    <Layout simpleHeader={true}>
-      <section className={style.section}>
+    <Layout simpleHeader>
+      <section className={style.section} id="politica-inicio">
         <div className={style.container}>
           <h2>Política Privacidade</h2>
           <p>
             A sua privacidade é importante para nós. É política da bid respeitar a sua privacidade em relação a qualquer informação sua que possamos
-            coletar no site <a href="http://bid.log.br">bid</a>, e outros sites que possuímos e operamos.
+            coletar no site
+            {' '}
+            <a href="http://bid.log.br">bid</a>
+            , e outros sites que possuímos e operamos.
           </p>
           <p>
             Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e
-            legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.{' '}
+            legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.
+            {' '}
           </p>
           <p>
             Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos
@@ -23,7 +28,8 @@ export default function PrivacyPolicyAndCookies() {
           <p>Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
           <p>
             O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e
-            práticas desses sites e não podemos aceitar responsabilidade por suas respectivas{' '}
+            práticas desses sites e não podemos aceitar responsabilidade por suas respectivas
+            {' '}
             <a href="https://politicaprivacidade.com" target="_blank" rel="noopener noreferrer">
               políticas de privacidade.
             </a>
@@ -63,41 +69,48 @@ export default function PrivacyPolicyAndCookies() {
               {' '}
               Cookies relacionados à conta Se você criar uma conta conosco, usaremos cookies para o gerenciamento do processo de inscrição e
               administração geral. Esses cookies geralmente serão excluídos quando você sair do sistema, porém, em alguns casos, eles poderão
-              permanecer posteriormente para lembrar as preferências do seu site ao sair.{' '}
+              permanecer posteriormente para lembrar as preferências do seu site ao sair.
+              {' '}
             </li>
             <li>
               {' '}
               Cookies relacionados ao login Utilizamos cookies quando você está logado, para que possamos lembrar dessa ação. Isso evita que você
               precise fazer login sempre que visitar uma nova página. Esses cookies são normalmente removidos ou limpos quando você efetua logout para
-              garantir que você possa acessar apenas a recursos e áreas restritas ao efetuar login.{' '}
+              garantir que você possa acessar apenas a recursos e áreas restritas ao efetuar login.
+              {' '}
             </li>
             <li>
               {' '}
               Cookies relacionados a boletins por e-mail Este site oferece serviços de assinatura de boletim informativo ou e-mail e os cookies podem
               ser usados para lembrar se você já está registrado e se deve mostrar determinadas notificações válidas apenas para usuários inscritos /
-              não inscritos.{' '}
+              não inscritos.
+              {' '}
             </li>
             <li>
               {' '}
               Pedidos processando cookies relacionados Este site oferece facilidades de comércio eletrônico ou pagamento e alguns cookies são
-              essenciais para garantir que seu pedido seja lembrado entre as páginas, para que possamos processá-lo adequadamente.{' '}
+              essenciais para garantir que seu pedido seja lembrado entre as páginas, para que possamos processá-lo adequadamente.
+              {' '}
             </li>
             <li>
               {' '}
               Cookies relacionados a pesquisas Periodicamente, oferecemos pesquisas e questionários para fornecer informações interessantes,
               ferramentas úteis ou para entender nossa base de usuários com mais precisão. Essas pesquisas podem usar cookies para lembrar quem já
-              participou numa pesquisa ou para fornecer resultados precisos após a alteração das páginas.{' '}
+              participou numa pesquisa ou para fornecer resultados precisos após a alteração das páginas.
+              {' '}
             </li>
             <li>
               {' '}
               Cookies relacionados a formulários Quando você envia dados por meio de um formulário como os encontrados nas páginas de contacto ou nos
-              formulários de comentários, os cookies podem ser configurados para lembrar os detalhes do usuário para correspondência futura.{' '}
+              formulários de comentários, os cookies podem ser configurados para lembrar os detalhes do usuário para correspondência futura.
+              {' '}
             </li>
             <li>
               {' '}
               Cookies de preferências do site Para proporcionar uma ótima experiência neste site, fornecemos a funcionalidade para definir suas
               preferências de como esse site é executado quando você o usa. Para lembrar suas preferências, precisamos definir cookies para que essas
-              informações possam ser chamadas sempre que você interagir com uma página for afetada por suas preferências.{' '}
+              informações possam ser chamadas sempre que você interagir com uma página for afetada por suas preferências.
+              {' '}
             </li>
           </ul>
           <h3>Cookies de Terceiros</h3>
@@ -110,7 +123,8 @@ export default function PrivacyPolicyAndCookies() {
               {' '}
               Este site usa o Google Analytics, que é uma das soluções de análise mais difundidas e confiáveis da Web, para nos ajudar a entender como
               você usa o site e como podemos melhorar sua experiência. Esses cookies podem rastrear itens como quanto tempo você gasta no site e as
-              páginas visitadas, para que possamos continuar produzindo conteúdo atraente.{' '}
+              páginas visitadas, para que possamos continuar produzindo conteúdo atraente.
+              {' '}
             </li>
           </ul>
           <p>Para mais informações sobre cookies do Google Analytics, consulte a página oficial do Google Analytics.</p>
@@ -158,7 +172,10 @@ export default function PrivacyPolicyAndCookies() {
             mais seguro deixar os cookies ativados, caso interaja com um dos recursos que você usa em nosso site.
           </p>
           <p>
-            Esta política é efetiva a partir de <strong>Julho de 2021</strong>.
+            Esta política é efetiva a partir de
+            {' '}
+            <strong>Julho de 2021</strong>
+            .
           </p>
         </div>
       </section>

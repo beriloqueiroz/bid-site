@@ -17,7 +17,7 @@ export default function Footer() {
           <Logo />
           <p>bid transporte inteligente</p>
           <p>bid © 2023. Todos os direitos reservados.</p>
-          <div onClick={() => router.push('/politica-privacidade-cookies')}>Política de Privacidade e Cookies</div>
+          <div onClick={() => router.push('/politica-privacidade-cookies/#politica-inicio')}>Política de Privacidade e Cookies</div>
         </div>
         <div className={styles.aboutUs}>
           <h1>EMPRESA</h1>
