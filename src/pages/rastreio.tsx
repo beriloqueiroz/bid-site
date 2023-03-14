@@ -1,7 +1,12 @@
+/* eslint-disable react/jsx-no-useless-fragment */
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable no-underscore-dangle */
 import { ReactElement, useEffect, useState } from 'react';
 import { FaMotorcycle, FaCheckCircle } from 'react-icons/fa';
 import { GoPackage } from 'react-icons/go';
-import { MdNoteAdd, MdOutlineSmsFailed, MdOutlineGetApp, MdCancelPresentation } from 'react-icons/md';
+import {
+  MdNoteAdd, MdOutlineSmsFailed, MdOutlineGetApp, MdCancelPresentation,
+} from 'react-icons/md';
 import { RiImageAddFill } from 'react-icons/ri';
 import { TfiReload } from 'react-icons/tfi';
 
@@ -13,8 +18,8 @@ import { TaskStatus } from '@/lib/types/TaskStatus';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
-import style from '../styles/rastreio.module.scss';
 import moment from 'moment';
+import style from '../styles/rastreio.module.scss';
 
 function ReactIcon({ status }: { status: string }): ReactElement {
   const st = [
@@ -66,7 +71,7 @@ function ReactIcon({ status }: { status: string }): ReactElement {
       out: <MdNoteAdd />,
       in: TaskStatus.DELIVERY_NOTE_ADDED,
     },
-  ].find((s) => s.in == status);
+  ].find((s) => s.in === status);
   return st?.out || <></>;
 }
 
@@ -84,7 +89,7 @@ export default function Rastreio() {
     const tracking = async (orderTrackApi: string) => {
       setSending(true);
       setError(false);
-      setIsPrivate(!!router.query['private']);
+      setIsPrivate(!!router.query.private);
       const responseApi = await axios.get(`/api/tracking?order=${orderTrackApi}`, {
         headers: {
           Accept: 'application/json, text/plain, */*',
@@ -99,8 +104,8 @@ export default function Rastreio() {
       }
       setSending(false);
     };
-    if (router.query['order']) {
-      tracking(router.query['order'].toString());
+    if (router.query.order) {
+      tracking(router.query.order.toString());
     }
   }, [router.query]);
 
@@ -112,12 +117,12 @@ export default function Rastreio() {
           query: null,
         },
         undefined,
-        { shallow: true }
+        { shallow: true },
       );
     }
     setSending(true);
     setError(false);
-    setIsPrivate(!!router.query['private']);
+    setIsPrivate(!!router.query.private);
     const responseApi = await axios.get(`/api/tracking?order=${orderTrack}`, {
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -135,12 +140,12 @@ export default function Rastreio() {
 
   function showDetail(value: string) {
     if (isShowDetail.includes(value)) {
-      setShowDetail(isShowDetail.filter((id) => id != value));
+      setShowDetail(isShowDetail.filter((id) => id !== value));
     } else setShowDetail([...isShowDetail, value]);
   }
 
   return (
-    <Layout simpleHeader={true}>
+    <Layout simpleHeader>
       <section className={style.section}>
         <form>
           <InputForm
@@ -149,7 +154,7 @@ export default function Rastreio() {
             name="order"
             id="order"
             placeholder="PREFX-12365478"
-            isRequired={true}
+            isRequired
             setOnChange={setOrder}
             value={orderTrack}
           />
@@ -163,67 +168,84 @@ export default function Rastreio() {
           <div className={style.result}>
             <div className={style.generalOrderInfo}>
               <p>
-                <strong>Destinatário:</strong> {response?.task.name}
+                <strong>Destinatário:</strong>
+                {' '}
+                {response?.task.name}
               </p>
               <p>
-                <strong>Pedido:</strong> {response.task.orderId}
+                <strong>Pedido:</strong>
+                {' '}
+                {response.task.orderId}
               </p>
               <p>
-                <strong>Endereço:</strong> {response.task.address.formatted_address}
+                <strong>Endereço:</strong>
+                {' '}
+                {response.task.address.formatted_address}
               </p>
               <p>
-                <strong>Previsão de entrega:</strong> {response.task.forecast.slice(0, 10)}
+                <strong>Previsão de entrega:</strong>
+                {' '}
+                {response.task.forecast.slice(0, 10)}
               </p>
               <p>
-                <strong>Último Status:</strong> {response.task.taskDescStatus}
+                <strong>Último Status:</strong>
+                {' '}
+                {response.task.taskDescStatus}
               </p>
+              {isPrivate && (
               <p>
-                <strong>Origem interna (bid):</strong> conta {response.origin}
+                <strong>Origem interna (bid):</strong>
+                {' '}
+                conta
+                {' '}
+                {response.origin}
               </p>
+              )}
             </div>
             <ul className={style.ul}>
               {response.history.map(
-                (task, i) =>
-                  task.taskStatus != '0' && (
-                    <li key={task._id}>
-                      <div className={style.init}>
-                        <div className={style.icon}>
-                          <ReactIcon status={task.taskDescStatus} />
-                        </div>
-                        <div className={style.status}>
-                          <p>{`${task.taskDescStatus}`}</p>
-                          <div className={style.statusInfo}>
-                            <p>{moment(task.created_at).subtract(3, 'hours').format('DD/MM/YYYY hh:mm:ss A')}</p>
-                            <p className={style.reason}>{task.reason ? task.reason : ''}</p>
-                            {!isPrivate && (task.notes || task.imageArry?.length) && (
-                              <p className={style.more_detail} onClick={() => showDetail(task._id)}>
-                                mais detalhes
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                (task) => task.taskStatus !== '0' && (
+                <li key={task._id}>
+                  <div className={style.init}>
+                    <div className={style.icon}>
+                      <ReactIcon status={task.taskDescStatus} />
+                    </div>
+                    <div className={style.status}>
+                      <p>{`${task.taskDescStatus}`}</p>
+                      <div className={style.statusInfo}>
+                        <p>{moment(task.created_at).subtract(3, 'hours').format('DD/MM/YYYY hh:mm:ss A')}</p>
+                        <p className={style.reason}>{task.reason ? task.reason : ''}</p>
+                        {!isPrivate && (task.notes || task.imageArry?.length) && (
+                        <p className={style.more_detail} onClick={() => showDetail(task._id)}>
+                          mais detalhes
+                        </p>
+                        )}
                       </div>
-                      {isShowDetail.includes(task._id) && (task.notes || task.imageArry?.length) && (
-                        <div className={style.detail}>
-                          {task.notes && (
-                            <p>
-                              <strong>Notas:</strong> {task.notes}
-                            </p>
-                          )}
-                          {task.imageArry?.length > 0 && (
-                            <div>
-                              <strong>Imagens:</strong>
-                              {task.imageArry.map((img, i) => (
-                                <a className={style.imagem} key={i} href={img} target="_blank" rel="noopener noreferrer">
-                                  <img src={img} alt={`Imagem ${i + 1}`} width="50px" height="50px" />
-                                </a>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </li>
-                  )
+                    </div>
+                  </div>
+                  {isShowDetail.includes(task._id) && (task.notes || task.imageArry?.length) && (
+                  <div className={style.detail}>
+                    {task.notes && (
+                    <p>
+                      <strong>Notas:</strong>
+                      {' '}
+                      {task.notes}
+                    </p>
+                    )}
+                    {task.imageArry?.length > 0 && (
+                    <div>
+                      <strong>Imagens:</strong>
+                      {task.imageArry.map((img, i) => (
+                        <a className={style.imagem} key={img} href={img} target="_blank" rel="noopener noreferrer">
+                          <img src={img} alt={`Imagem ${i + 1}`} width="50px" height="50px" />
+                        </a>
+                      ))}
+                    </div>
+                    )}
+                  </div>
+                  )}
+                </li>
+                ),
               )}
             </ul>
           </div>

@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import style from '@/components/sideBar/style.module.scss';
 import { useRouter } from 'next/router';
 
 import { SideBarProps } from './props';
+
 export default function SideBar({ active, setActive }: SideBarProps) {
   const router = useRouter();
   const closeAndAbout = () => {
@@ -34,7 +36,7 @@ export default function SideBar({ active, setActive }: SideBarProps) {
             Rastreio
           </li>
           <li className={style.li} onClick={closeAndPanel}>
-            Painel
+            Painel do cliente
           </li>
           <li className={style.liSocial}>
             <svg className={style.svg} xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">

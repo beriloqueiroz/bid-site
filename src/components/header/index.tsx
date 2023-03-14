@@ -20,7 +20,7 @@ export default function Header() {
               <li onClick={() => router.push('/#sobre')}>FAZEMOS SUAS ENTREGAS</li>
               <li onClick={() => router.push('/#contato')}>CONTATO</li>
               <li onClick={() => router.push('/rastreio')}>RASTREIO</li>
-              <li onClick={() => router.push('/painel-cliente')}>PAINEL</li>
+              <li onClick={() => router.push('/painel-cliente')}>PAINEL DO CLIENTE</li>
             </ul>
           </nav>
         </div>

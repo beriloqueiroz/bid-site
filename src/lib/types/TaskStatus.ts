@@ -4,7 +4,7 @@ export enum TaskStatus {
   PACKAGE_ON_DELIVERY_ROUTE = 'Pacote em rota de entrega',
   PACKAGE_IS_NEAR = 'O Entregador está próximo ao endereço de destino',
   DELIVERY_SUCCESSFULLY = 'Pacote entregue com sucesso',
-  DELIVERY_FAILURE = 'Falha na Entrega',
+  DELIVERY_FAILURE = 'Falha na Entrega (Entraremos em contato para realizar uma nova tentativa)',
   DELIVERY_ABORTED = 'Entrega abortada',
   DELIVERY_CANCELLED = 'Entrega cancelada',
   PACKAGE_PICKED = 'Pacote coletado pelo Entregador',
