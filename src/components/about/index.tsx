@@ -3,6 +3,8 @@ import styles from '@/components/about/style.module.scss';
 export default function About() {
   return (
     <section className={styles.container} id="sobre">
+      <br />
+      <br />
       <div className={styles.content}>
         <h1>Sobre Nós</h1>
         <p>

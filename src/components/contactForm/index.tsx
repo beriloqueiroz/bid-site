@@ -26,7 +26,18 @@ export default function ContactForm() {
   }
   function onChangePhone(e: ChangeEvent<HTMLInputElement>) {
     setErrorPhone(false);
-    setPhone(e.target.value);
+    const { value } = e.target;
+    if (value.length > 14) {
+      return;
+    }
+    setPhone(value);
+
+    if (value.length > 0 && value.length < 10 && value.indexOf('(') >= 0) { setPhone(value.replaceAll('(', '').replaceAll(') ', '')); } else
+    if (value.length === 10 && value.indexOf('(') < 0) {
+      const ddd = value.substring(0, 2);
+      const number = value.substring(2, value.length);
+      setPhone(`(${ddd}) ${number}`);
+    }
   }
 
   const handleSubmit = (e: any) => {
@@ -56,7 +67,7 @@ export default function ContactForm() {
       setErrorMessage('email inválido');
       return;
     }
-    if (phone.length < 10 || phone.length > 11) {
+    if (phone.length < 13 || phone.length > 14) {
       setErrorPhone(true);
       setSending(false);
       setErrorMessage('telefone inválido');
@@ -85,67 +96,81 @@ export default function ContactForm() {
   };
 
   return (
-    <section className={styles.container} id="contato">
-      <div>
-        <h1 className={styles.title}>Fale conosco</h1>
-        <form className={styles.form}>
-          <InputForm
-            label="Nome*"
-            type="text"
-            name="name"
-            id="name"
-            placeholder="João da Silva"
-            isRequired
-            alertRequired={requiredError && name === ''}
-            setOnChange={setName}
-            value={name}
-          />
-          <InputForm
-            label="E-mail*"
-            type="email"
-            name="email"
-            id="email"
-            placeholder="email@gmail.com"
-            isRequired
-            alertRequired={(requiredError && email === '') || errorEmail}
-            onChange={onChangeEmail}
-            value={email}
-          />
-          <InputForm
-            label="Telefone*"
-            type="tel"
-            name="phone"
-            id="phone"
-            placeholder="(85) 88888888"
-            alertRequired={(requiredError && phone === '') || errorPhone}
-            isRequired
-            onChange={onChangePhone}
-            value={phone}
-          />
-          <InputForm
-            label="Mensagem"
-            name="mensagem"
-            id="message"
-            placeholder="Olá, gostaria de solicitar uma ..."
-            setOnChange={setMessage}
-            value={message}
-            isTextArea
-          />
-          <Button sending={sending} handleSubmit={handleSubmit} type="submit" />
-          {!sending && (
-            requiredError || errorEmail || errorPhone ? <span className={styles.errorMessage}>{errorMessage}</span>
-              : geralError && (
-              <span className={styles.errorMessage}>
-                Desculpe Erro ao enviar mensagem, tente por outro canal
-                {' '}
-                (
-                Whatsapp, telefone
-                )
-              </span>
-              ))}
-          {submitted && !geralError && <span className={styles.successMessage}>Sucesso ao enviar informações. Bm breve entraremos em contato.</span>}
-        </form>
+    <>
+      <div id="contato">
+        <br />
+        <br />
       </div>
-    </section>
+      <br />
+      <br />
+      <br />
+      <br />
+      <section className={styles.container}>
+        <div>
+          <h1 className={styles.title}>Fale conosco</h1>
+          <form className={styles.form}>
+            <InputForm
+              label="Nome*"
+              type="text"
+              name="name"
+              id="name"
+              placeholder="João da Silva"
+              isRequired
+              alertRequired={requiredError && name === ''}
+              setOnChange={setName}
+              value={name}
+            />
+            <InputForm
+              label="E-mail*"
+              type="email"
+              name="email"
+              id="email"
+              placeholder="email@gmail.com"
+              isRequired
+              alertRequired={(requiredError && email === '') || errorEmail}
+              onChange={onChangeEmail}
+              value={email}
+            />
+            <InputForm
+              label="Telefone*"
+              type="tel"
+              name="phone"
+              id="phone"
+              placeholder="(85) 88888888"
+              alertRequired={(requiredError && phone === '') || errorPhone}
+              isRequired
+              onChange={onChangePhone}
+              value={phone}
+            />
+            <InputForm
+              label="Mensagem"
+              name="mensagem"
+              id="message"
+              placeholder="Olá, gostaria de solicitar uma ..."
+              setOnChange={setMessage}
+              value={message}
+              isTextArea
+            />
+            <Button sending={sending} handleSubmit={handleSubmit} type="submit" />
+            {!sending && (
+              requiredError || errorEmail || errorPhone ? <span className={styles.errorMessage}>{errorMessage}</span>
+                : geralError && (
+                <span className={styles.errorMessage}>
+                  Desculpe Erro ao enviar mensagem, tente por outro canal
+                  {' '}
+                  (
+                  Whatsapp, telefone
+                  )
+                </span>
+                ))}
+            {submitted && !geralError && (
+            <span className={styles.successMessage}>
+              Sucesso ao enviar informações. Bm breve entraremos em contato.
+            </span>
+            )}
+          </form>
+        </div>
+      </section>
+    </>
   );
 }
