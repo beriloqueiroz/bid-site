@@ -6,17 +6,11 @@
   div {
     display: flex;
     flex-direction: column;
-    gap: 8px;
     width: 100%;
     margin: auto;
-    padding: 1rem;
+    padding: 0 1rem 1rem;
     background-color: var(--color-light-1);
     border-radius: 2%;
-    box-shadow: 0 0 5px 0 rgb(0 0 0 / 25%);
-
-    @media (min-width: 768px) {
-      margin-top: 3rem;
-    }
 
     .title {
       margin: 15px 0;

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable no-useless-escape */
+import { ChangeEvent, useState } from 'react';
 
 import styles from '@/components/contactForm/style.module.scss';
 
@@ -13,18 +14,54 @@ export default function ContactForm() {
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState(false);
+  const [geralError, setGeralError] = useState(false);
+  const [requiredError, setRequiredError] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorPhone, setErrorPhone] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  function onChangeEmail(e: ChangeEvent<HTMLInputElement>) {
+    setErrorEmail(false);
+    setEmail(e.target.value);
+  }
+  function onChangePhone(e: ChangeEvent<HTMLInputElement>) {
+    setErrorPhone(false);
+    setPhone(e.target.value);
+  }
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     setSending(true);
-    setError(false);
+    setGeralError(false);
+    setRequiredError(false);
+    setErrorEmail(false);
+    setErrorPhone(false);
+
     const data = {
       name,
       email,
       message,
       phone,
     };
+    if (name === '' || email === '' || phone === '') {
+      setRequiredError(true);
+      setSending(false);
+      setErrorMessage('preencha todos os campos obrigatórios, os campos obrigatórios possuem *');
+      return;
+    }
+    const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!re.test(email)) {
+      setErrorEmail(true);
+      setSending(false);
+      setErrorMessage('email inválido');
+      return;
+    }
+    if (phone.length < 10 || phone.length > 11) {
+      setErrorPhone(true);
+      setSending(false);
+      setErrorMessage('telefone inválido');
+      return;
+    }
     fetch('/api/mail', {
       method: 'POST',
       headers: {
@@ -41,7 +78,7 @@ export default function ContactForm() {
         setPhone('');
         ga4.event({ action: 'lead_form', params: {} });
       } else {
-        setError(true);
+        setGeralError(true);
       }
       setSending(false);
     });
@@ -53,33 +90,36 @@ export default function ContactForm() {
         <h1 className={styles.title}>Fale conosco</h1>
         <form className={styles.form}>
           <InputForm
-            label="Nome"
+            label="Nome*"
             type="text"
             name="name"
             id="name"
             placeholder="João da Silva"
-            isRequired={true}
+            isRequired
+            alertRequired={requiredError && name === ''}
             setOnChange={setName}
             value={name}
           />
           <InputForm
-            label="E-mail"
+            label="E-mail*"
             type="email"
             name="email"
             id="email"
             placeholder="email@gmail.com"
-            isRequired={true}
-            setOnChange={setEmail}
+            isRequired
+            alertRequired={(requiredError && email === '') || errorEmail}
+            onChange={onChangeEmail}
             value={email}
           />
           <InputForm
-            label="Telefone"
+            label="Telefone*"
             type="tel"
             name="phone"
             id="phone"
             placeholder="(85) 88888888"
-            isRequired={true}
-            setOnChange={setPhone}
+            alertRequired={(requiredError && phone === '') || errorPhone}
+            isRequired
+            onChange={onChangePhone}
             value={phone}
           />
           <InputForm
@@ -89,13 +129,21 @@ export default function ContactForm() {
             placeholder="Olá, gostaria de solicitar uma ..."
             setOnChange={setMessage}
             value={message}
-            isTextArea={true}
+            isTextArea
           />
           <Button sending={sending} handleSubmit={handleSubmit} type="submit" />
-          {!sending && error && (
-            <span className={styles.errorMessage}>Desculpe Erro ao enviar mensagem, tente por outro canal (Whatsapp, telefone)</span>
-          )}
-          {submitted && !error && <span className={styles.successMessage}>Sucesso ao enviar informações. Bm breve entraremos em contato.</span>}
+          {!sending && (
+            requiredError || errorEmail || errorPhone ? <span className={styles.errorMessage}>{errorMessage}</span>
+              : geralError && (
+              <span className={styles.errorMessage}>
+                Desculpe Erro ao enviar mensagem, tente por outro canal
+                {' '}
+                (
+                Whatsapp, telefone
+                )
+              </span>
+              ))}
+          {submitted && !geralError && <span className={styles.successMessage}>Sucesso ao enviar informações. Bm breve entraremos em contato.</span>}
         </form>
       </div>
     </section>

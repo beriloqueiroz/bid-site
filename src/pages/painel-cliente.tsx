@@ -1,4 +1,6 @@
-import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
+import {
+  ChangeEvent, KeyboardEvent, useEffect, useState,
+} from 'react';
 
 import Button from '@/components/button';
 import InputForm from '@/components/inputForm';
@@ -19,7 +21,7 @@ export default function CustomerPanel() {
   const [sendingLogin, setSendingLogin] = useState(false);
   const [sendingIndividual, setSendingIndividual] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [error, setError] = useState(false);
+  const [errorGeral, setErrorGeral] = useState(false);
   const [messageError, setMessageError] = useState(' Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato.');
   const [fileName, setFileName] = useState('');
   const [prefix, setPrefix] = useState('');
@@ -42,17 +44,17 @@ export default function CustomerPanel() {
   const [requiredError, setRequiredError] = useState(false);
   const [isLogged, setLogged] = useState(false);
   const [inLote, setInLote] = useState(false);
-  const [optionsSelect, setOptionsSelect] = useState<OptionSelect[]>([
+  const [optionsSelect] = useState<OptionSelect[]>([
     { value: '', content: 'SELECIONE' },
     { value: 'D+1', content: 'ENTREGA NO PRÓXIMO DIA ÚTIL' },
     { value: 'D', content: 'ENTREGA NO MESMO DIA' },
   ]);
 
-  useEffect(()=>{
-    if (window.sessionStorage.getItem('token')){
+  useEffect(() => {
+    if (window.sessionStorage.getItem('token')) {
       setLogged(true);
     }
-  },[])
+  }, []);
 
   const router = useRouter();
 
@@ -66,12 +68,12 @@ export default function CustomerPanel() {
 
     try {
       setSendingLogin(true);
-      if (prefix == '' || password == '') {
-        setError(true);
+      if (prefix === '' || password === '') {
+        setErrorGeral(true);
         throw new Error('Credenciais não informadas');
       }
 
-      setError(false);
+      setErrorGeral(false);
 
       const res = await fetch('/api/login', {
         method: 'GET',
@@ -84,21 +86,21 @@ export default function CustomerPanel() {
       const { status, error, content }: ResponseLoginApi = await res.json();
 
       if (status === 401) {
-        setError(true);
+        setErrorGeral(true);
         setLogged(false);
-        throw new Error(error + '');
+        throw new Error(`${error}`);
       }
 
       if (status !== 200) {
-        setError(true);
-        throw new Error(error + ', entre em contato conosco!');
+        setErrorGeral(true);
+        throw new Error(`${error}, entre em contato conosco!`);
       }
 
       setLogged(true);
       window.sessionStorage.setItem('token', content);
-    } catch (error) {
-      setError(true);
-      handleMessageError('Erro, ao fazer login, entre em contato! ' + error);
+    } catch (err) {
+      setErrorGeral(true);
+      handleMessageError(`Erro, ao fazer login, entre em contato! ${err}`);
     }
     setSendingLogin(false);
   };
@@ -109,7 +111,7 @@ export default function CustomerPanel() {
       setLogged(false);
       setPrefix('');
       setPassword('');
-      setError(false);
+      setErrorGeral(false);
       setSubmitted(false);
       setCep('');
       setStreet('');
@@ -124,8 +126,8 @@ export default function CustomerPanel() {
       setDeliveryType('');
       setRecipient('');
     } catch (error) {
-      setError(true);
-      handleMessageError('Erro, fazer login ' + error);
+      setErrorGeral(true);
+      handleMessageError(`Erro, fazer login ${error}`);
     }
   };
 
@@ -143,7 +145,7 @@ export default function CustomerPanel() {
     const fileList = e.target.files;
 
     if (!fileList || !fileList[0]) {
-      setError(true);
+      setErrorGeral(true);
       handleMessageError('Erro ao selecionar arquivo!');
       return;
     }
@@ -153,8 +155,9 @@ export default function CustomerPanel() {
 
   function isNumber(value: string) {
     if (typeof value === 'string') {
-      return !isNaN(parseInt(value));
+      return !Number.isNaN(parseInt(value, 10));
     }
+    return false;
   }
 
   const getInfosByCep = async (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
@@ -167,7 +170,7 @@ export default function CustomerPanel() {
     setCep(e.target.value);
     if (e.target.value.length >= 8) {
       try {
-        const res = await fetch('/api/getInfosByCep' + '?cep=' + e.target.value, {
+        const res = await fetch(`/api/getInfosByCep?cep=${e.target.value}`, {
           method: 'GET',
           headers: {
             'X-Company': prefix,
@@ -179,16 +182,16 @@ export default function CustomerPanel() {
         const { status, error, content }: ResponseCepApi = await res.json();
 
         if (status === 401) {
-          setError(true);
+          setErrorGeral(true);
           setLogged(false);
           setPrefix('');
           setPassword('');
-          throw new Error(error + '');
+          throw new Error(`${error}`);
         }
 
         if (!content) {
-          setError(true);
-          throw new Error(error + ', entre em contato conosco!');
+          setErrorGeral(true);
+          throw new Error(`${error}, entre em contato conosco!`);
         }
 
         setStreet(content.rua);
@@ -196,8 +199,8 @@ export default function CustomerPanel() {
         setCity(content.cidade);
         setState(content.estado);
       } catch (error) {
-        setError(true);
-        handleMessageError('Erro, ao buscar informações, ' + error);
+        setErrorGeral(true);
+        handleMessageError(`Erro, ao buscar informações, ${error}`);
       }
     } else {
       setStreet('');
@@ -212,19 +215,19 @@ export default function CustomerPanel() {
     setRequiredError(false);
 
     try {
-      if (prefix == '' || password == '') {
-        setError(true);
+      if (prefix === '' || password === '') {
+        setErrorGeral(true);
         throw new Error('Credenciais não informadas');
       }
 
-      if (street == '' || number == '' || neighborhood == '' || city == '' || state == '' || cep == '' || deliveryType == '') {
-        setError(true);
+      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || deliveryType === '') {
+        setErrorGeral(true);
         setRequiredError(true);
-        throw new Error(`preencha todos os campos obrigatórios, os campos obrigatórios possuem *`);
+        throw new Error('preencha todos os campos obrigatórios, os campos obrigatórios possuem *');
       }
 
       setSendingIndividual(true);
-      setError(false);
+      setErrorGeral(false);
 
       const data = {
         street,
@@ -252,17 +255,17 @@ export default function CustomerPanel() {
       const response: ResponseSendTaskApi = await res.json();
 
       if (response.status === 401) {
-        setError(true);
+        setErrorGeral(true);
         setLogged(false);
         setPrefix('');
         setPassword('');
-        throw new Error(error + '');
+        throw new Error(`${errorGeral}`);
       }
 
       if (!response.content) {
-        setError(true);
+        setErrorGeral(true);
         setSendingIndividual(false);
-        throw new Error('Erro ao enviar pacote ' + response?.error);
+        throw new Error(`Erro ao enviar pacote ${response?.error}`);
       }
 
       setSubmitted(true);
@@ -279,8 +282,8 @@ export default function CustomerPanel() {
       setDeliveryType('');
       setRecipient('');
     } catch (error) {
-      setError(true);
-      handleMessageError('Erro, ao enviar informações, ' + error);
+      setErrorGeral(true);
+      handleMessageError(`Erro, ao enviar informações, ${error}`);
     }
     setSendingIndividual(false);
   };
@@ -289,17 +292,17 @@ export default function CustomerPanel() {
     if (e) e.preventDefault();
 
     if (!fileSelected) {
-      setError(true);
+      setErrorGeral(true);
       throw new Error('Arquivo não selecionado!');
     }
 
-    if (prefix == '' || password == '') {
-      setError(true);
+    if (prefix === '' || password === '') {
+      setErrorGeral(true);
       throw new Error('Credenciais não informadas');
     }
 
     setSending(true);
-    setError(false);
+    setErrorGeral(false);
 
     try {
       const formData = new FormData();
@@ -318,30 +321,30 @@ export default function CustomerPanel() {
       const { status, error }: ResponseUploadApi = await res.json();
 
       if (status === 401) {
-        setError(true);
+        setErrorGeral(true);
         setLogged(false);
         setSending(false);
         setPrefix('');
         setPassword('');
-        throw new Error(error + '');
+        throw new Error(`${error}`);
       }
 
       if (error) {
-        setError(true);
+        setErrorGeral(true);
         setSending(false);
-        throw new Error(error + 'entre em contato conosco!');
+        throw new Error(`${error}entre em contato conosco!`);
       }
 
-      if (error && status == 500) {
-        setError(true);
+      if (error && status === 500) {
+        setErrorGeral(true);
         setSending(false);
         throw new Error('entre em contato!');
       }
 
       setSubmitted(true);
     } catch (error) {
-      setError(true);
-      handleMessageError('Erro, ' + error);
+      setErrorGeral(true);
+      handleMessageError(`Erro, ${error}`);
     }
     setSending(false);
     setFileSelected(null);
@@ -370,23 +373,23 @@ export default function CustomerPanel() {
       } = await res.json();
 
       if (status === 401) {
-        setError(true);
+        setErrorGeral(true);
         setLogged(false);
         setPrefix('');
         setPassword('');
-        throw new Error(error + '');
+        throw new Error(`${error}`);
       }
 
-      if (status != 200) {
-        setError(true);
+      if (status !== 200) {
+        setErrorGeral(true);
         setDownloading(false);
         throw new Error('entre em contato conosco!');
       }
-      router.push(`/model.xlsx`);
+      router.push('/model.xlsx');
       setDownloading(false);
-    } catch (e) {
-      setError(true);
-      handleMessageError('Erro ao baixar modelo ' + error);
+    } catch (err) {
+      setErrorGeral(true);
+      handleMessageError(`Erro ao baixar modelo ${errorGeral}`);
     }
   }
 
@@ -397,7 +400,7 @@ export default function CustomerPanel() {
   };
 
   return (
-    <Layout simpleHeader={true}>
+    <Layout simpleHeader>
       <section className={style.section}>
         <form className={style.loginForm}>
           <InputForm
@@ -406,8 +409,8 @@ export default function CustomerPanel() {
             name="prefix"
             id="prefix"
             placeholder="PREFX"
-            isRequired={true}
-            alertRequired={requiredError && prefix == ''}
+            isRequired
+            alertRequired={requiredError && prefix === ''}
             setOnChange={setPrefix}
             value={prefix}
             disable={isLogged}
@@ -418,8 +421,8 @@ export default function CustomerPanel() {
             name="password"
             id="password"
             placeholder="*********"
-            isRequired={true}
-            alertRequired={requiredError && password == ''}
+            isRequired
+            alertRequired={requiredError && password === ''}
             setOnChange={setPassword}
             value={password}
             disable={isLogged}
@@ -433,155 +436,157 @@ export default function CustomerPanel() {
               <ToggleButton handle={() => setInLote(!inLote)} />
               <h1 className={`${style.titleChoose} ${inLote ? style.titleSelected : ''}`}>Em lote</h1>
             </div>
-            {!inLote ? (
-              <>
-                {order == '' ? (
-                  <form className={style.individualForm}>
-                    <InputForm
-                      label="CEP *"
-                      type="text"
-                      name="cep"
-                      id="cep"
-                      placeholder="60123456"
-                      isRequired={true}
-                      alertRequired={requiredError && cep == ''}
-                      onChange={getInfosByCep}
-                      value={cep}
+            {!inLote && (
+              order === '' ? (
+                <form className={style.individualForm}>
+                  <InputForm
+                    label="CEP *"
+                    type="text"
+                    name="cep"
+                    id="cep"
+                    placeholder="60123456"
+                    isRequired
+                    alertRequired={requiredError && cep === ''}
+                    onChange={getInfosByCep}
+                    value={cep}
                       // onKeyDown={handleKeypress}
-                      classPlus={style.i1}
-                    />
-                    <InputForm
-                      label="Rua"
-                      type="text"
-                      name="street"
-                      id="street"
-                      placeholder=""
-                      isRequired={true}
-                      alertRequired={requiredError && street == ''}
-                      setOnChange={setStreet}
-                      value={street}
-                      onKeyDown={handleKeypress}
-                      disable={true}
-                      classPlus={style.i2}
-                    />
-                    <InputForm
-                      label="Bairro"
-                      type="text"
-                      name="neighborhood"
-                      id="neighborhood"
-                      placeholder=""
-                      isRequired={true}
-                      alertRequired={requiredError && neighborhood == ''}
-                      setOnChange={setNeighborhood}
-                      value={neighborhood}
-                      onKeyDown={handleKeypress}
-                      disable={true}
-                      classPlus={style.i3}
-                    />
-                    <InputForm
-                      label="Estado"
-                      type="text"
-                      name="state"
-                      id="state"
-                      placeholder=""
-                      isRequired={true}
-                      alertRequired={requiredError && state == ''}
-                      setOnChange={setState}
-                      value={state}
-                      onKeyDown={handleKeypress}
-                      disable={true}
-                      classPlus={style.i4}
-                    />
-                    <InputForm
-                      label="Núm *"
-                      type="text"
-                      name="number"
-                      id="number"
-                      placeholder="123"
-                      isRequired={true}
-                      alertRequired={requiredError && number == ''}
-                      setOnChange={setNumber}
-                      value={number}
-                      onKeyDown={handleKeypress}
-                      classPlus={style.i5}
-                    />
-                    <InputForm
-                      label="Telefone *"
-                      type="text"
-                      name="phone"
-                      id="phone"
-                      placeholder="85 989888888"
-                      isRequired={true}
-                      alertRequired={requiredError && phone == ''}
-                      setOnChange={setPhone}
-                      value={phone}
-                      onKeyDown={handleKeypress}
-                      classPlus={style.i6}
-                    />
-                    <InputForm
-                      label="Complemento"
-                      type="text"
-                      name="complement"
-                      id="complement"
-                      placeholder="Casa | Apartamento | ap 14"
-                      isRequired={false}
-                      setOnChange={setComplement}
-                      value={complement}
-                      onKeyDown={handleKeypress}
-                      classPlus={style.i7}
-                    />
-                    <InputForm
-                      label="Ponto de referência"
-                      type="text"
-                      name="reference"
-                      id="reference"
-                      placeholder="próximo ao bar do seu zé"
-                      isRequired={false}
-                      setOnChange={setReference}
-                      value={reference}
-                      onKeyDown={handleKeypress}
-                      classPlus={style.i8}
-                    />
-                    <InputForm
-                      label="Destinatário *"
-                      type="text"
-                      name="recipient"
-                      id="recipient"
-                      placeholder="josé da silva"
-                      isRequired={true}
-                      setOnChange={setRecipient}
-                      value={recipient}
-                      onKeyDown={handleKeypress}
-                      classPlus={style.i8}
-                      alertRequired={requiredError && recipient == ''}
-                    />
-                    <InputForm
-                      label="Modalidade *"
-                      type="text"
-                      name="deliveryType"
-                      id="deliveryType"
-                      placeholder="Selecione"
-                      isRequired={true}
-                      setOnChange={setDeliveryType}
-                      value={deliveryType}
-                      isSelect={true}
-                      optionsSelect={optionsSelect}
-                      classPlus={style.i9}
-                      alertRequired={requiredError && deliveryType == ''}
-                    />
-                    <Button
-                      handleSubmit={individualHandleSubmit}
-                      sending={sendingIndividual}
-                      text="Enviar"
-                      id="endButton"
-                      type="submit"
-                      plusClass={style.i10}
-                    />
-                  </form>
-                ) : (
+                    classPlus={style.i1}
+                  />
+                  <InputForm
+                    label="Rua"
+                    type="text"
+                    name="street"
+                    id="street"
+                    placeholder=""
+                    isRequired
+                    alertRequired={requiredError && street === ''}
+                    setOnChange={setStreet}
+                    value={street}
+                    onKeyDown={handleKeypress}
+                    disable
+                    classPlus={style.i2}
+                  />
+                  <InputForm
+                    label="Bairro"
+                    type="text"
+                    name="neighborhood"
+                    id="neighborhood"
+                    placeholder=""
+                    isRequired
+                    alertRequired={requiredError && neighborhood === ''}
+                    setOnChange={setNeighborhood}
+                    value={neighborhood}
+                    onKeyDown={handleKeypress}
+                    disable
+                    classPlus={style.i3}
+                  />
+                  <InputForm
+                    label="Estado"
+                    type="text"
+                    name="state"
+                    id="state"
+                    placeholder=""
+                    isRequired
+                    alertRequired={requiredError && state === ''}
+                    setOnChange={setState}
+                    value={state}
+                    onKeyDown={handleKeypress}
+                    disable
+                    classPlus={style.i4}
+                  />
+                  <InputForm
+                    label="Núm *"
+                    type="text"
+                    name="number"
+                    id="number"
+                    placeholder="123"
+                    isRequired
+                    alertRequired={requiredError && number === ''}
+                    setOnChange={setNumber}
+                    value={number}
+                    onKeyDown={handleKeypress}
+                    classPlus={style.i5}
+                  />
+                  <InputForm
+                    label="Telefone *"
+                    type="text"
+                    name="phone"
+                    id="phone"
+                    placeholder="85 989888888"
+                    isRequired
+                    alertRequired={requiredError && phone === ''}
+                    setOnChange={setPhone}
+                    value={phone}
+                    onKeyDown={handleKeypress}
+                    classPlus={style.i6}
+                  />
+                  <InputForm
+                    label="Complemento"
+                    type="text"
+                    name="complement"
+                    id="complement"
+                    placeholder="Casa | Apartamento | ap 14"
+                    isRequired={false}
+                    setOnChange={setComplement}
+                    value={complement}
+                    onKeyDown={handleKeypress}
+                    classPlus={style.i7}
+                  />
+                  <InputForm
+                    label="Ponto de referência"
+                    type="text"
+                    name="reference"
+                    id="reference"
+                    placeholder="próximo ao bar do seu zé"
+                    isRequired={false}
+                    setOnChange={setReference}
+                    value={reference}
+                    onKeyDown={handleKeypress}
+                    classPlus={style.i8}
+                  />
+                  <InputForm
+                    label="Destinatário *"
+                    type="text"
+                    name="recipient"
+                    id="recipient"
+                    placeholder="josé da silva"
+                    isRequired
+                    setOnChange={setRecipient}
+                    value={recipient}
+                    onKeyDown={handleKeypress}
+                    classPlus={style.i8}
+                    alertRequired={requiredError && recipient === ''}
+                  />
+                  <InputForm
+                    label="Modalidade *"
+                    type="text"
+                    name="deliveryType"
+                    id="deliveryType"
+                    placeholder="Selecione"
+                    isRequired
+                    setOnChange={setDeliveryType}
+                    value={deliveryType}
+                    isSelect
+                    optionsSelect={optionsSelect}
+                    classPlus={style.i9}
+                    alertRequired={requiredError && deliveryType === ''}
+                  />
+                  <Button
+                    handleSubmit={individualHandleSubmit}
+                    sending={sendingIndividual}
+                    text="Enviar"
+                    id="endButton"
+                    type="submit"
+                    plusClass={style.i10}
+                  />
+                </form>
+              )
+                : (
                   <div className={style.resultIndividualForm}>
                     <div>
-                      Este é o número do seu pedido: <strong>{order}</strong>
+                      Este é o número do seu pedido:
+                      {' '}
+                      <strong>{order}</strong>
                     </div>
                     <span>anote na sua encomenda e o resto é com a gente.</span>
                     <Button
@@ -592,13 +597,14 @@ export default function CustomerPanel() {
                       type="button"
                     />
                   </div>
-                )}
-              </>
-            ) : (
+                )
+
+            )}
+            {inLote && (
               <form className={style.inLoteForm}>
                 <div className={style.inputUp}>
                   <label htmlFor="table" className={style.choose_btn}>
-                    {fileName != '' ? `Arquivo selecionado: ${fileName}` : 'Escolher arquivo'}
+                    {fileName !== '' ? `Arquivo selecionado: ${fileName}` : 'Escolher arquivo'}
                   </label>
                   <input
                     accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -609,7 +615,7 @@ export default function CustomerPanel() {
                     onChange={handleFileChange}
                     onKeyDown={handleKeypress}
                   />
-                  {fileSelected && <button onClick={onCancelFile}>Cancelar</button>}
+                  {fileSelected && <button type="button" onClick={onCancelFile}>Cancelar</button>}
                   <Button
                     plusClass={style.modelButton}
                     handleSubmit={downloadModel}
@@ -623,12 +629,12 @@ export default function CustomerPanel() {
             )}
           </div>
         )}
-        {error && (
+        {errorGeral && (
           <span id="error" className={style.errorMessage}>
             {messageError}
           </span>
         )}
-        {submitted && !error && <span className={style.successMessage}>Sucesso ao enviar.</span>}
+        {submitted && !errorGeral && <span className={style.successMessage}>Sucesso ao enviar.</span>}
       </section>
     </Layout>
   );
