@@ -1,4 +1,6 @@
-import { ChangeEventHandler, Dispatch, KeyboardEventHandler, ReactNode, SetStateAction } from 'react';
+import {
+  ChangeEventHandler, Dispatch, KeyboardEventHandler, ReactNode, SetStateAction,
+} from 'react';
 
 export interface Props {
   name: string;

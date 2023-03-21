@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import whatsStyles from '@/components/whatsappButton/style.module.scss';
 
 import * as ga4 from '../google/ga4lib';

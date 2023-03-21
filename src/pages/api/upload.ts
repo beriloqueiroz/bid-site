@@ -1,6 +1,6 @@
-import { loginImplementation } from '@/lib/login/implementations/enviroment';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
+import { loginService } from '@/lib/user/login/ILogin';
 
 import { parseForm, FormidableError } from '../../lib/util/parse-form';
 
@@ -21,15 +21,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
   }
 
   const prefixCompany = req.headers['x-company'];
-  const passCompany = req.headers['x-authentication'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !passCompany || !tokenSession) {
+  if (!prefixCompany || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token } = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
+  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
@@ -56,10 +55,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     });
 
     const mailData = {
-      from: `"Tabelas (bid.log.br)" <sender@bid.log.br>`,
+      from: '"Tabelas (bid.log.br)" <sender@bid.log.br>',
       to: 'tabelas@bid.log.br',
       subject: `${prefixCompany} - Tabela pelo formulário do site`,
-      text: `Em anexo`,
+      text: 'Em anexo',
       headers: { 'x-myheader': 'test header' },
       attachments: [
         {
@@ -69,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
       ],
     };
 
-    transporter.sendMail(mailData, function (err, info) {
+    transporter.sendMail(mailData, (err) => {
       if (err) {
         res.status(500).json({ status: 500, error: 'Erro ao enviar e-mail' });
       } else {
@@ -80,7 +79,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     if (e instanceof FormidableError) {
       res.status(e.httpCode || 400).json({ status: 400, error: e.message });
     } else {
-      console.error(e);
       res.status(500).json({ status: 500, error: 'Erro interno' });
     }
   }

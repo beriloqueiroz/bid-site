@@ -1,4 +1,4 @@
-import { loginImplementation } from '@/lib/login/implementations/enviroment';
+import { loginService } from '@/lib/user/login/ILogin';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export type ResponseLoginApi = {
@@ -25,7 +25,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginAp
     return;
   }
 
-  const { token } = await loginImplementation.login(prefixCompany.toString(), passCompany.toString());
+  const {
+    token, isAdmin, id, userName,
+  } = await loginService.login(prefixCompany.toString(), passCompany.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
@@ -33,9 +35,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginAp
   }
 
   try {
-    res.status(200).json({ status: 200, error: null, content: token });
+    res.status(200).json({
+      status: 200,
+      error: null,
+      content: {
+        token, isAdmin, id, userName,
+      },
+    });
   } catch (e) {
-    console.error(e);
     res.status(500).json({ status: 500, error: 'Erro interno' });
   }
 };

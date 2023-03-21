@@ -1,4 +1,4 @@
-import { loginImplementation } from '@/lib/login/implementations/enviroment';
+import { loginService } from '@/lib/user/login/ILogin';
 import { ceps } from '@/lib/util/ceps';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -29,15 +29,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi 
   }
 
   const prefixCompany = req.headers['x-company'];
-  const passCompany = req.headers['x-authentication'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !passCompany || !tokenSession) {
+  if (!prefixCompany || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token } = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
+  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
@@ -46,10 +45,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi 
 
   try {
     const param = req.query;
-    const infos = await getInfosByCEP(`${param['cep']}`);
+    const infos = await getInfosByCEP(`${param.cep}`);
     res.status(200).json({ status: 200, error: null, content: infos });
   } catch (e) {
-    console.error(e);
     res.status(500).json({ status: 500, error: 'Erro interno' });
   }
 };

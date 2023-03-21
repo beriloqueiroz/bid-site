@@ -6,6 +6,60 @@ import moment from 'moment';
 
 import { SendTask } from '../../types/SendTask';
 
+function getDescStatus(taskStatus: string, notes?: string, imageArry?: string[]): TaskStatus {
+  if (notes) return TaskStatus.DELIVERY_NOTE_ADDED;
+
+  if (imageArry && imageArry?.length > 0) return TaskStatus.DELIVERY_PROTOCOL_ADDED;
+
+  const st = [
+    {
+      in: '2',
+      out: TaskStatus.FILE_CHECK,
+    },
+    {
+      in: '3',
+      out: TaskStatus.PACKAGE_ACCEPTED,
+    },
+    {
+      in: '4',
+      out: TaskStatus.PACKAGE_ON_DELIVERY_ROUTE,
+    },
+    {
+      in: '5',
+      out: TaskStatus.PACKAGE_IS_NEAR,
+    },
+    {
+      in: '6',
+      out: TaskStatus.DELIVERY_SUCCESSFULLY,
+    },
+    {
+      in: '7',
+      out: TaskStatus.DELIVERY_FAILURE,
+    },
+    {
+      in: '8',
+      out: TaskStatus.DELIVERY_ABORTED,
+    },
+    {
+      in: '9',
+      out: TaskStatus.DELIVERY_CANCELLED,
+    },
+    {
+      in: '10',
+      out: TaskStatus.PACKAGE_PICKED,
+    },
+    {
+      in: '18',
+      out: TaskStatus.UPDATED_DELIVERY_DATA,
+    },
+  ];
+  const getDescStatusRet = st.find((s) => s?.in === taskStatus);
+
+  if (getDescStatusRet) return getDescStatusRet.out;
+
+  return TaskStatus.UNDEFINED;
+}
+
 type TaskLog = {
   _id: string;
   isDeleted: number;
@@ -58,15 +112,15 @@ async function get(url: string, auth: string): Promise<ResponseDefault> {
   };
   await axios({
     method: 'get',
-    url: url,
+    url,
     headers: {
       ...headers,
     },
   })
-    .then(function (response) {
+    .then((response) => {
       result.content = response.data;
     })
-    .catch(function (error) {
+    .catch((error) => {
       result.error = error?.response?.data || error;
     });
   return result;
@@ -83,16 +137,16 @@ async function post(url: string, data: any, key: string): Promise<ResponseDefaul
   };
   await axios({
     method: 'post',
-    url: url,
+    url,
     headers: {
       ...headers,
     },
-    data: data,
+    data,
   })
-    .then(function (response) {
+    .then((response) => {
       result.content = response.data;
     })
-    .catch(function (error) {
+    .catch((error) => {
       result.error = error?.response?.data || error;
     });
   return result;
@@ -100,9 +154,9 @@ async function post(url: string, data: any, key: string): Promise<ResponseDefaul
 
 async function getTaskLog(taskId: string, auth: string): Promise<TaskLog[]> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
-  const responseData = await get(urlbase + `/task/tasklog?taskId=${taskId}`, auth);
+  const responseData = await get(`${urlbase}/task/tasklog?taskId=${taskId}`, auth);
   if (!responseData) throw new Error('Erro interno!');
-  if (!responseData.content) throw new Error('Erro interno!' + JSON.stringify(responseData?.error || '{}'));
+  if (!responseData.content) throw new Error(`Erro interno!${JSON.stringify(responseData?.error || '{}')}`);
   const logs = responseData.content as TaskLog[];
   if (!logs.length) return [];
   return logs.map((hist) => ({
@@ -114,10 +168,10 @@ async function getTaskLog(taskId: string, auth: string): Promise<TaskLog[]> {
 
 async function getTaskByOrder(orderNumber: string, auth: string): Promise<Task | null> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
-  const responseData = await get(urlbase + `/task/orderid?orderId=${orderNumber}`, auth);
+  const responseData = await get(`${urlbase}/task/orderid?orderId=${orderNumber}`, auth);
 
   if (!responseData) throw new Error('Erro interno!');
-  if (!responseData.content) throw new Error('Erro interno!' + JSON.stringify(responseData?.error || '{}'));
+  if (!responseData.content) throw new Error(`Erro interno!${JSON.stringify(responseData?.error || '{}')}`);
   const tasks = responseData.content as Task[];
   if (!tasks.length) return null;
   const task = tasks.find((resp) => !resp.isDeleted);
@@ -139,20 +193,20 @@ async function sendTask({
   reference,
   account,
   deliveryType,
-  dynamicKey
+  dynamicKey,
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
   const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env['SEND_' + prefix] as string;
+  const generalAuth = process.env[`SEND_${prefix}`] as string;
 
   if (!generalAuth) return { content: null, error: 'erro ao buscar empresa' };
 
-  const driverID = process.env['DRIVER_' + account] as string;
-  const teamID = process.env['TEAM_' + account] as string;
-  const ruleID = process.env['RULE_' + account] as string;
-  const templateID = process.env['MODEL_' + account] as string;
+  const driverID = process.env[`DRIVER_${account}`] as string;
+  const teamID = process.env[`TEAM_${account}`] as string;
+  const ruleID = process.env[`RULE_${account}`] as string;
+  const templateID = process.env[`MODEL_${account}`] as string;
   const keyForce = dynamicKey ? process.env[`SEND_${dynamicKey}`] : null;
 
   if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: 'erro ao buscar infos deliforce' };
@@ -168,28 +222,28 @@ async function sendTask({
   if (order) {
     return {
       content: null,
-      error: "Pedido já existe",
+      error: 'Pedido já existe',
     };
   }
 
-  let now = moment().format("YYYY-MM-DD");
+  const now = moment().format('YYYY-MM-DD');
 
   if (moment(startDate).isBefore(moment(now)) || moment(endDate).isBefore(moment(now))) {
     return {
       content: null,
-      error: "Pedido com data antes de hoje",
+      error: 'Pedido com data antes de hoje',
     };
   }
 
   const data = {
-    name: name,
-    email: email,
+    name,
+    email,
     date: startDate,
-    endDate: endDate,
+    endDate,
     lastName: ' ',
     FlatNo: complement,
-    address: address,
-    phone: '+55 ' + (!phone || phone == '' ? '8888888888' : phone.replace(/\D/g, '')),
+    address,
+    phone: `+55 ${!phone || phone === '' ? '8888888888' : phone.replace(/\D/g, '')}`,
     isPickup: true,
     manual: true,
     businessType: 2,
@@ -198,7 +252,7 @@ async function sendTask({
     driverId: driverID,
     teamId: teamID,
     customerNotes: reference,
-    description: description,
+    description,
     jobAmount: value,
     driverType: 1,
     transportType: [1],
@@ -220,7 +274,7 @@ async function sendTask({
     ],
   };
   try {
-    const response = await post(urlbase + '/task', data, key);
+    const response = await post(`${urlbase}/task`, data, key);
     if (!response?.content || response?.error) {
       return { content: null, error: response?.error };
     }
@@ -243,13 +297,11 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
 
   const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env['TRACKING_' + prefix] as string;
+  const generalAuth = process.env[`TRACKING_${prefix}`] as string;
 
   if (!generalAuth) return null;
 
   const keys = JSON.parse(generalAuth) as string[];
-
-
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -274,65 +326,11 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
         },
         forecast: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
       },
-      origin: `${i + 1}`
+      origin: `${i + 1}`,
     };
     return historyResponse;
   }
   return null;
-}
-
-function getDescStatus(taskStatus: string, notes?: string, imageArry?: string[]): TaskStatus {
-  if (notes) return TaskStatus.DELIVERY_NOTE_ADDED;
-
-  if (imageArry && imageArry?.length > 0) return TaskStatus.DELIVERY_PROTOCOL_ADDED;
-
-  const st = [
-    {
-      in: '2',
-      out: TaskStatus.FILE_CHECK,
-    },
-    {
-      in: '3',
-      out: TaskStatus.PACKAGE_ACCEPTED,
-    },
-    {
-      in: '4',
-      out: TaskStatus.PACKAGE_ON_DELIVERY_ROUTE,
-    },
-    {
-      in: '5',
-      out: TaskStatus.PACKAGE_IS_NEAR,
-    },
-    {
-      in: '6',
-      out: TaskStatus.DELIVERY_SUCCESSFULLY,
-    },
-    {
-      in: '7',
-      out: TaskStatus.DELIVERY_FAILURE,
-    },
-    {
-      in: '8',
-      out: TaskStatus.DELIVERY_ABORTED,
-    },
-    {
-      in: '9',
-      out: TaskStatus.DELIVERY_CANCELLED,
-    },
-    {
-      in: '10',
-      out: TaskStatus.PACKAGE_PICKED,
-    },
-    {
-      in: '18',
-      out: TaskStatus.UPDATED_DELIVERY_DATA,
-    },
-  ];
-  const getDescStatus = st.find((s) => s?.in == taskStatus);
-
-  if (getDescStatus) return getDescStatus.out;
-
-  return TaskStatus.UNDEFINED;
 }
 
 export const deliforceImplementation = { sendTask, getTrackingHistory };

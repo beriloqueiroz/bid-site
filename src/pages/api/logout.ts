@@ -18,19 +18,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data | null>) =
   }
 
   const prefixCompany = req.headers['x-company'];
+  const id = req.headers['x-identification'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !tokenSession) {
+  if (!prefixCompany || !id || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
-
-  if (!token) {
+  try {
+    await loginService.logout(prefixCompany.toString(), tokenSession.toString());
+  } catch (error) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
+
   res.status(200).json({ status: 200, error: null, token: '123456' });
 };
 

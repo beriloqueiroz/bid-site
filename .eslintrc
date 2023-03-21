@@ -16,6 +16,13 @@
     "jsx-a11y/no-noninteractive-element-interactions":"off",
     "jsx-a11y/click-events-have-key-events":"off",
     "jsx-a11y/no-static-element-interactions": "off",
-    "@next/next/no-img-element": "off"
+    "@next/next/no-img-element": "off",
+    "import/no-cycle": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "react-hooks/rules-of-hooks": "off",
+    "no-plusplus": "off",
+    "no-continue":"off",
+    "no-await-in-loop": "off",
+    "react-hooks/exhaustive-deps": "off"
   }
 }

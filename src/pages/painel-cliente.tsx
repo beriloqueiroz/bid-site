@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   ChangeEvent, KeyboardEvent, useEffect, useState,
 } from 'react';
@@ -9,25 +10,25 @@ import Layout from '@/components/layout';
 import ToggleButton from '@/components/toggleButton';
 import { useRouter } from 'next/router';
 
+import { useApply, useReducers } from '@/lib/redux/hooks';
+import LoginForm from '@/components/painel/login';
 import style from '../styles/painel-cliente.module.scss';
 import { ResponseCepApi } from './api/getInfosByCep';
-import { ResponseLoginApi } from './api/login';
 import { ResponseSendTaskApi } from './api/sendTask';
 import { ResponseUploadApi } from './api/upload';
 
 export default function CustomerPanel() {
+  const { isLogged, userName, token } = useReducers('user.isLogged', 'user.userName', 'user.token');
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [sendingLogin, setSendingLogin] = useState(false);
-  const [sendingIndividual, setSendingIndividual] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [errorGeral, setErrorGeral] = useState(false);
   const [messageError, setMessageError] = useState(' Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato.');
   const [fileName, setFileName] = useState('');
-  const [prefix, setPrefix] = useState('');
-  const [password, setPassword] = useState('');
   const [fileSelected, setFileSelected] = useState<File | null>();
+  const [requiredError, setRequiredError] = useState(false);
 
+  const [sendingIndividual, setSendingIndividual] = useState(false);
   const [cep, setCep] = useState('');
   const [street, setStreet] = useState('');
   const [reference, setReference] = useState('');
@@ -41,18 +42,53 @@ export default function CustomerPanel() {
   const [recipient, setRecipient] = useState('');
   const [deliveryType, setDeliveryType] = useState('');
 
-  const [requiredError, setRequiredError] = useState(false);
-  const [isLogged, setLogged] = useState(false);
   const [inLote, setInLote] = useState(false);
   const [optionsSelect] = useState<OptionSelect[]>([
     { value: '', content: 'SELECIONE' },
     { value: 'D+1', content: 'ENTREGA NO PRÓXIMO DIA ÚTIL' },
     { value: 'D', content: 'ENTREGA NO MESMO DIA' },
   ]);
+  const apply = useApply();
+
+  function clearLogin() {
+    window.sessionStorage.removeItem('token');
+    window.sessionStorage.removeItem('userid');
+    window.sessionStorage.removeItem('username');
+    apply('user', { isLogged: false, userName: '', identification: '' });
+  }
 
   useEffect(() => {
-    if (window.sessionStorage.getItem('token')) {
-      setLogged(true);
+    const tokenSession = window.sessionStorage.getItem('token');
+    const useridSession = window.sessionStorage.getItem('userid');
+    const usernameSession = window.sessionStorage.getItem('username');
+    async function authenticate() {
+      const res = await fetch('/api/authenticate', {
+        method: 'GET',
+        headers: {
+          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-token': window.sessionStorage.getItem('token') || token || '',
+        },
+      });
+
+      const {
+        status,
+        error,
+      }: {
+        status: number;
+        error: string | null;
+      } = await res.json();
+
+      if (status === 401) {
+        setErrorGeral(true);
+        clearLogin();
+        throw new Error(`${error}`);
+      }
+      apply('user', {
+        isLogged: true, userName: usernameSession, identification: useridSession, token: tokenSession,
+      });
+    }
+    if (tokenSession && useridSession && usernameSession) {
+      authenticate();
     }
   }, []);
 
@@ -61,74 +97,6 @@ export default function CustomerPanel() {
   const handleMessageError = (msg: string) => {
     setMessageError(msg);
     router.push('#error');
-  };
-
-  const login = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-    if (e) e.preventDefault();
-
-    try {
-      setSendingLogin(true);
-      if (prefix === '' || password === '') {
-        setErrorGeral(true);
-        throw new Error('Credenciais não informadas');
-      }
-
-      setErrorGeral(false);
-
-      const res = await fetch('/api/login', {
-        method: 'GET',
-        headers: {
-          'X-Company': prefix,
-          'X-Authentication': password,
-        },
-      });
-
-      const { status, error, content }: ResponseLoginApi = await res.json();
-
-      if (status === 401) {
-        setErrorGeral(true);
-        setLogged(false);
-        throw new Error(`${error}`);
-      }
-
-      if (status !== 200) {
-        setErrorGeral(true);
-        throw new Error(`${error}, entre em contato conosco!`);
-      }
-
-      setLogged(true);
-      window.sessionStorage.setItem('token', content);
-    } catch (err) {
-      setErrorGeral(true);
-      handleMessageError(`Erro, ao fazer login, entre em contato! ${err}`);
-    }
-    setSendingLogin(false);
-  };
-
-  const logout = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-    if (e) e.preventDefault();
-    try {
-      setLogged(false);
-      setPrefix('');
-      setPassword('');
-      setErrorGeral(false);
-      setSubmitted(false);
-      setCep('');
-      setStreet('');
-      setNumber('');
-      setComplement('');
-      setReference('');
-      setPhone('');
-      setCity('');
-      setNeighborhood('');
-      setCity('');
-      setOrder('');
-      setDeliveryType('');
-      setRecipient('');
-    } catch (error) {
-      setErrorGeral(true);
-      handleMessageError(`Erro, fazer login ${error}`);
-    }
   };
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -153,9 +121,109 @@ export default function CustomerPanel() {
     setFileName(fileList[0].name);
   };
 
+  const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.preventDefault();
+
+    if (!fileSelected) {
+      setErrorGeral(true);
+      throw new Error('Arquivo não selecionado!');
+    }
+
+    if (userName === '' || token === '' || !isLogged) {
+      setErrorGeral(true);
+      clearLogin();
+      throw new Error('Credenciais não informadas');
+    }
+
+    setSending(true);
+    setErrorGeral(false);
+
+    try {
+      const formData = new FormData();
+      formData.append('media', fileSelected);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-token': window.sessionStorage.getItem('token') || token || '',
+        },
+      });
+
+      const { status, error }: ResponseUploadApi = await res.json();
+
+      if (status === 401) {
+        setErrorGeral(true);
+        clearLogin();
+        setSending(false);
+        throw new Error(`${error}`);
+      }
+
+      if (status !== 200) {
+        setErrorGeral(true);
+        setSending(false);
+        throw new Error(`${error}entre em contato conosco!`);
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      setErrorGeral(true);
+      handleMessageError(`Erro, ${error}`);
+    }
+    setSending(false);
+    setFileSelected(null);
+    setFileName('');
+  };
+
+  async function downloadModel(e: React.MouseEvent) {
+    e.preventDefault();
+    try {
+      setDownloading(true);
+      const res = await fetch('/api/authenticate', {
+        method: 'GET',
+        headers: {
+          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-token': window.sessionStorage.getItem('token') || token || '',
+        },
+      });
+
+      const {
+        status,
+        error,
+      }: {
+        status: number;
+        error: string | null;
+      } = await res.json();
+
+      if (status === 401) {
+        setErrorGeral(true);
+        clearLogin();
+        throw new Error(`${error}`);
+      }
+
+      if (status !== 200) {
+        setErrorGeral(true);
+        setDownloading(false);
+        throw new Error('entre em contato conosco!');
+      }
+      router.push('/model.xlsx');
+      setDownloading(false);
+    } catch (err) {
+      setErrorGeral(true);
+      handleMessageError(`Erro ao baixar modelo ${errorGeral}`);
+    }
+  }
+
+  const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
   function isNumber(value: string) {
     if (typeof value === 'string') {
-      return !Number.isNaN(parseInt(value, 10));
+      return !Number.isNaN(Number(value));
     }
     return false;
   }
@@ -173,9 +241,8 @@ export default function CustomerPanel() {
         const res = await fetch(`/api/getInfosByCep?cep=${e.target.value}`, {
           method: 'GET',
           headers: {
-            'X-Company': prefix,
-            'X-Authentication': password,
-            'x-token': window.sessionStorage.getItem('token') || '',
+            'X-Company': window.sessionStorage.getItem('username') || userName || '',
+            'x-token': window.sessionStorage.getItem('token') || token || '',
           },
         });
 
@@ -183,9 +250,7 @@ export default function CustomerPanel() {
 
         if (status === 401) {
           setErrorGeral(true);
-          setLogged(false);
-          setPrefix('');
-          setPassword('');
+          clearLogin();
           throw new Error(`${error}`);
         }
 
@@ -215,8 +280,9 @@ export default function CustomerPanel() {
     setRequiredError(false);
 
     try {
-      if (prefix === '' || password === '') {
+      if (userName === '' || token === '' || !isLogged) {
         setErrorGeral(true);
+        clearLogin();
         throw new Error('Credenciais não informadas');
       }
 
@@ -246,9 +312,8 @@ export default function CustomerPanel() {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'X-Company': prefix,
-          'X-Authentication': password,
-          'x-token': window.sessionStorage.getItem('token') || '',
+          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });
 
@@ -256,9 +321,7 @@ export default function CustomerPanel() {
 
       if (response.status === 401) {
         setErrorGeral(true);
-        setLogged(false);
-        setPrefix('');
-        setPassword('');
+        clearLogin();
         throw new Error(`${errorGeral}`);
       }
 
@@ -288,147 +351,10 @@ export default function CustomerPanel() {
     setSendingIndividual(false);
   };
 
-  const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-    if (e) e.preventDefault();
-
-    if (!fileSelected) {
-      setErrorGeral(true);
-      throw new Error('Arquivo não selecionado!');
-    }
-
-    if (prefix === '' || password === '') {
-      setErrorGeral(true);
-      throw new Error('Credenciais não informadas');
-    }
-
-    setSending(true);
-    setErrorGeral(false);
-
-    try {
-      const formData = new FormData();
-      formData.append('media', fileSelected);
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'X-Company': prefix,
-          'X-Authentication': password,
-          'x-token': window.sessionStorage.getItem('token') || '',
-        },
-      });
-
-      const { status, error }: ResponseUploadApi = await res.json();
-
-      if (status === 401) {
-        setErrorGeral(true);
-        setLogged(false);
-        setSending(false);
-        setPrefix('');
-        setPassword('');
-        throw new Error(`${error}`);
-      }
-
-      if (error) {
-        setErrorGeral(true);
-        setSending(false);
-        throw new Error(`${error}entre em contato conosco!`);
-      }
-
-      if (error && status === 500) {
-        setErrorGeral(true);
-        setSending(false);
-        throw new Error('entre em contato!');
-      }
-
-      setSubmitted(true);
-    } catch (error) {
-      setErrorGeral(true);
-      handleMessageError(`Erro, ${error}`);
-    }
-    setSending(false);
-    setFileSelected(null);
-    setFileName('');
-  };
-
-  async function downloadModel(e: React.MouseEvent) {
-    e.preventDefault();
-    try {
-      setDownloading(true);
-      const res = await fetch('/api/authenticate', {
-        method: 'GET',
-        headers: {
-          'X-Company': prefix,
-          'X-Authentication': password,
-          'x-token': window.sessionStorage.getItem('token') || '',
-        },
-      });
-
-      const {
-        status,
-        error,
-      }: {
-        status: number;
-        error: string | null;
-      } = await res.json();
-
-      if (status === 401) {
-        setErrorGeral(true);
-        setLogged(false);
-        setPrefix('');
-        setPassword('');
-        throw new Error(`${error}`);
-      }
-
-      if (status !== 200) {
-        setErrorGeral(true);
-        setDownloading(false);
-        throw new Error('entre em contato conosco!');
-      }
-      router.push('/model.xlsx');
-      setDownloading(false);
-    } catch (err) {
-      setErrorGeral(true);
-      handleMessageError(`Erro ao baixar modelo ${errorGeral}`);
-    }
-  }
-
-  const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-    }
-  };
-
   return (
-    <Layout simpleHeader>
+    <Layout>
       <section className={style.section}>
-        <form className={style.loginForm}>
-          <InputForm
-            label="Prefixo"
-            type="text"
-            name="prefix"
-            id="prefix"
-            placeholder="PREFX"
-            isRequired
-            alertRequired={requiredError && prefix === ''}
-            setOnChange={setPrefix}
-            value={prefix}
-            disable={isLogged}
-          />
-          <InputForm
-            label="Senha"
-            type="password"
-            name="password"
-            id="password"
-            placeholder="*********"
-            isRequired
-            alertRequired={requiredError && password === ''}
-            setOnChange={setPassword}
-            value={password}
-            disable={isLogged}
-          />
-          <Button handleSubmit={!isLogged ? login : logout} sending={sendingLogin} text={!isLogged ? 'Entrar' : 'Sair'} id="login" type="submit" />
-        </form>
+        <LoginForm />
         {isLogged && (
           <div className={style.forms}>
             <div className={style.chooseForm}>

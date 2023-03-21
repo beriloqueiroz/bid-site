@@ -1,9 +1,9 @@
 import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
-import { loginImplementation } from '@/lib/login/implementations/enviroment';
 import { SendTask } from '@/lib/types/SendTask';
 import { dateByDeliveryType } from '@/lib/util/rules';
 import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { loginService } from '@/lib/user/login/ILogin';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -22,43 +22,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
   }
 
   const prefixCompany = req.headers['x-company'];
-  const passCompany = req.headers['x-authentication'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !passCompany || !tokenSession) {
+  if (!prefixCompany || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token } = await loginImplementation.authenticate(prefixCompany.toString(), passCompany.toString(), tokenSession.toString());
+  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const collectionAddress = process.env['ADDRESS_' + prefixCompany.toString()] as string;
+  const collectionAddress = process.env[`ADDRESS_${prefixCompany.toString()}`] as string;
 
-  const { street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, deliveryType } = JSON.parse(req.body);
+  const {
+    street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, deliveryType,
+  } = JSON.parse(req.body);
 
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
     const data: SendTask = {
       address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: complement + ', ' + reference,
-      phone: phone,
+      complement: `${complement}, ${reference}`,
+      phone,
       name: `[${orderNumber}] ${recipient}`,
       value: '10.00',
       startDate: dateByDeliveryType(deliveryType).format('YYYY-MM-DDThh:mm:ss'),
       endDate: dateByDeliveryType(deliveryType).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
-      reference: reference,
+      reference,
 
       description: collectionAddress,
       email: 'sender@bid.log.br',
-      orderNumber: orderNumber,
+      orderNumber,
 
       account: prefixCompany.toString(),
-      deliveryType: deliveryType,
+      deliveryType,
     };
     const response = await deliveryService.sendTask(data);
     if (response?.error || !response?.content) {
@@ -67,7 +68,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     }
     res.status(200).json({ status: 200, error: null, content: orderNumber });
   } catch (e) {
-    console.error(e);
     res.status(500).json({ status: 500, error: `${e}` });
   }
 };

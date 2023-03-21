@@ -1,22 +1,21 @@
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable implicit-arrow-linebreak */
 import formidable from 'formidable';
 import { mkdir, stat } from 'fs/promises';
 import mime from 'mime';
 import type { NextApiRequest } from 'next';
 
-export const FormidableError = formidable.errors.FormidableError;
+export const { FormidableError } = formidable.errors;
 
-export const parseForm = async (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
-  // eslint-disable-next-line no-async-promise-executor
-  return await new Promise(async (resolve, reject) => {
-    const uploadDir = `/tmp/`;
-
+export const parseForm = async (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> =>
+  new Promise(async (resolve, reject) => {
+    const uploadDir = '/tmp/';
     try {
       await stat(uploadDir);
     } catch (e: any) {
       if (e.code === 'ENOENT') {
         await mkdir(uploadDir, { recursive: true });
       } else {
-        console.error(e);
         reject(e);
         return;
       }
@@ -31,16 +30,13 @@ export const parseForm = async (req: NextApiRequest): Promise<{ fields: formidab
         const filename = `${part.name || 'file'}-${uniqueSuffix}.${mime.getExtension(part.mimetype || '') || 'unknown'}`;
         return filename;
       },
-      filter: (part) => {
-        return (
-          part.name === 'media' && (part.mimetype?.includes('sheet') || part.mimetype?.includes('csv') || part.mimetype?.includes('excel') || false)
-        );
-      },
+      filter: (part) => (
+        part.name === 'media' && (part.mimetype?.includes('sheet') || part.mimetype?.includes('csv') || part.mimetype?.includes('excel') || false)
+      ),
     });
 
-    form.parse(req, function (err, fields, files) {
+    form.parse(req, (err, fields, files) => {
       if (err) reject(err);
       else resolve({ fields, files });
     });
   });
-};

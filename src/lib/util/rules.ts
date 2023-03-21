@@ -1,5 +1,12 @@
 import moment, { Moment } from 'moment';
 
+export function isNumber(value: string) {
+  if (typeof value === 'string') {
+    return !Number.isNaN(Number(value));
+  }
+  return false;
+}
+
 export function countValidDays(startDate: string, forecast: number, validWeekDays: number[] = [1, 2, 3, 4, 5, 6]): Moment {
   let count = 0;
   let forecastDate = moment(startDate);
@@ -15,14 +22,14 @@ export function countValidDays(startDate: string, forecast: number, validWeekDay
 
 export function dateByDeliveryType(type: string): Moment {
   let forecast = 1;
-  if (type == 'D') forecast = 0;
+  if (type === 'D') forecast = 0;
   if (type.includes('+')) {
     const numb = type.split('+')[1];
     if (isNumber(numb)) {
-      forecast = parseInt(numb);
+      forecast = parseInt(numb, 10);
     }
   }
-  let now = moment().subtract(3, 'hours');
+  const now = moment().subtract(3, 'hours');
   // if (isNumber(`${process.env.LIMIT_HOUR}`)) {
   //   if (now.hour() >= parseInt(`${process.env.LIMIT_HOUR}`)) {
   //     throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);
@@ -30,10 +37,4 @@ export function dateByDeliveryType(type: string): Moment {
   // }
 
   return countValidDays(now.toISOString(), forecast);
-}
-
-export function isNumber(value: string) {
-  if (typeof value === 'string') {
-    return !isNaN(parseInt(value));
-  }
 }

@@ -4,7 +4,7 @@ import style from '../styles/privacy.module.scss';
 
 export default function PrivacyPolicyAndCookies() {
   return (
-    <Layout simpleHeader>
+    <Layout>
       <section className={style.section} id="politica-inicio">
         <div className={style.container}>
           <h2>Política Privacidade</h2>

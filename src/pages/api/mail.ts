@@ -19,10 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     logger: true,
   });
 
-  const body = req.body;
+  const { body } = req;
 
   const mailData = {
-    from: `"Formulário (bid.log.br)" <sender@bid.log.br>`,
+    from: '"Formulário (bid.log.br)" <sender@bid.log.br>',
     to: 'contato@bid.log.br',
     subject: 'Contato pelo formulário do site',
     text: `${body.message}`,
@@ -33,11 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     headers: { 'x-myheader': 'test header' },
   };
 
-  if (!body.email || body.email == '') {
+  if (!body.email || body.email === '') {
     res.status(500).json({ status: 'Nok' });
   }
 
-  transporter.sendMail(mailData, function (err, info) {
+  transporter.sendMail(mailData, (err) => {
     if (err) {
       res.status(500).json({ status: 'Nok' });
     } else {

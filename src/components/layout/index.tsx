@@ -9,7 +9,6 @@ import styles from './style.module.scss';
 
 interface Props {
   children: ReactNode;
-  simpleHeader?: boolean;
 }
 
 export default function Layout(props: Props) {

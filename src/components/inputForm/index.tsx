@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ChangeEvent } from 'react';
 
 import { Props } from './props';
@@ -25,9 +26,9 @@ export default function InputForm({
   optionsSelect,
 }: Props) {
   function setChange(e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLSelectElement>) {
-    setOnChange && setOnChange(e.target.value);
+    !!setOnChange && setOnChange(e.target.value);
   }
-  function InputTextArea() {
+  if (isTextArea) {
     return (
       <div className={`${style.container} ${classPlus}`}>
         <label className={style.label} htmlFor={name}>
@@ -36,9 +37,6 @@ export default function InputForm({
         <textarea className={style.textarea} name={name} id={id} placeholder={placeholder} onChange={setChange} value={value} disabled={disable} />
       </div>
     );
-  }
-  if (isTextArea) {
-    return InputTextArea();
   }
   if (isSelect) {
     return (

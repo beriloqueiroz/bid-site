@@ -145,7 +145,7 @@ export default function Rastreio() {
   }
 
   return (
-    <Layout simpleHeader>
+    <Layout>
       <section className={style.section}>
         <form>
           <InputForm
