@@ -279,7 +279,6 @@ export default function CustomerPanel() {
     if (e) e.preventDefault();
     setRequiredError(false);
 
-    console.log('🚀 ~ file: painel-cliente.tsx:284 ~ individualHandleSubmit ~ userName:', userName, token, !isLogged);
     try {
       if (userName === '' || token === '' || !isLogged) {
         setErrorGeral(true);
@@ -351,6 +350,21 @@ export default function CustomerPanel() {
     }
     setSendingIndividual(false);
   };
+
+  function onChangePhone(e: ChangeEvent<HTMLInputElement>) {
+    const { value } = e.target;
+    if (value.length > 14) {
+      return;
+    }
+    setPhone(value);
+
+    if (value.length > 0 && value.length < 10 && value.indexOf('(') >= 0) { setPhone(value.replaceAll('(', '').replaceAll(') ', '')); } else
+    if (value.length === 10 && value.indexOf('(') < 0) {
+      const ddd = value.substring(0, 2);
+      const cellNumber = value.substring(2, value.length);
+      setPhone(`(${ddd}) ${cellNumber}`);
+    }
+  }
 
   return (
     <Layout>
@@ -439,10 +453,10 @@ export default function CustomerPanel() {
                     type="text"
                     name="phone"
                     id="phone"
-                    placeholder="85 989888888"
+                    placeholder="(85) 989888888"
                     isRequired
                     alertRequired={requiredError && phone === ''}
-                    setOnChange={setPhone}
+                    onChange={onChangePhone}
                     value={phone}
                     onKeyDown={handleKeypress}
                     classPlus={style.i6}
@@ -464,7 +478,7 @@ export default function CustomerPanel() {
                     type="text"
                     name="reference"
                     id="reference"
-                    placeholder="próximo ao bar do seu zé"
+                    placeholder="Próximo a igreja"
                     isRequired={false}
                     setOnChange={setReference}
                     value={reference}
@@ -476,7 +490,7 @@ export default function CustomerPanel() {
                     type="text"
                     name="recipient"
                     id="recipient"
-                    placeholder="josé da silva"
+                    placeholder="José da Silva"
                     isRequired
                     setOnChange={setRecipient}
                     value={recipient}

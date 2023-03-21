@@ -12,52 +12,52 @@ export default function About() {
           {' '}
           <strong>Missão</strong>
           {' '}
-          é proporcionar a operação de entregas de forma simples e inteligente. Temos como
+          é simplificar e otimizar a operação de entregas por meio de soluções inteligentes. Almejamos a
           {' '}
           <strong>Visão</strong>
-          :
-          tornar-se uma referência em entregas rápidas, confiáveis e eficientes para empresas em Fortaleza, tendo como
+          de ser reconhecidos como referência em entregas rápidas,
+          confiáveis e eficientes em Fortaleza. Para alcançar esse objetivo, norteamos nossas ações pelos
           {' '}
           <strong>Valores</strong>
-          :
-          respeito, honestidade, cordialidade, inteligência e agilidade.
+          de respeito, honestidade, cordialidade, inteligência e agilidade.
         </p>
-        <h2>Onde estamos</h2>
+        <h2>Onde atuamos</h2>
         <p>
-          Estamos em
+          Atendemos a capital e toda a região metropolitana de
           {' '}
           <strong>Fortaleza</strong>
           {' '}
-          e entregamos em toda capital e região metropolitana.
+          com nossos serviços de entregas.
         </p>
         <h2>A quem atendemos</h2>
         <p>
-          Atendemos à empresas, e-commerces/lojas virtuais que desejam
+          Oferecemos soluções de entrega para e-commerces, lojas virtuais ou demais negócios que buscam
           <strong> simplificar</strong>
           {' '}
-          a operação com entrega em Fortaleza e região metropolitana.
+          suas operações logísticas.
         </p>
         <h2>Como trabalhamos</h2>
         <p>
-          Possuímos entregadores
+          Contamos com uma equipe de entregadores
           {' '}
-          <strong>treinados</strong>
-          , experientes e especialistas na região que atuamos. Através deles e de um sistema
+          <strong>altamente treinados</strong>
+          , experientes e especializados na região em que atuamos. Aliando seus conhecimentos ao nosso sistema
           <strong> inteligente</strong>
           {' '}
-          de rotas e acompanhamento, conseguimos obter
+          de rotas e acompanhamento, garantimos a
           {' '}
           <strong>eficiência</strong>
           , velocidade e um
           {' '}
-          <strong>preço incrível</strong>
-          . Nosso entregador coleta na sua empresa as encomendas/pedidos no final da tarde e entrega no dia seguinte.
-          Sem complicação e sem dor de cabeça. E claro, você nos paga um preço mais barato do que o normal. Assim oferece preço e prazo para seu
-          cliente,
+          <strong>preço competitivo</strong>
+          em nossos serviços de entrega.
+          Oferecemos serviços de entrega D+1, expressa e logística reversa para
+          atender às necessidades de sua empresa. Realizamos a coleta das encomendas
+          diretamente em seu centro de distribuição, de forma prática e simplificada. Além disso,
+          oferecemos valores acessíveis para que você possa oferecer aos seus clientes preços e prazos atrativos,
           {' '}
-          <strong>aumenta as vendas</strong>
-          {' '}
-          e todo mundo ganha.
+          <strong>aumentando suas vendas</strong>
+          .
         </p>
       </div>
     </section>

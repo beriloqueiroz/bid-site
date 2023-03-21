@@ -19,22 +19,18 @@ export default function Presentation() {
           <Video />
         </div>
         <p className={styles.presentationDescription}>
-          A bid é entrega sem complicação, de forma
+          A bid é a solução de entrega que você precisa para o seu negócio:
           {' '}
-          <strong>rápida</strong>
+          <strong>prática, rápida e inteligente</strong>
+          .
+          Selecionamos e treinamos cuidadosamente nossa equipe de entregadores, garantindo a confiança e a
+          qualidade do serviço prestado. Além disso, oferecemos
+          <strong>preços</strong>
           {' '}
-          e
-          {' '}
-          <strong>inteligente</strong>
-          . Reunimos e treinamos entregadores de
-          confiança para proporcionar um
-          {' '}
-          <strong>preço</strong>
-          {' '}
-          justo, pra não dizer
-          {' '}
-          <strong>barato</strong>
-          , e uma entrega rápida.
+          justos e
+          <strong>competitivos</strong>
+          para que você possa realizar suas entregas sem preocupações. Conte conosco para uma entrega rápida e eficiente.
+
         </p>
         <div className={styles.buttons}>
           <button type="button" className={styles.buttonAbout} onClick={() => router.push('/#contato')}>

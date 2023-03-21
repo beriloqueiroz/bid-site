@@ -6,7 +6,7 @@ export enum TaskStatus {
   DELIVERY_SUCCESSFULLY = 'Pacote entregue com sucesso',
   DELIVERY_FAILURE = 'Falha na Entrega (Entraremos em contato para realizar uma nova tentativa)',
   DELIVERY_ABORTED = 'Entrega abortada',
-  DELIVERY_CANCELLED = 'Entrega cancelada',
+  DELIVERY_CANCELLED = 'Tentativa de entrega não realizada',
   PACKAGE_PICKED = 'Pacote coletado pelo Entregador',
   UPDATED_DELIVERY_DATA = 'Dados de entrega atualizados - Nova tentativa de entrega',
   DELIVERY_NOTE_ADDED = 'Nota de entrega adicionada',
