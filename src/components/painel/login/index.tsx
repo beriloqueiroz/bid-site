@@ -55,7 +55,9 @@ export default function LoginForm() {
         throw new Error(`${error}, entre em contato conosco!`);
       }
 
-      apply('user', { isLogged: true, userName: prefix, identification: content.id });
+      apply('user', {
+        isLogged: true, userName: prefix, identification: content.id, token: content.token,
+      });
 
       window.sessionStorage.setItem('token', content.token);
       window.sessionStorage.setItem('userid', content.id);

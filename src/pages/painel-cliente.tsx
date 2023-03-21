@@ -279,6 +279,7 @@ export default function CustomerPanel() {
     if (e) e.preventDefault();
     setRequiredError(false);
 
+    console.log('🚀 ~ file: painel-cliente.tsx:284 ~ individualHandleSubmit ~ userName:', userName, token, !isLogged);
     try {
       if (userName === '' || token === '' || !isLogged) {
         setErrorGeral(true);
@@ -322,7 +323,7 @@ export default function CustomerPanel() {
       if (response.status === 401) {
         setErrorGeral(true);
         clearLogin();
-        throw new Error(`${errorGeral}`);
+        throw new Error(`Erro de autenticação ${errorGeral}`);
       }
 
       if (!response.content) {
