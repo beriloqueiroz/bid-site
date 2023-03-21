@@ -8,7 +8,7 @@ import style from './style.module.scss';
 export default function LoginForm() {
   const apply = useApply();
   const [sendingLogin, setSendingLogin] = useState(false);
-  const [prefix, setPrefix] = useState('');
+  const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [requiredError, setRequiredError] = useState(false);
 
@@ -20,7 +20,7 @@ export default function LoginForm() {
     window.sessionStorage.removeItem('token');
     window.sessionStorage.removeItem('userid');
     window.sessionStorage.removeItem('username');
-    setPrefix('');
+    setUser('');
     setPassword('');
     apply('user', { isLogged: false, userName: '', identification: '' });
   }
@@ -31,7 +31,7 @@ export default function LoginForm() {
 
     try {
       setSendingLogin(true);
-      if (prefix === '' || password === '') {
+      if (user === '' || password === '') {
         clearLogin();
         setRequiredError(true);
         throw new Error('Credenciais não informadas');
@@ -42,8 +42,8 @@ export default function LoginForm() {
       const res = await fetch('/api/login', {
         method: 'GET',
         headers: {
-          'X-Company': prefix,
-          'X-Authentication': password,
+          'x-username': user,
+          'x-authentication': password,
         },
       });
 
@@ -56,7 +56,7 @@ export default function LoginForm() {
       }
 
       apply('user', {
-        isLogged: true, userName: prefix, identification: content.id, token: content.token,
+        isLogged: true, userName: user, identification: content.id, token: content.token,
       });
 
       window.sessionStorage.setItem('token', content.token);
@@ -76,7 +76,7 @@ export default function LoginForm() {
       const res = await fetch('/api/logout', {
         method: 'GET',
         headers: {
-          'X-Company': prefix,
+          'x-username': user,
           'X-Identification': window.sessionStorage.getItem('userid') || identification || '',
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
@@ -107,15 +107,15 @@ export default function LoginForm() {
       {!isLogged && (
       <>
         <InputForm
-          label="Prefixo"
+          label="Usuário"
           type="text"
-          name="prefix"
-          id="prefix"
-          placeholder="PREFX"
+          name="username"
+          id="username"
+          placeholder="USERNAME"
           isRequired
-          alertRequired={requiredError && prefix === ''}
-          setOnChange={setPrefix}
-          value={prefix}
+          alertRequired={requiredError && user === ''}
+          setOnChange={setUser}
+          value={user}
           disable={isLogged}
         />
         <InputForm

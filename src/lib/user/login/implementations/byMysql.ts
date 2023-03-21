@@ -4,7 +4,7 @@ import moment, { now } from 'moment';
 import { authResponse } from '../ILogin';
 
 async function login(user: string, password: string): Promise<authResponse> {
-  const statment = 'SELECT token, isAdmin, id FROM `users` WHERE `username` = ? AND `password` = ?';
+  const statment = 'SELECT isAdmin, id FROM `users` WHERE `username` = ? AND `password` = ?';
   let conn = null;
   try {
     conn = await connection();

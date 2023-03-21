@@ -197,9 +197,9 @@ async function sendTask({
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
-  const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
+  const username = orderNumber.slice(0, orderNumber.indexOf('-'));
 
-  const generalAuth = process.env[`SEND_${prefix}`] as string;
+  const generalAuth = process.env[`SEND_${username}`] as string;
 
   if (!generalAuth && !dynamicKey) return { content: null, error: 'erro ao buscar empresa' };
 

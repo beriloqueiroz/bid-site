@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data | null>) =
     return;
   }
 
-  const prefixCompany = req.headers['x-company'];
+  const prefixCompany = req.headers['x-username'];
   const tokenSession = req.headers['x-token'];
 
   if (!prefixCompany || !tokenSession) {

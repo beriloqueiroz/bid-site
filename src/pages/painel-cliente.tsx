@@ -65,7 +65,7 @@ export default function CustomerPanel() {
       const res = await fetch('/api/authenticate', {
         method: 'GET',
         headers: {
-          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-username': window.sessionStorage.getItem('username') || userName || '',
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });
@@ -146,7 +146,7 @@ export default function CustomerPanel() {
         method: 'POST',
         body: formData,
         headers: {
-          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-username': window.sessionStorage.getItem('username') || userName || '',
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });
@@ -183,7 +183,7 @@ export default function CustomerPanel() {
       const res = await fetch('/api/authenticate', {
         method: 'GET',
         headers: {
-          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-username': window.sessionStorage.getItem('username') || userName || '',
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });
@@ -241,7 +241,7 @@ export default function CustomerPanel() {
         const res = await fetch(`/api/getInfosByCep?cep=${e.target.value}`, {
           method: 'GET',
           headers: {
-            'X-Company': window.sessionStorage.getItem('username') || userName || '',
+            'x-username': window.sessionStorage.getItem('username') || userName || '',
             'x-token': window.sessionStorage.getItem('token') || token || '',
           },
         });
@@ -312,7 +312,7 @@ export default function CustomerPanel() {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'X-Company': window.sessionStorage.getItem('username') || userName || '',
+          'x-username': window.sessionStorage.getItem('username') || userName || '',
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });

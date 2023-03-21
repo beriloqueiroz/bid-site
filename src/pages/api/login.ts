@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginAp
     return;
   }
 
-  const prefixCompany = req.headers['x-company'];
+  const prefixCompany = req.headers['x-username'];
   const passCompany = req.headers['x-authentication'];
 
   if (!prefixCompany || !passCompany) {
