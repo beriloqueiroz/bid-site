@@ -7,7 +7,8 @@ import type { NextApiRequest } from 'next';
 
 export const { FormidableError } = formidable.errors;
 
-export const parseForm = async (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> =>
+export const parseForm = async (req: NextApiRequest, csv = true, xslx = false, excel = false):
+Promise<{ fields: formidable.Fields; files: formidable.Files }> =>
   new Promise(async (resolve, reject) => {
     const uploadDir = '/tmp/';
     try {
@@ -31,7 +32,10 @@ export const parseForm = async (req: NextApiRequest): Promise<{ fields: formidab
         return filename;
       },
       filter: (part) => (
-        part.name === 'media' && (part.mimetype?.includes('sheet') || part.mimetype?.includes('csv') || part.mimetype?.includes('excel') || false)
+        part.name === 'media'
+        && ((part.mimetype?.includes('sheet') && xslx)
+        || (csv && part.mimetype?.includes('csv'))
+        || (excel && part.mimetype?.includes('excel')) || false)
       ),
     });
 

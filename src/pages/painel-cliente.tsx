@@ -207,7 +207,7 @@ export default function CustomerPanel() {
         setDownloading(false);
         throw new Error('entre em contato conosco!');
       }
-      router.push('/model.xlsx');
+      router.push('/model.csv');
       setDownloading(false);
     } catch (err) {
       setErrorGeral(true);

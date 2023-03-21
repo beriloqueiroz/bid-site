@@ -201,7 +201,7 @@ async function sendTask({
 
   const generalAuth = process.env[`SEND_${prefix}`] as string;
 
-  if (!generalAuth) return { content: null, error: 'erro ao buscar empresa' };
+  if (!generalAuth && !dynamicKey) return { content: null, error: 'erro ao buscar empresa' };
 
   const driverID = process.env[`DRIVER_${account}`] as string;
   const teamID = process.env[`TEAM_${account}`] as string;

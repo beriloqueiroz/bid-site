@@ -1,7 +1,12 @@
+/* eslint-disable no-restricted-syntax */
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import { loginService } from '@/lib/user/login/ILogin';
 
+import { csvToJson } from '@/lib/util/convertions';
+import { SendTask } from '@/lib/types/SendTask';
+import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
+import { dateByDeliveryType } from '@/lib/util/rules';
 import { parseForm, FormidableError } from '../../lib/util/parse-form';
 
 export type ResponseUploadApi = {
@@ -10,7 +15,68 @@ export type ResponseUploadApi = {
   content?: any;
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi | null>) => {
+type Template =
+  {
+    'Nome': string,
+    'Celular': string,
+    'Email':string,
+    'Pedido':string,
+    'Rua/Avenida/Travessa': string,
+    'Número': string,
+    'Bairro': string,
+    'CEP': string,
+    'Complemento': string,
+    'Ponto de referência': string,
+    'Categoria de envio': string,
+    'Cidade':string,
+    'Estado':string
+  };
+
+async function sendTasksbyFile(url: string, prefixCompany:string, accountEmail = 'bid_entregas') {
+  let tasks = [];
+  const responses: ResponseUploadApi[] = [];
+  const collectionAddress = process.env[`ADDRESS_${prefixCompany.toString()}`] as string;
+
+  try {
+    tasks = await csvToJson(url.toString(), ',') as Template[];
+  } catch (e) {
+    tasks = await csvToJson(url.toString(), ';') as Template[];
+  }
+  for (const task of tasks) {
+    try {
+      const orderNumber = task.Pedido;
+      const data: SendTask = {
+        address: `${task['Rua/Avenida/Travessa']}, ${task['Número']} - ${task.Bairro}, ${task.Cidade} - ${task.Estado}, ${task.CEP} Brazil`,
+        complement: `${task.Complemento}, ${task['Ponto de referência']}`,
+        phone: task.Celular,
+        name: `[${orderNumber}] ${task.Nome}`,
+        value: '10.00',
+        startDate: dateByDeliveryType(task['Categoria de envio']).format('YYYY-MM-DDThh:mm:ss'),
+        endDate: dateByDeliveryType(task['Categoria de envio']).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
+        reference: task['Ponto de referência'],
+
+        description: collectionAddress,
+        email: 'sender@bid.log.br',
+        orderNumber,
+
+        deliveryType: task['Categoria de envio'],
+        account: accountEmail?.toString(),
+        dynamicKey: accountEmail?.toString(),
+      };
+      const response = await deliveryService.sendTask(data);
+      if (response?.error || !response?.content) {
+        responses.push({ content: orderNumber, status: 500, error: JSON.stringify(response.error) });
+        continue;
+      }
+      responses.push({ status: 200, error: null, content: orderNumber });
+    } catch (e) {
+      responses.push({ status: 500, error: `${e}` });
+    }
+  }
+  return responses;
+}
+
+const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi[] | ResponseUploadApi | null>) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     res.status(405).json({
@@ -71,16 +137,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     transporter.sendMail(mailData, (err) => {
       if (err) {
         res.status(500).json({ status: 500, error: 'Erro ao enviar e-mail' });
-      } else {
-        res.status(200).json({ status: 200, error: null });
       }
     });
+
+    const responses = await sendTasksbyFile(url.toString(), prefixCompany.toString());
+    console.log('🚀 ~ file: upload.ts:144 ~ handler ~ responses:', responses);
+    const hasSuccess = !!responses.find((r) => r.status === 200);
+    if (hasSuccess) { res.status(200).json(responses); } else { res.status(500).json(responses); }
   } catch (e) {
     if (e instanceof FormidableError) {
       res.status(e.httpCode || 400).json({ status: 400, error: e.message });
     } else {
       res.status(500).json({ status: 500, error: 'Erro interno' });
     }
+    res.status(500).json({ status: 500, error: 'Erro interno' });
   }
 };
 

@@ -144,6 +144,13 @@ export default function Rastreio() {
     } else setShowDetail([...isShowDetail, value]);
   }
 
+  function adjustData(date:string) {
+    const dataString = moment(date);
+    return `${dataString.day() < 10 ? 0 : ''}${dataString.day()}/${dataString.month() < 10 ? 0 : ''}${dataString.month()}/${dataString.year()}
+    ${dataString.hours()}:${dataString.minutes()}
+    `;
+  }
+
   return (
     <Layout>
       <section className={style.section}>
@@ -213,7 +220,7 @@ export default function Rastreio() {
                     <div className={style.status}>
                       <p>{`${task.taskDescStatus}`}</p>
                       <div className={style.statusInfo}>
-                        <p>{moment(task.created_at).subtract(3, 'hours').format('DD/MM/YYYY hh:mm:ss A')}</p>
+                        <p>{adjustData(moment(task.created_at).subtract(3, 'hours').format('DD/MM/YYYY hh:mm:ss A'))}</p>
                         <p className={style.reason}>{task.reason ? task.reason : ''}</p>
                         {!isPrivate && (task.notes || task.imageArry?.length) && (
                         <p className={style.more_detail} onClick={() => showDetail(task._id)}>
