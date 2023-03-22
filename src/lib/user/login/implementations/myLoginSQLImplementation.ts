@@ -19,6 +19,13 @@ async function login(user: string, password: string): Promise<authResponse> {
   const statmentUpdate = 'UPDATE `users` SET `token`= ? where `id` = ?';
 
   const tokenRandom = randomUUID();
+
+  if (!result[0][0]) {
+    conn.end();
+    return {
+      token: null,
+    };
+  }
   const { isAdmin, id } = result[0][0];
 
   let resultUpdateToken = null;
@@ -51,6 +58,14 @@ async function authenticate(user: string, currentToken: string): Promise<authRes
     return { token: null };
   }
   const result = await conn.query(statment, [user, currentToken]) as any[][];
+
+  if (!result[0][0]) {
+    conn.end();
+    return {
+      token: null,
+    };
+  }
+
   const {
     isAdmin, token, token_expired_date, id,
   } = result[0][0];

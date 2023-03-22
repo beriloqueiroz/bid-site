@@ -12,6 +12,8 @@ import { useApply, useReducers } from '@/lib/redux/hooks';
 import LoginForm from '@/components/painel/login';
 import style from '../styles/painel-bid.module.scss';
 import { ResponseUploadApi } from './api/upload';
+import { DataAuthenticate } from './api/authenticate';
+import { DataGetAccounts } from './api/getAccounts';
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
@@ -25,7 +27,7 @@ export default function CustomerPanel() {
 
   const [resultLog, setResultLog] = useState<ResponseUploadApi[]>([]);
   const [accountEmail, setAccountEmail] = useState('');
-  const [optionsSelect] = useState<OptionSelect[]>([
+  const [optionsSelect, setOptionSelect] = useState<OptionSelect[]>([
     { value: '', content: 'SELECIONE' },
     { content: 'Conta 1', value: 'bid_entregas1' },
     { content: 'Conta 2', value: 'bid_entregas2' },
@@ -58,15 +60,9 @@ export default function CustomerPanel() {
         },
       });
 
-      const {
-        status,
-        error,
-      }: {
-        status: number;
-        error: string | null;
-      } = await res.json();
+      const { status, error, isAdmin }: DataAuthenticate = await res.json();
 
-      if (status === 401) {
+      if (status === 401 || !isAdmin) {
         setErrorGeral(true);
         clearLogin();
         throw new Error(`${error}`);
@@ -78,6 +74,33 @@ export default function CustomerPanel() {
     if (tokenSession && useridSession && usernameSession) {
       authenticate();
     }
+  }, []);
+
+  useEffect(() => {
+    async function getOptionsAccounts() {
+      const res = await fetch('/api/getAccounts', {
+        method: 'GET',
+        headers: {
+          'x-username': window.sessionStorage.getItem('username') || userName || '',
+          'x-token': window.sessionStorage.getItem('token') || token || '',
+        },
+      });
+
+      const { status, error, content }: DataGetAccounts = await res.json();
+
+      if (status === 401 || !content) {
+        setErrorGeral(true);
+        clearLogin();
+        throw new Error(`${error}`);
+      }
+
+      setOptionSelect(content.map((elem) => ({
+        content: elem.name,
+        value: elem.id,
+      })));
+    }
+
+    getOptionsAccounts();
   }, []);
 
   const router = useRouter();
@@ -229,7 +252,7 @@ export default function CustomerPanel() {
   return (
     <Layout>
       <section className={style.section}>
-        <LoginForm />
+        <LoginForm isPrivate />
         {isLogged && (
           <div className={style.forms}>
             <form className={style.inLoteForm}>

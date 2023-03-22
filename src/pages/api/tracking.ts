@@ -1,4 +1,5 @@
-import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
+import { accountService } from '@/lib/account/IAccountService';
+import { deliveryService } from '@/lib/task/IDeliveryService';
 import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -11,7 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   const param = req.query;
 
-  const history = await deliveryService.getTrackingHistory(`${param.order}`);
+  const configs = await accountService.getTrackingKeysByUserID('');
+
+  const history = await deliveryService.getTrackingHistory(`${param.order}`, configs);
 
   if (history) {
     history.task.name = parseRecipient(history.task.name);

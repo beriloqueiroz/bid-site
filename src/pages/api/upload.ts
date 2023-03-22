@@ -5,8 +5,10 @@ import { loginService } from '@/lib/user/login/ILogin';
 
 import { csvToJson } from '@/lib/util/convertions';
 import { SendTask } from '@/lib/types/SendTask';
-import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
+import { deliveryService } from '@/lib/task/IDeliveryService';
 import { dateByDeliveryType } from '@/lib/util/rules';
+import { accountService } from '@/lib/account/IAccountService';
+import { SendTaskConfig } from '@/lib/types/TaskConfig';
 import { parseForm, FormidableError } from '../../lib/util/parse-form';
 
 export type ResponseUploadApi = {
@@ -32,16 +34,19 @@ type Template =
     'Estado':string
   };
 
-async function sendTasksbyFile(url: string, prefixCompany:string, accountEmail = 'bid_entregas') {
+async function sendTasksbyFile(url: string, configSendTask: SendTaskConfig) {
   let tasks = [];
   const responses: ResponseUploadApi[] = [];
-  const collectionAddress = process.env[`ADDRESS_${prefixCompany.toString()}`] as string;
+  const collectionAddress = configSendTask.address;
 
   try {
     tasks = await csvToJson(url.toString(), ',') as Template[];
   } catch (e) {
     tasks = await csvToJson(url.toString(), ';') as Template[];
   }
+  const {
+    driver, key, model, rule, team,
+  } = configSendTask;
   for (const task of tasks) {
     try {
       const orderNumber = task.Pedido;
@@ -54,14 +59,15 @@ async function sendTasksbyFile(url: string, prefixCompany:string, accountEmail =
         startDate: dateByDeliveryType(task['Categoria de envio']).format('YYYY-MM-DDThh:mm:ss'),
         endDate: dateByDeliveryType(task['Categoria de envio']).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
         reference: task['Ponto de referência'],
-
         description: collectionAddress,
         email: 'sender@bid.log.br',
         orderNumber,
-
-        deliveryType: task['Categoria de envio'],
-        account: accountEmail?.toString(),
-        dynamicKey: accountEmail?.toString(),
+        type: task['Categoria de envio'],
+        driver,
+        key,
+        model,
+        rule,
+        team,
       };
       const response = await deliveryService.sendTask(data);
       if (response?.error || !response?.content) {
@@ -94,10 +100,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, id } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
-  if (!token) {
+  if (!token || !id) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
+    return;
+  }
+
+  const configSendTask = await accountService.getSendInfosByUserID(id.toString());
+
+  if (!configSendTask) {
+    res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });
     return;
   }
 
@@ -140,8 +153,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
       }
     });
 
-    const responses = await sendTasksbyFile(url.toString(), prefixCompany.toString());
-    console.log('🚀 ~ file: upload.ts:144 ~ handler ~ responses:', responses);
+    const responses = await sendTasksbyFile(url.toString(), configSendTask);
     const hasSuccess = !!responses.find((r) => r.status === 200);
     if (hasSuccess) { res.status(200).json(responses); } else { res.status(500).json(responses); }
   } catch (e) {

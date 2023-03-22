@@ -1,12 +1,13 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
+import { deliveryService } from '@/lib/task/IDeliveryService';
 import { SendTask } from '@/lib/types/SendTask';
 import { csvToJson } from '@/lib/util/convertions';
 import moment from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
+import { accountService } from '@/lib/account/IAccountService';
 import { parseForm, FormidableError } from '../../lib/util/parse-form';
 
 export type ResponseUploadApi = {
@@ -42,17 +43,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
 
   const prefixCompany = req.headers['x-username'];
   const tokenSession = req.headers['x-token'];
-  const accountEmail = req.headers['x-account'];
+  const account = req.headers['x-account'];
 
-  if (!prefixCompany || !tokenSession || !accountEmail) {
+  if (!prefixCompany || !tokenSession || !account) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token, isAdmin } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, id, isAdmin } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
-  if (!token) {
+  if (!token || !id) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
+    return;
+  }
+
+  const configSendTask = await accountService.getSendInfoByAccountID(account.toString());
+
+  if (!configSendTask) {
+    res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });
     return;
   }
 
@@ -61,6 +69,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
+  const {
+    driver, key, model, rule, team,
+  } = configSendTask;
   const responses: ResponseUploadApi[] = [];
 
   try {
@@ -88,15 +99,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           startDate: `${moment(task.Start_Before).format('YYYY-MM-DD')}T08:00:00.830Z`,
           endDate: `${moment(task.Complete_Before).format('YYYY-MM-DD')}T23:00:00.830Z`,
           reference: task.notes,
-
           description: task.Description,
           email: 'sender@bid.log.br',
           orderNumber,
-
-          account: accountEmail?.toString(),
-          deliveryType: task['Categoria de envio'],
-
-          dynamicKey: accountEmail?.toString(),
+          type: task['Categoria de envio'],
+          driver,
+          key,
+          model,
+          rule,
+          team,
         };
         const response = await deliveryService.sendTask(data);
         if (response?.error || !response?.content) {

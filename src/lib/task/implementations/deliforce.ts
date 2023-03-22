@@ -1,4 +1,5 @@
 import { ResponseDefault } from '@/lib/types/Response';
+import { TrackingTaskConfig } from '@/lib/types/TaskConfig';
 import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
 import { TaskStatus } from '@/lib/types/TaskStatus';
 import axios from 'axios';
@@ -191,31 +192,16 @@ async function sendTask({
   phone,
   complement,
   reference,
-  account,
-  deliveryType,
-  dynamicKey,
+  type,
+  key,
+  driver,
+  team,
+  rule,
+  model,
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
-  const username = orderNumber.slice(0, orderNumber.indexOf('-'));
-
-  const generalAuth = process.env[`SEND_${username}`] as string;
-
-  if (!generalAuth && !dynamicKey) return { content: null, error: 'erro ao buscar empresa' };
-
-  const driverID = process.env[`DRIVER_${account}`] as string;
-  const teamID = process.env[`TEAM_${account}`] as string;
-  const ruleID = process.env[`RULE_${account}`] as string;
-  const templateID = process.env[`MODEL_${account}`] as string;
-  const keyForce = dynamicKey ? process.env[`SEND_${dynamicKey}`] : null;
-
-  if (!ruleID || !driverID || !teamID || !templateID) return { content: null, error: 'erro ao buscar infos deliforce' };
-
-  let key = generalAuth as string;
-
-  if (keyForce) {
-    key = keyForce;
-  }
+  if (!rule || !driver || !team || !model) return { content: null, error: 'erro ao buscar infos deliforce' };
 
   const order = await getTaskByOrder(orderNumber, key);
 
@@ -249,23 +235,23 @@ async function sendTask({
     businessType: 2,
     orderId: orderNumber,
     timezone: 'America/Fortaleza',
-    driverId: driverID,
-    teamId: teamID,
+    driverId: driver,
+    teamId: team,
     customerNotes: reference,
     description,
     jobAmount: value,
     driverType: 1,
     transportType: [1],
-    pricingOrEarningRules: [ruleID],
+    pricingOrEarningRules: [rule],
 
     isRepeat: false,
     isDriverTemplateRepeat: false,
-    templateId: templateID,
+    templateId: model,
     templateName: 'Envio',
     templateData: [
       {
         fieldName: 'tipo',
-        fieldValue: deliveryType,
+        fieldValue: type,
         dataType: 'text',
         mandatoryFields: 'Not-Mandatory',
         permitAgent: 'Read Only',
@@ -290,21 +276,13 @@ async function sendTask({
   }
 }
 
-async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | null> {
+async function getTrackingHistory(orderNumber: string, config: TrackingTaskConfig[]): Promise<TaskLogDTO | null> {
   if (orderNumber.indexOf('-') < 0) {
     return null;
   }
 
-  const prefix = orderNumber.slice(0, orderNumber.indexOf('-'));
-
-  const generalAuth = process.env[`TRACKING_${prefix}`] as string;
-
-  if (!generalAuth) return null;
-
-  const keys = JSON.parse(generalAuth) as string[];
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
+  for (let i = 0; i < config.length; i++) {
+    const { key, name } = config[i];
     const order = await getTaskByOrder(orderNumber, key);
 
     if (!order) continue;
@@ -326,7 +304,7 @@ async function getTrackingHistory(orderNumber: string): Promise<TaskLogDTO | nul
         },
         forecast: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
       },
-      origin: `${i + 1}`,
+      origin: name,
     };
     return historyResponse;
   }

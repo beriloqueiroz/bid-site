@@ -40,7 +40,7 @@ export default function CustomerPanel() {
   const [state, setState] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
   const [recipient, setRecipient] = useState('');
-  const [deliveryType, setDeliveryType] = useState('');
+  const [type, setType] = useState('');
 
   const [inLote, setInLote] = useState(false);
   const [optionsSelect] = useState<OptionSelect[]>([
@@ -286,7 +286,7 @@ export default function CustomerPanel() {
         throw new Error('Credenciais não informadas');
       }
 
-      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || deliveryType === '') {
+      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || type === '') {
         setErrorGeral(true);
         setRequiredError(true);
         throw new Error('preencha todos os campos obrigatórios, os campos obrigatórios possuem *');
@@ -306,7 +306,7 @@ export default function CustomerPanel() {
         reference,
         phone,
         recipient,
-        deliveryType,
+        deliveryType: type,
       };
       const res = await fetch('/api/sendTask', {
         method: 'POST',
@@ -342,7 +342,7 @@ export default function CustomerPanel() {
       setNeighborhood('');
       setCity('');
       setOrder(response.content);
-      setDeliveryType('');
+      setType('');
       setRecipient('');
     } catch (error) {
       setErrorGeral(true);
@@ -505,12 +505,12 @@ export default function CustomerPanel() {
                     id="deliveryType"
                     placeholder="Selecione"
                     isRequired
-                    setOnChange={setDeliveryType}
-                    value={deliveryType}
+                    setOnChange={setType}
+                    value={type}
                     isSelect
                     optionsSelect={optionsSelect}
                     classPlus={style.i9}
-                    alertRequired={requiredError && deliveryType === ''}
+                    alertRequired={requiredError && type === ''}
                   />
                   <Button
                     handleSubmit={individualHandleSubmit}

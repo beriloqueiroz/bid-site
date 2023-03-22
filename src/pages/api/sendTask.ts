@@ -1,10 +1,11 @@
-import { deliveryService } from '@/lib/deliverySystem/IDeliveryService';
+import { deliveryService } from '@/lib/task/IDeliveryService';
 import { SendTask } from '@/lib/types/SendTask';
 import { dateByDeliveryType } from '@/lib/util/rules';
 import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
 import nodemailer from 'nodemailer';
+import { accountService } from '@/lib/account/IAccountService';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -58,17 +59,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     return;
   }
 
-  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, id } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
-  if (!token) {
+  if (!token || !id) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const collectionAddress = process.env[`ADDRESS_${prefixCompany.toString()}`] as string;
+  const configSendTask = await accountService.getSendInfosByUserID(id.toString());
+
+  if (!configSendTask) {
+    res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });
+    return;
+  }
 
   const {
-    street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, deliveryType,
+    street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type,
   } = JSON.parse(req.body);
 
   try {
@@ -76,6 +82,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
   } catch (error) {
     res.status(500).json({ status: 500, error: `erro ao enviar email ${error}` });
   }
+
+  const {
+    driver, key, model, rule, team,
+  } = configSendTask;
 
   try {
     const orderNumber = `${prefixCompany}-${randomInt(100000)}`;
@@ -85,16 +95,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       phone,
       name: `[${orderNumber}] ${recipient}`,
       value: '10.00',
-      startDate: dateByDeliveryType(deliveryType).format('YYYY-MM-DDThh:mm:ss'),
-      endDate: dateByDeliveryType(deliveryType).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
+      startDate: dateByDeliveryType(type).format('YYYY-MM-DDThh:mm:ss'),
+      endDate: dateByDeliveryType(type).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
       reference,
-
-      description: collectionAddress,
+      description: configSendTask.address,
       email: 'sender@bid.log.br',
       orderNumber,
-
-      account: prefixCompany.toString(),
-      deliveryType,
+      type,
+      driver,
+      key,
+      model,
+      rule,
+      team,
     };
     const response = await deliveryService.sendTask(data);
     if (response?.error || !response?.content) {

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { myLoginSQLImplementation } from './implementations/byMysql';
+import { myLoginSQLImplementation } from './implementations/myLoginSQLImplementation';
 
 export type authResponse = {
   token: string | null

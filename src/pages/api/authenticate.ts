@@ -1,13 +1,14 @@
 import { loginService } from '@/lib/user/login/ILogin';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type Data = {
+export type DataAuthenticate = {
   status: number;
   error: string | null;
   token?: string;
+  isAdmin?:boolean
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Data | null>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<DataAuthenticate | null>) => {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     res.status(405).json({
@@ -25,13 +26,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data | null>) =
     return;
   }
 
-  const { token } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, isAdmin } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
-  res.status(200).json({ status: 200, error: null, token: '123456' });
+  res.status(200).json({
+    status: 200, error: null, token, isAdmin,
+  });
 };
 
 export default handler;

@@ -10,9 +10,10 @@ export type SendTask = {
   orderNumber: string;
   description: string;
   value: string;
-
-  account: string;
-  deliveryType: string;
-
-  dynamicKey?: string;
+  type: string;
+  key: string;
+  driver:string;
+  team:string;
+  rule:string;
+  model:string;
 };

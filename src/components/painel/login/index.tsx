@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import Button from '@/components/button';
 import InputForm from '@/components/inputForm';
 import { useApply, useReducers } from '@/lib/redux/hooks';
@@ -5,7 +6,11 @@ import { ResponseLoginApi } from '@/pages/api/login';
 import React, { useState } from 'react';
 import style from './style.module.scss';
 
-export default function LoginForm() {
+interface Props {
+  isPrivate?:boolean;
+}
+
+export default function LoginForm({ isPrivate }:Props) {
   const apply = useApply();
   const [sendingLogin, setSendingLogin] = useState(false);
   const [user, setUser] = useState('');
@@ -53,6 +58,12 @@ export default function LoginForm() {
         apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
         clearLogin();
         throw new Error(`${error}, entre em contato conosco!`);
+      }
+
+      if (!content.isAdmin && isPrivate) {
+        apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
+        clearLogin();
+        throw new Error('Não permitido');
       }
 
       apply('user', {
