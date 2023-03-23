@@ -3,12 +3,12 @@
 /* eslint-disable no-await-in-loop */
 import { deliveryService } from '@/lib/task/IDeliveryService';
 import { SendTask } from '@/lib/types/SendTask';
-import { csvToJson } from '@/lib/util/convertions';
+import { csvToJson } from '@/lib/helpers/convertions';
 import moment from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
 import { accountService } from '@/lib/account/IAccountInfosService';
-import { parseForm, FormidableError } from '../../lib/util/parse-form';
+import { parseForm, FormidableError } from '../../lib/helpers/parse-form';
 
 export type ResponseUploadApi = {
   status: number;

@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useApply, useReducers } from '@/lib/redux/hooks';
 import LoginForm from '@/components/login';
 import { TrackingTaskConfig } from '@/lib/types/AccountInfo';
+import Error from '@/components/error';
 import style from '../styles/painel-bid.module.scss';
 import { ResponseUploadApi } from './api/upload';
 
@@ -242,8 +243,8 @@ export default function CustomerPanel() {
             ))
           )}
         </div>
-
       </section>
+      <Error />
     </Layout>
   );
 }

@@ -3,13 +3,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import { loginService } from '@/lib/user/login/ILogin';
 
-import { csvToJson } from '@/lib/util/convertions';
+import { csvToJson } from '@/lib/helpers/convertions';
 import { SendTask } from '@/lib/types/SendTask';
 import { deliveryService } from '@/lib/task/IDeliveryService';
-import { dateByDeliveryType } from '@/lib/util/rules';
+import { dateByDeliveryType } from '@/lib/helpers/rules';
 import { accountService } from '@/lib/account/IAccountInfosService';
 import { AccountInfo } from '@/lib/types/AccountInfo';
-import { parseForm, FormidableError } from '../../lib/util/parse-form';
+import { parseForm, FormidableError } from '../../lib/helpers/parse-form';
 
 export type ResponseUploadApi = {
   status: number;

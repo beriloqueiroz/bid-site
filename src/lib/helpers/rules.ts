@@ -1,4 +1,5 @@
 import moment, { Moment } from 'moment';
+import { Client } from '../types/Client';
 
 export function isNumber(value: string) {
   if (typeof value === 'string') {
@@ -30,11 +31,27 @@ export function dateByDeliveryType(type: string): Moment {
     }
   }
   const now = moment().subtract(3, 'hours');
-  // if (isNumber(`${process.env.LIMIT_HOUR}`)) {
-  //   if (now.hour() >= parseInt(`${process.env.LIMIT_HOUR}`)) {
-  //     throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);
-  //   }
-  // }
+  if (isNumber(`${process.env.LIMIT_HOUR}`)) {
+    if (now.hour() >= Number(`${process.env.LIMIT_HOUR}`)) {
+      throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);
+    }
+  }
 
   return countValidDays(now.toISOString(), forecast);
+}
+
+export function calculePrice(value:number, typeSelected:string, citySelected: string, clientInfos: Client) {
+  let base = 10;
+  if (typeSelected === 'D') {
+    if (citySelected.toLowerCase() === 'fortaleza') {
+      base = clientInfos.prices.capital.d;
+    } else { base = clientInfos.prices.metropolitana.d; }
+  }
+  if (typeSelected === 'D+1') {
+    if (citySelected.toLowerCase() === 'fortaleza') {
+      base = clientInfos.prices.capital.d1;
+    } else { base = clientInfos.prices.metropolitana.d1; }
+  }
+  if (value < 200) return base;
+  return (base * value) / 200;
 }

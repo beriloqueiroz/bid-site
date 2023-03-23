@@ -1,6 +1,6 @@
 import { deliveryService } from '@/lib/task/IDeliveryService';
 import { SendTask } from '@/lib/types/SendTask';
-import { dateByDeliveryType } from '@/lib/util/rules';
+import { dateByDeliveryType } from '@/lib/helpers/rules';
 import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';

@@ -12,6 +12,8 @@ import { useRouter } from 'next/router';
 
 import { useApply, useReducers } from '@/lib/redux/hooks';
 import LoginForm from '@/components/login';
+import Error from '@/components/error';
+import { calculePrice, isNumber } from '@/lib/helpers/rules';
 import style from '../styles/painel-cliente.module.scss';
 import { ResponseCepApi } from './api/getInfosByCep';
 import { ResponseSendTaskApi } from './api/sendTask';
@@ -57,22 +59,6 @@ export default function CustomerPanel() {
     window.sessionStorage.removeItem('userid');
     window.sessionStorage.removeItem('username');
     apply('user', { isLogged: false, userName: '', identification: '' });
-  }
-
-  function calculePrice(value:number, typeSelected:string, citySelected: string) {
-    let base = 10;
-    if (typeSelected === 'D') {
-      if (citySelected.toLowerCase() === 'fortaleza') {
-        base = client.prices.capital.d;
-      } else { base = client.prices.metropolitana.d; }
-    }
-    if (typeSelected === 'D+1') {
-      if (citySelected.toLowerCase() === 'fortaleza') {
-        base = client.prices.capital.d1;
-      } else { base = client.prices.metropolitana.d1; }
-    }
-    if (value < 200) return base;
-    return (base * value) / 200;
   }
 
   const router = useRouter();
@@ -197,13 +183,6 @@ export default function CustomerPanel() {
     }
   };
 
-  function isNumber(value: string) {
-    if (typeof value === 'string') {
-      return !Number.isNaN(Number(value));
-    }
-    return false;
-  }
-
   const getInfosByCep = async (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
     if (!isNumber(e.target.value.slice(-1)) && e.target.value.length > 0) {
       return;
@@ -239,7 +218,7 @@ export default function CustomerPanel() {
         setNeighborhood(content.bairro);
         setCity(content.cidade);
         setState(content.estado);
-        setPrice(calculePrice(valueDeclared, type, content.cidade).toString());
+        setPrice(calculePrice(valueDeclared, type, content.cidade, client).toString());
       } catch (error) {
         apply('error', { hasError: true, message: `${error}` });
       }
@@ -344,13 +323,13 @@ export default function CustomerPanel() {
   function onChangeValue(e: ChangeEvent<HTMLInputElement>) {
     if (isNumber(e.target.value)) {
       setValueDeclared(Number(e.target.value));
-      setPrice(calculePrice(Number(e.target.value), type, city).toString());
+      setPrice(calculePrice(Number(e.target.value), type, city, client).toString());
     }
   }
 
   function onChangeType(e: ChangeEvent<HTMLSelectElement>) {
     setType(e.target.value);
-    setPrice(calculePrice(valueDeclared, e.target.value, city).toString());
+    setPrice(calculePrice(valueDeclared, e.target.value, city, client).toString());
   }
 
   return (
@@ -603,6 +582,7 @@ export default function CustomerPanel() {
         )}
         {submitted && !hasError && <span className={style.successMessage}>Sucesso ao enviar.</span>}
       </section>
+      <Error />
     </Layout>
   );
 }

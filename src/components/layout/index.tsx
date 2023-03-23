@@ -6,7 +6,6 @@ import Footer from '../footer';
 import GoogleAnalytics from '../google/ga4Tag';
 import Header from '../header';
 import styles from './style.module.scss';
-import Error from '../error';
 
 interface Props {
   children: ReactNode;
@@ -24,7 +23,6 @@ export default function Layout(props: Props) {
       </Head>
       <Header />
       <main className={styles.main}>{props.children}</main>
-      <Error />
       <Footer />
     </>
   );

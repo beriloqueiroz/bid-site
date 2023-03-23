@@ -1,5 +1,5 @@
 import { loginService } from '@/lib/user/login/ILogin';
-import { ceps } from '@/lib/util/ceps';
+import { ceps } from '@/lib/helpers/ceps';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export type ResponseCepApi = {
