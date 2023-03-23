@@ -2,8 +2,9 @@
 import Button from '@/components/button';
 import InputForm from '@/components/inputForm';
 import { useApply, useReducers } from '@/lib/redux/hooks';
+import { DataGetAccounts } from '@/pages/api/getAccountsOptionsInfos';
 import { ResponseLoginApi } from '@/pages/api/login';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
 
 interface Props {
@@ -30,6 +31,67 @@ export default function LoginForm({ isPrivate }:Props) {
     apply('user', { isLogged: false, userName: '', identification: '' });
   }
 
+  async function getOptionsAccounts() {
+    const res = await fetch('/api/getAccountsOptionsInfos', {
+      method: 'GET',
+      headers: {
+        'x-username': window.sessionStorage.getItem('username') || userName || '',
+        'x-token': window.sessionStorage.getItem('token') || token || '',
+      },
+    });
+
+    const { status, error, content }: DataGetAccounts = await res.json();
+
+    if (status === 401 || !content) {
+      apply('error', { hasError: true, message: 'Autenticação inválida' });
+      clearLogin();
+      throw new Error(`${error}`);
+    }
+
+    apply('accountsToSend', {
+      content: content.map((elem) => ({
+        name: elem.name,
+        id: elem.id,
+      })),
+    });
+  }
+
+  useEffect(() => {
+    const tokenSession = window.sessionStorage.getItem('token');
+    const useridSession = window.sessionStorage.getItem('userid');
+    const usernameSession = window.sessionStorage.getItem('username');
+    async function authenticate() {
+      const res = await fetch('/api/authenticate', {
+        method: 'GET',
+        headers: {
+          'x-username': userName || usernameSession || '',
+          'x-token': token || tokenSession || '',
+        },
+      });
+
+      const {
+        status,
+        error,
+      }: {
+        status: number;
+        error: string | null;
+      } = await res.json();
+
+      if (status === 401) {
+        apply('error', { hasError: true, message: 'Autenticação inválida' });
+        clearLogin();
+        throw new Error(`${error}`);
+      }
+      apply('user', {
+        isLogged: true, userName: usernameSession, identification: useridSession, token: tokenSession,
+      });
+      if (isPrivate) { await getOptionsAccounts(); }
+    }
+    if (tokenSession && useridSession && usernameSession && !isLogged) {
+      authenticate();
+    }
+  }, []);
+
   const login = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
     setRequiredError(false);
@@ -42,7 +104,7 @@ export default function LoginForm({ isPrivate }:Props) {
         throw new Error('Credenciais não informadas');
       }
 
-      apply('error', { hasAuthenticateError: false, hasGenericError: false, message: '' });
+      apply('error', { hasError: false, message: '' });
 
       const res = await fetch('/api/login', {
         method: 'GET',
@@ -55,13 +117,13 @@ export default function LoginForm({ isPrivate }:Props) {
       const { status, error, content }: ResponseLoginApi = await res.json();
 
       if (status !== 200) {
-        apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         clearLogin();
         throw new Error(`${error}, entre em contato conosco!`);
       }
 
       if (!content.isAdmin && isPrivate) {
-        apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         clearLogin();
         throw new Error('Não permitido');
       }
@@ -73,8 +135,9 @@ export default function LoginForm({ isPrivate }:Props) {
       window.sessionStorage.setItem('token', content.token);
       window.sessionStorage.setItem('userid', content.id);
       window.sessionStorage.setItem('username', content.userName);
+      if (isPrivate) { await getOptionsAccounts(); }
     } catch (err) {
-      apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
+      apply('error', { hasError: true, message: 'Erro de autenticação' });
       clearLogin();
     }
     setSendingLogin(false);
@@ -88,7 +151,7 @@ export default function LoginForm({ isPrivate }:Props) {
         method: 'GET',
         headers: {
           'x-username': user,
-          'X-Identification': window.sessionStorage.getItem('userid') || identification || '',
+          'x-identification': window.sessionStorage.getItem('userid') || identification || '',
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });
@@ -104,12 +167,12 @@ export default function LoginForm({ isPrivate }:Props) {
       clearLogin();
 
       if (status !== 200) {
-        apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         throw new Error(`${error}, entre em contato conosco!`);
       }
-      apply('error', { hasAuthenticateError: false, hasGenericError: false, message: '' });
+      apply('error', { hasError: false, message: '' });
     } catch (err) {
-      apply('error', { hasAuthenticateError: true, hasGenericError: false, message: 'Erro de autenticação' });
+      apply('error', { hasError: true, message: 'Erro de autenticação' });
     }
   };
 

@@ -1,5 +1,5 @@
 import {
-  KeyboardEvent, useEffect, useState,
+  KeyboardEvent, useState,
 } from 'react';
 
 import Button from '@/components/button';
@@ -7,34 +7,22 @@ import InputForm from '@/components/inputForm';
 import Layout from '@/components/layout';
 import { useRouter } from 'next/router';
 
-import { OptionSelect } from '@/components/inputForm/props';
 import { useApply, useReducers } from '@/lib/redux/hooks';
-import LoginForm from '@/components/painel/login';
+import LoginForm from '@/components/login';
+import { TrackingTaskConfig } from '@/lib/types/AccountInfo';
 import style from '../styles/painel-bid.module.scss';
 import { ResponseUploadApi } from './api/upload';
-import { DataAuthenticate } from './api/authenticate';
-import { DataGetAccounts } from './api/getAccounts';
 
 export default function CustomerPanel() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [errorGeral, setErrorGeral] = useState(false);
-  const [messageError, setMessageError] = useState(' Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato.');
   const [fileName, setFileName] = useState('');
   const [fileSelected, setFileSelected] = useState<File | null>();
   const [requiredError, setRequiredError] = useState(false);
 
   const [resultLog, setResultLog] = useState<ResponseUploadApi[]>([]);
-  const [accountEmail, setAccountEmail] = useState('');
-  const [optionsSelect, setOptionSelect] = useState<OptionSelect[]>([
-    { value: '', content: 'SELECIONE' },
-    { content: 'Conta 1', value: 'bid_entregas1' },
-    { content: 'Conta 2', value: 'bid_entregas2' },
-    { content: 'Conta 3', value: 'bid_entregas3' },
-    { content: 'Conta 4', value: 'bid_entregas4' },
-    { content: 'Master', value: 'bid_entregas' },
-  ]);
+  const [account, setAccount] = useState('');
 
   const apply = useApply();
 
@@ -45,70 +33,11 @@ export default function CustomerPanel() {
     apply('user', { isLogged: false, userName: '', identification: '' });
   }
 
-  const { isLogged, userName, token } = useReducers('user.isLogged', 'user.userName', 'user.token');
-
-  useEffect(() => {
-    const tokenSession = window.sessionStorage.getItem('token');
-    const useridSession = window.sessionStorage.getItem('userid');
-    const usernameSession = window.sessionStorage.getItem('username');
-    async function authenticate() {
-      const res = await fetch('/api/authenticate', {
-        method: 'GET',
-        headers: {
-          'x-username': window.sessionStorage.getItem('username') || userName || '',
-          'x-token': window.sessionStorage.getItem('token') || token || '',
-        },
-      });
-
-      const { status, error, isAdmin }: DataAuthenticate = await res.json();
-
-      if (status === 401 || !isAdmin) {
-        setErrorGeral(true);
-        clearLogin();
-        throw new Error(`${error}`);
-      }
-      apply('user', {
-        isLogged: true, userName: usernameSession, identification: useridSession, token: tokenSession,
-      });
-    }
-    if (tokenSession && useridSession && usernameSession) {
-      authenticate();
-    }
-  }, []);
-
-  useEffect(() => {
-    async function getOptionsAccounts() {
-      const res = await fetch('/api/getAccounts', {
-        method: 'GET',
-        headers: {
-          'x-username': window.sessionStorage.getItem('username') || userName || '',
-          'x-token': window.sessionStorage.getItem('token') || token || '',
-        },
-      });
-
-      const { status, error, content }: DataGetAccounts = await res.json();
-
-      if (status === 401 || !content) {
-        setErrorGeral(true);
-        clearLogin();
-        throw new Error(`${error}`);
-      }
-
-      setOptionSelect(content.map((elem) => ({
-        content: elem.name,
-        value: elem.id,
-      })));
-    }
-
-    getOptionsAccounts();
-  }, []);
+  const {
+    isLogged, userName, token, content, hasError,
+  } = useReducers('user.isLogged', 'user.userName', 'user.token', 'accountsToSend.content', 'error.hasError');
 
   const router = useRouter();
-
-  const handleMessageError = (msg: string) => {
-    setMessageError(msg);
-    router.push('#error');
-  };
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -122,10 +51,9 @@ export default function CustomerPanel() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files;
-
+    apply('error', { hasError: false, message: '' });
     if (!fileList || !fileList[0]) {
-      setErrorGeral(true);
-      handleMessageError('Erro ao selecionar arquivo!');
+      apply('error', { hasError: true, message: 'Erro ao selecionar arquivo!' });
       return;
     }
     setFileSelected(fileList[0]);
@@ -134,26 +62,26 @@ export default function CustomerPanel() {
 
   const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
+    apply('error', { hasError: false, message: '' });
 
     if (!fileSelected) {
-      setErrorGeral(true);
-      throw new Error('Arquivo não selecionado!');
+      apply('error', { hasError: true, message: 'Arquivo não selecionado!' });
+      return;
     }
 
     if (userName === '' || token === '' || !isLogged) {
       clearLogin();
-      setErrorGeral(true);
-      throw new Error('Credenciais não informadas');
+      apply('error', { hasError: true, message: 'Credenciais não informadas' });
+      return;
     }
 
-    if (accountEmail === '') {
-      setErrorGeral(true);
+    if (account === '') {
+      apply('error', { hasError: true, message: 'preencha todos os campos obrigatórios, os campos obrigatórios possuem *' });
       setRequiredError(true);
-      throw new Error('preencha todos os campos obrigatórios, os campos obrigatórios possuem *');
     }
 
     setSending(true);
-    setErrorGeral(false);
+    apply('error', { hasError: false, message: '' });
     setResultLog([]);
 
     try {
@@ -165,7 +93,7 @@ export default function CustomerPanel() {
         body: formData,
         headers: {
           'x-username': window.sessionStorage.getItem('username') || userName || '',
-          'x-account': accountEmail,
+          'x-account': account,
           'x-token': window.sessionStorage.getItem('token') || token || '',
         },
       });
@@ -174,30 +102,29 @@ export default function CustomerPanel() {
 
       if (!response?.length) {
         if (response?.status === 401) {
-          setErrorGeral(true);
+          apply('error', { hasError: true, message: 'Erro de autenticação' });
           clearLogin();
           setSending(false);
-          throw new Error(`${errorGeral}`);
+          return;
         }
 
         if (response?.error) {
-          setErrorGeral(true);
+          apply('error', { hasError: true, message: `Erro ${response?.error}` });
           setSending(false);
-          throw new Error(`${errorGeral}entre em contato conosco!`);
+          return;
         }
 
         if (response?.error && response?.status === 500) {
-          setErrorGeral(true);
+          apply('error', { hasError: true, message: `Erro ${response?.error}` });
           setSending(false);
-          throw new Error('entre em contato!');
+          return;
         }
       } else {
         setResultLog(response as ResponseUploadApi[]);
       }
       setSubmitted(true);
     } catch (error) {
-      setErrorGeral(true);
-      handleMessageError(`Erro, ${error}`);
+      apply('error', { hasError: true, message: `Erro ${error}` });
     }
     setSending(false);
     setFileSelected(null);
@@ -225,21 +152,20 @@ export default function CustomerPanel() {
       } = await res.json();
 
       if (status === 401) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
         clearLogin();
-        throw new Error(`${error}`);
+        return;
       }
 
       if (status !== 200) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: 'Erro de execução' });
         setDownloading(false);
-        throw new Error('entre em contato conosco!');
+        return;
       }
       router.push('/model_admin.csv');
       setDownloading(false);
     } catch (err) {
-      setErrorGeral(true);
-      handleMessageError(`Erro ao baixar modelo ${errorGeral}`);
+      apply('error', { hasError: true, message: `${err}` });
     }
   }
 
@@ -285,24 +211,19 @@ export default function CustomerPanel() {
                 id="accountEmail"
                 placeholder="Selecione"
                 isRequired
-                setOnChange={setAccountEmail}
-                value={accountEmail}
+                setOnChange={setAccount}
+                value={account}
                 isSelect
-                optionsSelect={optionsSelect}
-                alertRequired={requiredError && accountEmail === ''}
+                optionsSelect={content.map((elem: TrackingTaskConfig) => ({ value: elem.id, content: elem.name }))}
+                alertRequired={requiredError && account === ''}
               />
               <Button handleSubmit={handleSubmit} sending={sending} text="Enviar" id="endButton" type="submit" />
             </form>
 
           </div>
         )}
-        {errorGeral && (
-          <span id="error" className={style.errorMessage}>
-            {messageError}
-          </span>
-        )}
-        {submitted && !errorGeral && <span className={style.successMessage}>Tasks enviadas, verifique o resultado detalhado.</span>}
-        {submitted && !errorGeral && <span className={style.successMessage}>Resultado detalhado:</span>}
+        {submitted && !hasError && <span className={style.successMessage}>Tasks enviadas, verifique o resultado detalhado.</span>}
+        {submitted && !hasError && <span className={style.successMessage}>Resultado detalhado:</span>}
         <div className={style.resultLog}>
           {resultLog.length > 0 && (
             resultLog.map((resLg) => (

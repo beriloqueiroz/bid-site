@@ -24,6 +24,7 @@ export default function InputForm({
   isSelect,
   selectOnChange,
   optionsSelect,
+  littleLabel,
 }: Props) {
   function setChange(e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLSelectElement>) {
     !!setOnChange && setOnChange(e.target.value);
@@ -33,6 +34,7 @@ export default function InputForm({
       <div className={`${style.container} ${classPlus}`}>
         <label className={style.label} htmlFor={name}>
           {label}
+          {littleLabel && <div className={style.littleLabel}>{littleLabel}</div>}
         </label>
         <textarea className={style.textarea} name={name} id={id} placeholder={placeholder} onChange={setChange} value={value} disabled={disable} />
       </div>
@@ -43,6 +45,7 @@ export default function InputForm({
       <div className={`${style.container} ${classPlus}`}>
         <label className={style.label} htmlFor={name}>
           {label}
+          {littleLabel && <div className={style.littleLabel}>{littleLabel}</div>}
         </label>
         <select
           name={name}
@@ -67,6 +70,7 @@ export default function InputForm({
     <div className={`${style.container} ${classPlus}`}>
       <label className={style.label} htmlFor={name}>
         {label}
+        {littleLabel && <div className={style.littleLabel}>{littleLabel}</div>}
       </label>
       <input
         className={`${style.input} ${alertRequired ? style.alertRequired : ''}`}

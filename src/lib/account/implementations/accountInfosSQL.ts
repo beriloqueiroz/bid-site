@@ -1,5 +1,6 @@
 import { connection } from '@/lib/db/mysql/factory';
-import { SendTaskConfig, TrackingTaskConfig } from '@/lib/types/TaskConfig';
+import { AccountInfo, TrackingTaskConfig } from '@/lib/types/AccountInfo';
+import { IAccountInfosService } from '../IAccountInfosService';
 
 async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConfig[]> {
   const statment = 'SELECT * FROM `delivery_accont` WHERE `enabled`=true;';
@@ -23,11 +24,12 @@ async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConf
   })) as TrackingTaskConfig[];
 }
 
-async function getSendInfosByUserID(userID: string): Promise<SendTaskConfig | null> {
-  const statment = `select da.*, c.* from delivery_accont da 
+async function getAccountInfosByUserID(userID: string): Promise<AccountInfo | null> {
+  const statment = `select da.*, c.*, cp.* from delivery_accont da 
                     join clients_config cc on cc.account_to_send=da.id 
                     join users u on u.client_id=cc.client_id 
                     join clients c on c.id=u.client_id
+                    join clients_price cp on c.id=cp.client_id
                     where u.id=? and da.enabled=true;`;
   let conn = null;
   try {
@@ -49,15 +51,31 @@ async function getSendInfosByUserID(userID: string): Promise<SendTaskConfig | nu
     team: res.team,
     model: res.model,
     rule: res.rule,
-    prefix: res.prefix,
-    address: res.address,
+    client: {
+      prefix: res.prefix,
+      address: res.address,
+      allowInlote: res.allow_inlote,
+      corporateName: res.corporate_name,
+      name: res.name,
+      prices: {
+        capital: {
+          d: res.d_capital as number,
+          d1: res.d1_capital as number,
+        },
+        metropolitana: {
+          d: res.d_metropolitana as number,
+          d1: res.d1_metropolitana as number,
+        },
+      },
+    },
   };
 }
-async function getSendInfoByAccountID(accountId :string): Promise<SendTaskConfig | null> {
-  const statment = `select da.*, c.* from delivery_accont da 
+async function getAccountInfoByAccountID(accountId :string): Promise<AccountInfo | null> {
+  const statment = `select da.*, c.*, cp.* from delivery_accont da 
                     join clients_config cc on cc.account_to_send=da.id 
                     join users u on u.client_id=cc.client_id 
                     join clients c on c.id=u.client_id
+                    join clients_price cp on c.id=cp.client_id
                     where da.id=? and da.enabled=true;`;
   let conn = null;
   try {
@@ -80,9 +98,24 @@ async function getSendInfoByAccountID(accountId :string): Promise<SendTaskConfig
     team: res.team,
     model: res.model,
     rule: res.rule,
-    prefix: res.prefix,
-    address: res.address,
+    client: {
+      prefix: res.prefix,
+      address: res.address,
+      allowInlote: res.allow_inlote,
+      corporateName: res.corporate_name,
+      name: res.name,
+      prices: {
+        capital: {
+          d: res.d_capital as number,
+          d1: res.d1_capital as number,
+        },
+        metropolitana: {
+          d: res.d_metropolitana as number,
+          d1: res.d1_metropolitana as number,
+        },
+      },
+    },
   };
 }
 
-export const myAccountSQLImplementation = { getTrackingKeysByUserID, getSendInfosByUserID, getSendInfoByAccountID };
+export const accountInfosSQL: IAccountInfosService = { getTrackingKeysByUserID, getAccountInfosByUserID, getAccountInfoByAccountID };

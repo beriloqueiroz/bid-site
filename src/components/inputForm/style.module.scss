@@ -13,6 +13,7 @@
     width: 100%;
     padding: 10px;
     font-size: 14px;
+    margin-top: auto;
 
     option {
       background: #f8f8f8;
@@ -25,7 +26,7 @@
     }
   }
 
-  input[type='text']:disabled {
+  input[type="text"]:disabled {
     background: var(--color-light-4);
   }
 
@@ -36,6 +37,10 @@
   .label {
     font-size: 18px;
     padding: 0.5rem;
+
+    .littleLabel {
+      font-size: 10px;
+    }
   }
 
   .alertRequired {

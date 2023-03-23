@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
-import { myLoginSQLImplementation } from './implementations/myLoginSQLImplementation';
+
+import { myLoginSQL } from './implementations/myLoginSQL';
 
 export type authResponse = {
   token: string | null
@@ -14,4 +15,4 @@ interface ILoginService {
   authenticate(user: string, token: string): Promise<authResponse>;
 }
 
-export const loginService: ILoginService = myLoginSQLImplementation;
+export const loginService: ILoginService = myLoginSQL;

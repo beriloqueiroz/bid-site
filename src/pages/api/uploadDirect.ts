@@ -7,7 +7,7 @@ import { csvToJson } from '@/lib/util/convertions';
 import moment from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
-import { accountService } from '@/lib/account/IAccountService';
+import { accountService } from '@/lib/account/IAccountInfosService';
 import { parseForm, FormidableError } from '../../lib/util/parse-form';
 
 export type ResponseUploadApi = {
@@ -57,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-  const configSendTask = await accountService.getSendInfoByAccountID(account.toString());
+  const configSendTask = await accountService.getAccountInfoByAccountID(account.toString());
 
   if (!configSendTask) {
     res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });

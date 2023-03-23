@@ -5,7 +5,7 @@ import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
 import nodemailer from 'nodemailer';
-import { accountService } from '@/lib/account/IAccountService';
+import { accountService } from '@/lib/account/IAccountInfosService';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -66,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     return;
   }
 
-  const configSendTask = await accountService.getSendInfosByUserID(id.toString());
+  const configSendTask = await accountService.getAccountInfosByUserID(id.toString());
 
   if (!configSendTask) {
     res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });
@@ -98,7 +98,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       startDate: dateByDeliveryType(type).format('YYYY-MM-DDThh:mm:ss'),
       endDate: dateByDeliveryType(type).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
       reference,
-      description: configSendTask.address,
+      description: configSendTask.client.address,
       email: 'sender@bid.log.br',
       orderNumber,
       type,

@@ -1,6 +1,6 @@
-import { accountService } from '@/lib/account/IAccountService';
+import { accountService } from '@/lib/account/IAccountInfosService';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { TrackingTaskConfig } from '@/lib/types/TaskConfig';
+import { TrackingTaskConfig } from '@/lib/types/AccountInfo';
 import { loginService } from '@/lib/user/login/ILogin';
 
 export type DataGetAccounts = {
@@ -19,15 +19,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<DataGetAccounts
     return;
   }
 
-  const prefixCompany = req.headers['x-username'];
+  const username = req.headers['x-username'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !tokenSession) {
+  if (!username || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token, id, isAdmin } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, id, isAdmin } = await loginService.authenticate(username.toString(), tokenSession.toString());
 
   if (!token || !id || !isAdmin) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });

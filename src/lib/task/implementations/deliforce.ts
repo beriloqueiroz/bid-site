@@ -1,5 +1,5 @@
 import { ResponseDefault } from '@/lib/types/Response';
-import { TrackingTaskConfig } from '@/lib/types/TaskConfig';
+import { TrackingTaskConfig } from '@/lib/types/AccountInfo';
 import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
 import { TaskStatus } from '@/lib/types/TaskStatus';
 import axios from 'axios';

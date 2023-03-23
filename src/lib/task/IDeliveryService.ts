@@ -2,7 +2,7 @@ import { SendTask } from '@/lib/types/SendTask';
 import { TaskLogDTO } from '@/lib/types/TaskLogDTO';
 
 import { ResponseDefault } from '../types/Response';
-import { TrackingTaskConfig } from '../types/TaskConfig';
+import { TrackingTaskConfig } from '../types/AccountInfo';
 import { deliforceImplementation } from './implementations/deliforce';
 
 interface IDeliveryService {

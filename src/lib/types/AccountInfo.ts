@@ -1,11 +1,12 @@
-export interface SendTaskConfig {
+import { Client } from './Client';
+
+export interface AccountInfo {
   key: string;
   driver:string;
   team:string;
   rule:string;
   model:string;
-  prefix: string;
-  address: string;
+  client: Client;
 }
 
 export interface TrackingTaskConfig {

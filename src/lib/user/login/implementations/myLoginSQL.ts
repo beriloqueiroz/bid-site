@@ -108,4 +108,4 @@ async function logout(user: string, token: string): Promise<void> {
   }
 }
 
-export const myLoginSQLImplementation = { login, logout, authenticate };
+export const myLoginSQL = { login, logout, authenticate };

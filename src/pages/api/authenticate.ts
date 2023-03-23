@@ -18,15 +18,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<DataAuthenticat
     return;
   }
 
-  const prefixCompany = req.headers['x-username'];
+  const username = req.headers['x-username'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !tokenSession) {
+  if (!username || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token, isAdmin } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, isAdmin } = await loginService.authenticate(username.toString(), tokenSession.toString());
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });

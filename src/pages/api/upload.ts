@@ -7,8 +7,8 @@ import { csvToJson } from '@/lib/util/convertions';
 import { SendTask } from '@/lib/types/SendTask';
 import { deliveryService } from '@/lib/task/IDeliveryService';
 import { dateByDeliveryType } from '@/lib/util/rules';
-import { accountService } from '@/lib/account/IAccountService';
-import { SendTaskConfig } from '@/lib/types/TaskConfig';
+import { accountService } from '@/lib/account/IAccountInfosService';
+import { AccountInfo } from '@/lib/types/AccountInfo';
 import { parseForm, FormidableError } from '../../lib/util/parse-form';
 
 export type ResponseUploadApi = {
@@ -34,10 +34,10 @@ type Template =
     'Estado':string
   };
 
-async function sendTasksbyFile(url: string, configSendTask: SendTaskConfig) {
+async function sendTasksbyFile(url: string, configSendTask: AccountInfo) {
   let tasks = [];
   const responses: ResponseUploadApi[] = [];
-  const collectionAddress = configSendTask.address;
+  const collectionAddress = configSendTask.client.address;
 
   try {
     tasks = await csvToJson(url.toString(), ',') as Template[];
@@ -107,13 +107,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-  const configSendTask = await accountService.getSendInfosByUserID(id.toString());
+  const configSendTask = await accountService.getAccountInfosByUserID(id.toString());
 
   if (!configSendTask) {
     res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });
     return;
   }
 
+  if (!configSendTask.client.allowInlote) {
+    res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
+    return;
+  }
   try {
     const { files } = await parseForm(req);
 

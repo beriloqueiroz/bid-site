@@ -12,6 +12,7 @@ export interface Props {
   isTextArea?: boolean;
   value: string;
   label: string;
+  littleLabel?: string;
   onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
   disable?: boolean | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement> | undefined;

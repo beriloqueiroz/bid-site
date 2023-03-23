@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  ChangeEvent, KeyboardEvent, useEffect, useState,
+  ChangeEvent, KeyboardEvent, useState,
 } from 'react';
 
 import Button from '@/components/button';
@@ -11,19 +11,19 @@ import ToggleButton from '@/components/toggleButton';
 import { useRouter } from 'next/router';
 
 import { useApply, useReducers } from '@/lib/redux/hooks';
-import LoginForm from '@/components/painel/login';
+import LoginForm from '@/components/login';
 import style from '../styles/painel-cliente.module.scss';
 import { ResponseCepApi } from './api/getInfosByCep';
 import { ResponseSendTaskApi } from './api/sendTask';
 import { ResponseUploadApi } from './api/upload';
 
 export default function CustomerPanel() {
-  const { isLogged, userName, token } = useReducers('user.isLogged', 'user.userName', 'user.token');
+  const {
+    isLogged, userName, token, client, hasError,
+  } = useReducers('user.isLogged', 'user.userName', 'user.token', 'client', 'error.hasError');
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [errorGeral, setErrorGeral] = useState(false);
-  const [messageError, setMessageError] = useState(' Desculpe, Erro ao enviar arquivo, tente novamente ou entre em contato.');
   const [fileName, setFileName] = useState('');
   const [fileSelected, setFileSelected] = useState<File | null>();
   const [requiredError, setRequiredError] = useState(false);
@@ -41,6 +41,8 @@ export default function CustomerPanel() {
   const [neighborhood, setNeighborhood] = useState('');
   const [recipient, setRecipient] = useState('');
   const [type, setType] = useState('');
+  const [price, setPrice] = useState('10');
+  const [valueDeclared, setValueDeclared] = useState(0);
 
   const [inLote, setInLote] = useState(false);
   const [optionsSelect] = useState<OptionSelect[]>([
@@ -57,47 +59,23 @@ export default function CustomerPanel() {
     apply('user', { isLogged: false, userName: '', identification: '' });
   }
 
-  useEffect(() => {
-    const tokenSession = window.sessionStorage.getItem('token');
-    const useridSession = window.sessionStorage.getItem('userid');
-    const usernameSession = window.sessionStorage.getItem('username');
-    async function authenticate() {
-      const res = await fetch('/api/authenticate', {
-        method: 'GET',
-        headers: {
-          'x-username': window.sessionStorage.getItem('username') || userName || '',
-          'x-token': window.sessionStorage.getItem('token') || token || '',
-        },
-      });
-
-      const {
-        status,
-        error,
-      }: {
-        status: number;
-        error: string | null;
-      } = await res.json();
-
-      if (status === 401) {
-        setErrorGeral(true);
-        clearLogin();
-        throw new Error(`${error}`);
-      }
-      apply('user', {
-        isLogged: true, userName: usernameSession, identification: useridSession, token: tokenSession,
-      });
+  function calculePrice(value:number, typeSelected:string, citySelected: string) {
+    let base = 10;
+    if (typeSelected === 'D') {
+      if (citySelected.toLowerCase() === 'fortaleza') {
+        base = client.prices.capital.d;
+      } else { base = client.prices.metropolitana.d; }
     }
-    if (tokenSession && useridSession && usernameSession) {
-      authenticate();
+    if (typeSelected === 'D+1') {
+      if (citySelected.toLowerCase() === 'fortaleza') {
+        base = client.prices.capital.d1;
+      } else { base = client.prices.metropolitana.d1; }
     }
-  }, []);
+    if (value < 200) return base;
+    return (base * value) / 200;
+  }
 
   const router = useRouter();
-
-  const handleMessageError = (msg: string) => {
-    setMessageError(msg);
-    router.push('#error');
-  };
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -111,10 +89,9 @@ export default function CustomerPanel() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files;
-
+    apply('error', { hasError: false, message: '' });
     if (!fileList || !fileList[0]) {
-      setErrorGeral(true);
-      handleMessageError('Erro ao selecionar arquivo!');
+      apply('error', { hasError: true, message: 'Erro ao selecionar arquivo!' });
       return;
     }
     setFileSelected(fileList[0]);
@@ -123,20 +100,21 @@ export default function CustomerPanel() {
 
   const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
+    apply('error', { hasError: false, message: '' });
 
     if (!fileSelected) {
-      setErrorGeral(true);
-      throw new Error('Arquivo não selecionado!');
+      apply('error', { hasError: true, message: 'Arquivo não selecionado!' });
+      return;
     }
 
     if (userName === '' || token === '' || !isLogged) {
-      setErrorGeral(true);
+      apply('error', { hasError: true, message: 'Credenciais não informadas' });
       clearLogin();
-      throw new Error('Credenciais não informadas');
+      return;
     }
 
     setSending(true);
-    setErrorGeral(false);
+    apply('error', { hasError: false, message: '' });
 
     try {
       const formData = new FormData();
@@ -154,22 +132,21 @@ export default function CustomerPanel() {
       const { status, error }: ResponseUploadApi = await res.json();
 
       if (status === 401) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         clearLogin();
         setSending(false);
-        throw new Error(`${error}`);
+        return;
       }
 
       if (status !== 200) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: `Erro ${error}` });
         setSending(false);
-        throw new Error(`${error}entre em contato conosco!`);
+        return;
       }
 
       setSubmitted(true);
     } catch (error) {
-      setErrorGeral(true);
-      handleMessageError(`Erro, ${error}`);
+      apply('error', { hasError: true, message: `Erro ${error}` });
     }
     setSending(false);
     setFileSelected(null);
@@ -197,21 +174,20 @@ export default function CustomerPanel() {
       } = await res.json();
 
       if (status === 401) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
         clearLogin();
-        throw new Error(`${error}`);
+        return;
       }
 
       if (status !== 200) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: 'Erro de execução' });
         setDownloading(false);
-        throw new Error('entre em contato conosco!');
+        return;
       }
       router.push('/model.csv');
       setDownloading(false);
     } catch (err) {
-      setErrorGeral(true);
-      handleMessageError(`Erro ao baixar modelo ${errorGeral}`);
+      apply('error', { hasError: true, message: `${err}` });
     }
   }
 
@@ -249,23 +225,23 @@ export default function CustomerPanel() {
         const { status, error, content }: ResponseCepApi = await res.json();
 
         if (status === 401) {
-          setErrorGeral(true);
+          apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
           clearLogin();
-          throw new Error(`${error}`);
+          return;
         }
 
         if (!content) {
-          setErrorGeral(true);
-          throw new Error(`${error}, entre em contato conosco!`);
+          apply('error', { hasError: true, message: `Erro  ${error}` });
+          return;
         }
 
         setStreet(content.rua);
         setNeighborhood(content.bairro);
         setCity(content.cidade);
         setState(content.estado);
+        setPrice(calculePrice(valueDeclared, type, content.cidade).toString());
       } catch (error) {
-        setErrorGeral(true);
-        handleMessageError(`Erro, ao buscar informações, ${error}`);
+        apply('error', { hasError: true, message: `${error}` });
       }
     } else {
       setStreet('');
@@ -281,19 +257,19 @@ export default function CustomerPanel() {
 
     try {
       if (userName === '' || token === '' || !isLogged) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: 'Credenciais não informadas' });
         clearLogin();
-        throw new Error('Credenciais não informadas');
+        return;
       }
 
       if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || type === '') {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: 'preencha todos os campos obrigatórios, os campos obrigatórios possuem *' });
         setRequiredError(true);
-        throw new Error('preencha todos os campos obrigatórios, os campos obrigatórios possuem *');
+        return;
       }
 
       setSendingIndividual(true);
-      setErrorGeral(false);
+      apply('error', { hasError: false, message: '' });
 
       const data = {
         street,
@@ -320,15 +296,15 @@ export default function CustomerPanel() {
       const response: ResponseSendTaskApi = await res.json();
 
       if (response.status === 401) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         clearLogin();
-        throw new Error(`Erro de autenticação ${errorGeral}`);
+        return;
       }
 
       if (!response.content) {
-        setErrorGeral(true);
+        apply('error', { hasError: true, message: `Erro ao enviar pacote ${response?.error}` });
         setSendingIndividual(false);
-        throw new Error(`Erro ao enviar pacote ${response?.error}`);
+        return;
       }
 
       setSubmitted(true);
@@ -345,8 +321,7 @@ export default function CustomerPanel() {
       setType('');
       setRecipient('');
     } catch (error) {
-      setErrorGeral(true);
-      handleMessageError(`Erro, ao enviar informações, ${error}`);
+      apply('error', { hasError: true, message: `Erro ${error}` });
     }
     setSendingIndividual(false);
   };
@@ -366,17 +341,32 @@ export default function CustomerPanel() {
     }
   }
 
+  function onChangeValue(e: ChangeEvent<HTMLInputElement>) {
+    if (isNumber(e.target.value)) {
+      setValueDeclared(Number(e.target.value));
+      setPrice(calculePrice(Number(e.target.value), type, city).toString());
+    }
+  }
+
+  function onChangeType(e: ChangeEvent<HTMLSelectElement>) {
+    setType(e.target.value);
+    setPrice(calculePrice(valueDeclared, e.target.value, city).toString());
+  }
+
   return (
     <Layout>
       <section className={style.section}>
         <LoginForm />
         {isLogged && (
           <div className={style.forms}>
+            { client.allowInlote
+            && (
             <div className={style.chooseForm}>
               <h1 className={`${style.titleChoose} ${!inLote ? style.titleSelected : ''}`}>Individual</h1>
               <ToggleButton handle={() => setInLote(!inLote)} />
               <h1 className={`${style.titleChoose} ${inLote ? style.titleSelected : ''}`}>Em lote</h1>
             </div>
+            )}
             {!inLote && (
               order === '' ? (
                 <form className={style.individualForm}>
@@ -434,6 +424,20 @@ export default function CustomerPanel() {
                     onKeyDown={handleKeypress}
                     disable
                     classPlus={style.i4}
+                  />
+                  <InputForm
+                    label="Cidade"
+                    type="text"
+                    name="city"
+                    id="city"
+                    placeholder=""
+                    isRequired
+                    alertRequired={requiredError && city === ''}
+                    setOnChange={setCity}
+                    value={city}
+                    onKeyDown={handleKeypress}
+                    disable
+                    classPlus={style.i5_1}
                   />
                   <InputForm
                     label="Núm *"
@@ -505,12 +509,39 @@ export default function CustomerPanel() {
                     id="deliveryType"
                     placeholder="Selecione"
                     isRequired
-                    setOnChange={setType}
+                    selectOnChange={onChangeType}
                     value={type}
                     isSelect
                     optionsSelect={optionsSelect}
                     classPlus={style.i9}
                     alertRequired={requiredError && type === ''}
+                  />
+                  <InputForm
+                    label="Valor da mercadoria"
+                    littleLabel="É o valor que será devolvido caso o pacote seja 'perdido'"
+                    type="text"
+                    name="value"
+                    id="value"
+                    placeholder="150"
+                    onChange={onChangeValue}
+                    value={`${valueDeclared}`}
+                    onKeyDown={handleKeypress}
+                    classPlus={style.ilast_half}
+
+                  />
+                  <InputForm
+                    label="Preço"
+                    type="text"
+                    name="preco"
+                    id="preco"
+                    placeholder="R$ --"
+                    isRequired
+                    setOnChange={setPrice}
+                    value={`R$ ${price}`}
+                    onKeyDown={handleKeypress}
+                    disable
+                    classPlus={style.ilast_half}
+
                   />
                   <Button
                     handleSubmit={individualHandleSubmit}
@@ -570,12 +601,7 @@ export default function CustomerPanel() {
             )}
           </div>
         )}
-        {errorGeral && (
-          <span id="error" className={style.errorMessage}>
-            {messageError}
-          </span>
-        )}
-        {submitted && !errorGeral && <span className={style.successMessage}>Sucesso ao enviar.</span>}
+        {submitted && !hasError && <span className={style.successMessage}>Sucesso ao enviar.</span>}
       </section>
     </Layout>
   );
