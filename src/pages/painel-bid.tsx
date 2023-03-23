@@ -1,5 +1,5 @@
 import {
-  KeyboardEvent, useState,
+  KeyboardEvent, useEffect, useState,
 } from 'react';
 
 import Button from '@/components/button';
@@ -38,6 +38,15 @@ export default function CustomerPanel() {
     isLogged, userName, token, content, hasError,
   } = useReducers('user.isLogged', 'user.userName', 'user.token', 'accountsToSend.content', 'error.hasError');
 
+  useEffect(() => {
+    if (!isLogged) {
+      setSubmitted(false);
+      setSending(false);
+      setFileSelected(null);
+      setFileName('');
+    }
+  }, [isLogged]);
+
   const router = useRouter();
 
   const onCancelFile = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -59,6 +68,7 @@ export default function CustomerPanel() {
     }
     setFileSelected(fileList[0]);
     setFileName(fileList[0].name);
+    e.target.files = null;
   };
 
   const handleSubmit = async (e?: React.MouseEvent<HTMLButtonElement>) => {

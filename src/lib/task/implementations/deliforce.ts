@@ -222,7 +222,7 @@ async function sendTask({
   }
 
   const data = {
-    name,
+    name: `[${type.replace('+', '')}]${name}`,
     email,
     date: startDate,
     endDate,
@@ -256,6 +256,14 @@ async function sendTask({
         mandatoryFields: 'Not-Mandatory',
         permitAgent: 'Read Only',
         order: 0,
+      },
+      {
+        fieldName: 'valor',
+        fieldValue: value,
+        dataType: 'text',
+        mandatoryFields: 'Not-Mandatory',
+        permitAgent: 'Read Only',
+        order: 1,
       },
     ],
   };

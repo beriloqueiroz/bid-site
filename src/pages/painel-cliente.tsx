@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  ChangeEvent, KeyboardEvent, useState,
+  ChangeEvent, KeyboardEvent, useEffect, useState,
 } from 'react';
 
 import Button from '@/components/button';
@@ -14,6 +14,9 @@ import { useApply, useReducers } from '@/lib/redux/hooks';
 import LoginForm from '@/components/login';
 import Error from '@/components/error';
 import { calculePrice, isNumber } from '@/lib/helpers/rules';
+import {
+  initialAccountsToSend, initialClient, initialError, initialUser,
+} from '@/lib/redux/state/initial';
 import style from '../styles/painel-cliente.module.scss';
 import { ResponseCepApi } from './api/getInfosByCep';
 import { ResponseSendTaskApi } from './api/sendTask';
@@ -44,7 +47,7 @@ export default function CustomerPanel() {
   const [recipient, setRecipient] = useState('');
   const [type, setType] = useState('');
   const [price, setPrice] = useState('10');
-  const [valueDeclared, setValueDeclared] = useState(0);
+  const [declaredValue, setValueDeclared] = useState(0);
 
   const [inLote, setInLote] = useState(false);
   const [optionsSelect] = useState<OptionSelect[]>([
@@ -54,12 +57,34 @@ export default function CustomerPanel() {
   ]);
   const apply = useApply();
 
-  function clearLogin() {
+  function cleanLogin() {
     window.sessionStorage.removeItem('token');
     window.sessionStorage.removeItem('userid');
     window.sessionStorage.removeItem('username');
-    apply('user', { isLogged: false, userName: '', identification: '' });
+
+    apply('user', initialUser);
+    apply('accountsToSend', initialAccountsToSend);
+    apply('client', initialClient);
+    apply('error', initialError);
   }
+
+  useEffect(() => {
+    if (!isLogged) {
+      setSubmitted(false);
+      setCep('');
+      setStreet('');
+      setNumber('');
+      setComplement('');
+      setReference('');
+      setPhone('');
+      setCity('');
+      setNeighborhood('');
+      setCity('');
+      setOrder('');
+      setType('');
+      setRecipient('');
+    }
+  }, [isLogged]);
 
   const router = useRouter();
 
@@ -95,7 +120,7 @@ export default function CustomerPanel() {
 
     if (userName === '' || token === '' || !isLogged) {
       apply('error', { hasError: true, message: 'Credenciais não informadas' });
-      clearLogin();
+      cleanLogin();
       return;
     }
 
@@ -119,7 +144,7 @@ export default function CustomerPanel() {
 
       if (status === 401) {
         apply('error', { hasError: true, message: 'Erro de autenticação' });
-        clearLogin();
+        cleanLogin();
         setSending(false);
         return;
       }
@@ -161,7 +186,7 @@ export default function CustomerPanel() {
 
       if (status === 401) {
         apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
-        clearLogin();
+        cleanLogin();
         return;
       }
 
@@ -205,7 +230,7 @@ export default function CustomerPanel() {
 
         if (status === 401) {
           apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
-          clearLogin();
+          cleanLogin();
           return;
         }
 
@@ -218,7 +243,7 @@ export default function CustomerPanel() {
         setNeighborhood(content.bairro);
         setCity(content.cidade);
         setState(content.estado);
-        setPrice(calculePrice(valueDeclared, type, content.cidade, client).toString());
+        setPrice(calculePrice(declaredValue, type, content.cidade, client).toString());
       } catch (error) {
         apply('error', { hasError: true, message: `${error}` });
       }
@@ -237,11 +262,11 @@ export default function CustomerPanel() {
     try {
       if (userName === '' || token === '' || !isLogged) {
         apply('error', { hasError: true, message: 'Credenciais não informadas' });
-        clearLogin();
+        cleanLogin();
         return;
       }
 
-      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || type === '') {
+      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || type === '' || declaredValue === 0) {
         apply('error', { hasError: true, message: 'preencha todos os campos obrigatórios, os campos obrigatórios possuem *' });
         setRequiredError(true);
         return;
@@ -261,7 +286,8 @@ export default function CustomerPanel() {
         reference,
         phone,
         recipient,
-        deliveryType: type,
+        type,
+        declaredValue,
       };
       const res = await fetch('/api/sendTask', {
         method: 'POST',
@@ -276,7 +302,7 @@ export default function CustomerPanel() {
 
       if (response.status === 401) {
         apply('error', { hasError: true, message: 'Erro de autenticação' });
-        clearLogin();
+        cleanLogin();
         return;
       }
 
@@ -329,7 +355,7 @@ export default function CustomerPanel() {
 
   function onChangeType(e: ChangeEvent<HTMLSelectElement>) {
     setType(e.target.value);
-    setPrice(calculePrice(valueDeclared, e.target.value, city, client).toString());
+    setPrice(calculePrice(declaredValue, e.target.value, city, client).toString());
   }
 
   return (
@@ -487,12 +513,12 @@ export default function CustomerPanel() {
                     name="deliveryType"
                     id="deliveryType"
                     placeholder="Selecione"
-                    isRequired
                     selectOnChange={onChangeType}
                     value={type}
                     isSelect
                     optionsSelect={optionsSelect}
                     classPlus={style.i9}
+                    isRequired
                     alertRequired={requiredError && type === ''}
                   />
                   <InputForm
@@ -503,10 +529,11 @@ export default function CustomerPanel() {
                     id="value"
                     placeholder="150"
                     onChange={onChangeValue}
-                    value={`${valueDeclared}`}
+                    value={`${declaredValue}`}
                     onKeyDown={handleKeypress}
                     classPlus={style.ilast_half}
-
+                    isRequired
+                    alertRequired={requiredError && declaredValue === 0}
                   />
                   <InputForm
                     label="Preço"

@@ -17,17 +17,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data | null>) =
     return;
   }
 
-  const prefixCompany = req.headers['x-username'];
+  const username = req.headers['x-username'];
   const id = req.headers['x-identification'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !id || !tokenSession) {
+  if (!username || !id || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
   try {
-    await loginService.logout(prefixCompany.toString(), tokenSession.toString());
+    await loginService.logout(username.toString(), tokenSession.toString());
   } catch (error) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;

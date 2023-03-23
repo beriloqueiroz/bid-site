@@ -2,9 +2,13 @@
 import Button from '@/components/button';
 import InputForm from '@/components/inputForm';
 import { useApply, useReducers } from '@/lib/redux/hooks';
+
 import { DataGetAccounts } from '@/pages/api/getAccountsOptionsInfos';
 import { ResponseLoginApi } from '@/pages/api/login';
 import React, { useEffect, useState } from 'react';
+import {
+  initialAccountsToSend, initialClient, initialError, initialUser,
+} from '@/lib/redux/state/initial';
 import style from './style.module.scss';
 
 interface Props {
@@ -22,13 +26,21 @@ export default function LoginForm({ isPrivate }:Props) {
     isLogged, identification, token, userName,
   } = useReducers('user.isLogged', 'user.identification', 'user.token', 'user.userName');
 
-  function clearLogin() {
+  function cleanLogin():void {
     window.sessionStorage.removeItem('token');
     window.sessionStorage.removeItem('userid');
     window.sessionStorage.removeItem('username');
+
+    apply('user', initialUser);
+    apply('accountsToSend', initialAccountsToSend);
+    apply('client', initialClient);
+    apply('error', initialError);
+  }
+
+  function clearLogin() {
     setUser('');
     setPassword('');
-    apply('user', { isLogged: false, userName: '', identification: '' });
+    cleanLogin();
   }
 
   async function getOptionsAccounts() {
@@ -101,7 +113,8 @@ export default function LoginForm({ isPrivate }:Props) {
       if (user === '' || password === '') {
         clearLogin();
         setRequiredError(true);
-        throw new Error('Credenciais não informadas');
+        apply('error', { hasError: true, message: 'Credenciais não informadas' });
+        return;
       }
 
       apply('error', { hasError: false, message: '' });
@@ -117,15 +130,15 @@ export default function LoginForm({ isPrivate }:Props) {
       const { status, error, content }: ResponseLoginApi = await res.json();
 
       if (status !== 200) {
-        apply('error', { hasError: true, message: 'Erro de autenticação' });
+        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
         clearLogin();
-        throw new Error(`${error}, entre em contato conosco!`);
+        return;
       }
 
       if (!content.isAdmin && isPrivate) {
         apply('error', { hasError: true, message: 'Erro de autenticação' });
         clearLogin();
-        throw new Error('Não permitido');
+        return;
       }
 
       apply('user', {
@@ -167,8 +180,8 @@ export default function LoginForm({ isPrivate }:Props) {
       clearLogin();
 
       if (status !== 200) {
-        apply('error', { hasError: true, message: 'Erro de autenticação' });
-        throw new Error(`${error}, entre em contato conosco!`);
+        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
+        return;
       }
       apply('error', { hasError: false, message: '' });
     } catch (err) {

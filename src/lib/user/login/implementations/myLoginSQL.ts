@@ -1,7 +1,7 @@
 import { connection } from '@/lib/db/mysql/factory';
+import { authResponse } from '@/lib/types/AuthResponse';
 import { randomUUID } from 'crypto';
 import moment, { now } from 'moment';
-import { authResponse } from '../ILogin';
 
 async function login(user: string, password: string): Promise<authResponse> {
   const statment = 'SELECT isAdmin, id FROM `users` WHERE `username` = ? AND `password` = ?';

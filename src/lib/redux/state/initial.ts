@@ -4,10 +4,10 @@ export type User = {
   isLogged: boolean,
   userName: string,
   identification: string,
-  token: string
+  token: string,
 };
 
-const initialUser: User = {
+export const initialUser: User = {
   isLogged: false,
   userName: '',
   identification: '',
@@ -19,12 +19,12 @@ export type Error = {
   message: string
 };
 
-const initialError:Error = {
+export const initialError:Error = {
   hasError: false,
   message: '',
 };
 
-const initialClient:Client = {
+export const initialClient:Client = {
   address: '',
   allowInlote: false,
   corporateName: '',
@@ -33,7 +33,7 @@ const initialClient:Client = {
   prices: { capital: { d: 15, d1: 10 }, metropolitana: { d: 20, d1: 15 } },
 };
 
-const initialAccountsToSend: { content :{ name:string, id:string }[] } = { content: [{ name: '', id: '' }] };
+export const initialAccountsToSend: { content :{ name:string, id:string }[] } = { content: [{ name: '', id: '' }] };
 export type GeneralState = {
   user: User,
   error: Error,

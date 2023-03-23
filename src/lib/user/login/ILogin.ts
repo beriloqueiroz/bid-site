@@ -1,13 +1,7 @@
 /* eslint-disable import/no-cycle */
 
+import { authResponse } from '@/lib/types/AuthResponse';
 import { myLoginSQL } from './implementations/myLoginSQL';
-
-export type authResponse = {
-  token: string | null
-  isAdmin?: boolean,
-  id?:number,
-  userName?: string
-};
 
 interface ILoginService {
   login(user: string, password: string): Promise<authResponse>;
