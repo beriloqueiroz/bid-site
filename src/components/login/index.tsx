@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import {
   initialAccountsToSend, initialClient, initialError, initialUser,
 } from '@/lib/redux/state/initial';
+import { DataGetAccount } from '@/pages/api/getAccountInfos';
 import style from './style.module.scss';
 
 interface Props {
@@ -68,6 +69,26 @@ export default function LoginForm({ isPrivate }:Props) {
     });
   }
 
+  async function getAccountInfos() {
+    const res = await fetch('/api/getAccountInfos', {
+      method: 'GET',
+      headers: {
+        'x-username': window.sessionStorage.getItem('username') || userName || '',
+        'x-token': window.sessionStorage.getItem('token') || token || '',
+      },
+    });
+
+    const { status, error, content }: DataGetAccount = await res.json();
+
+    if (status === 401 || !content) {
+      apply('error', { hasError: true, message: 'Autenticação inválida' });
+      clearLogin();
+      throw new Error(`${error}`);
+    }
+
+    apply('client', content);
+  }
+
   useEffect(() => {
     const tokenSession = window.sessionStorage.getItem('token');
     const useridSession = window.sessionStorage.getItem('userid');
@@ -98,6 +119,7 @@ export default function LoginForm({ isPrivate }:Props) {
         isLogged: true, userName: usernameSession, identification: useridSession, token: tokenSession,
       });
       if (isPrivate) { await getOptionsAccounts(); }
+      await getAccountInfos();
     }
     if (tokenSession && useridSession && usernameSession && !isLogged) {
       authenticate();
@@ -129,7 +151,7 @@ export default function LoginForm({ isPrivate }:Props) {
 
       const { status, error, content }: ResponseLoginApi = await res.json();
 
-      if (status !== 200) {
+      if (status !== 200 || !content || !content.token || !content.id || !content.userName) {
         apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
         clearLogin();
         return;
@@ -146,9 +168,10 @@ export default function LoginForm({ isPrivate }:Props) {
       });
 
       window.sessionStorage.setItem('token', content.token);
-      window.sessionStorage.setItem('userid', content.id);
+      window.sessionStorage.setItem('userid', content.id.toString());
       window.sessionStorage.setItem('username', content.userName);
       if (isPrivate) { await getOptionsAccounts(); }
+      await getAccountInfos();
     } catch (err) {
       apply('error', { hasError: true, message: 'Erro de autenticação' });
       clearLogin();

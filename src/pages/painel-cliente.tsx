@@ -20,13 +20,14 @@ import {
 import style from '../styles/painel-cliente.module.scss';
 import { ResponseCepApi } from './api/getInfosByCep';
 import { ResponseSendTaskApi } from './api/sendTask';
-import { ResponseUploadApi } from './api/upload';
+import { ContentResponseUpload, ResponseUploadApi } from './api/upload';
 
 export default function CustomerPanel() {
   const {
     isLogged, userName, token, client, hasError,
   } = useReducers('user.isLogged', 'user.userName', 'user.token', 'client', 'error.hasError');
   const [submitted, setSubmitted] = useState(false);
+  const [inloteResult, setInloteResult] = useState<ContentResponseUpload[]>([]);
   const [sending, setSending] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -40,6 +41,7 @@ export default function CustomerPanel() {
   const [complement, setComplement] = useState('');
   const [number, setNumber] = useState('');
   const [order, setOrder] = useState('');
+  const [orderNumber, setOrderNumber] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
@@ -83,6 +85,7 @@ export default function CustomerPanel() {
       setOrder('');
       setType('');
       setRecipient('');
+      setOrderNumber('');
     }
   }, [isLogged]);
 
@@ -140,7 +143,7 @@ export default function CustomerPanel() {
         },
       });
 
-      const { status, error }: ResponseUploadApi = await res.json();
+      const { status, error, content }: ResponseUploadApi = await res.json();
 
       if (status === 401) {
         apply('error', { hasError: true, message: 'Erro de autenticação' });
@@ -152,9 +155,9 @@ export default function CustomerPanel() {
       if (status !== 200) {
         apply('error', { hasError: true, message: `Erro ${error}` });
         setSending(false);
-        return;
       }
 
+      setInloteResult(content || []);
       setSubmitted(true);
     } catch (error) {
       apply('error', { hasError: true, message: `Erro ${error}` });
@@ -288,6 +291,7 @@ export default function CustomerPanel() {
         recipient,
         type,
         declaredValue,
+        orderNumber,
       };
       const res = await fetch('/api/sendTask', {
         method: 'POST',
@@ -325,6 +329,7 @@ export default function CustomerPanel() {
       setOrder(response.content);
       setType('');
       setRecipient('');
+      setOrderNumber('');
     } catch (error) {
       apply('error', { hasError: true, message: `Erro ${error}` });
     }
@@ -364,7 +369,7 @@ export default function CustomerPanel() {
         <LoginForm />
         {isLogged && (
           <div className={style.forms}>
-            { client.allowInlote
+            { !!client.allowInlote
             && (
             <div className={style.chooseForm}>
               <h1 className={`${style.titleChoose} ${!inLote ? style.titleSelected : ''}`}>Individual</h1>
@@ -375,6 +380,17 @@ export default function CustomerPanel() {
             {!inLote && (
               order === '' ? (
                 <form className={style.individualForm}>
+                  <InputForm
+                    label="Número do pedido (opcional)"
+                    type="text"
+                    name="pedido"
+                    id="pedido"
+                    placeholder="PREFIX-12366"
+                    isRequired={false}
+                    setOnChange={setOrderNumber}
+                    value={orderNumber}
+                    onKeyDown={handleKeypress}
+                  />
                   <InputForm
                     label="CEP *"
                     type="text"
@@ -608,6 +624,15 @@ export default function CustomerPanel() {
           </div>
         )}
         {submitted && !hasError && <span className={style.successMessage}>Sucesso ao enviar.</span>}
+        {submitted && inloteResult.map((res) => (
+          <div className={`${style.inlotResultMessage} ${res.error ? `${style.inlotError}` : `${style.inlotSuccess}`}`}>
+            pedido:
+            {' '}
+            {!!res.content && res.content}
+            {' '}
+            {!!res.error && res.error}
+          </div>
+        ))}
       </section>
       <Error />
     </Layout>

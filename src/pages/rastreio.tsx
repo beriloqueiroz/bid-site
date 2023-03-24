@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable no-underscore-dangle */
 import { ReactElement, useEffect, useState } from 'react';
-import { FaMotorcycle, FaCheckCircle } from 'react-icons/fa';
+import { FaMotorcycle, FaCheckCircle, FaRoute } from 'react-icons/fa';
 import { GoPackage } from 'react-icons/go';
 import {
   MdNoteAdd, MdOutlineSmsFailed, MdOutlineGetApp, MdCancelPresentation,
@@ -39,7 +39,7 @@ function ReactIcon({ status }: { status: string }): ReactElement {
       in: TaskStatus.PACKAGE_ON_DELIVERY_ROUTE,
     },
     {
-      out: <FaMotorcycle />,
+      out: <FaRoute />,
       in: TaskStatus.PACKAGE_IS_NEAR,
     },
     {

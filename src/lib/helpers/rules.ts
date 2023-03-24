@@ -31,11 +31,11 @@ export function dateByDeliveryType(type: string): Moment {
     }
   }
   const now = moment().subtract(3, 'hours');
-  if (isNumber(`${process.env.LIMIT_HOUR}`)) {
-    if (now.hour() >= Number(`${process.env.LIMIT_HOUR}`)) {
-      throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);
-    }
-  }
+  // if (isNumber(`${process.env.LIMIT_HOUR}`)) {
+  //   if (now.hour() >= Number(`${process.env.LIMIT_HOUR}`)) {
+  //     throw new Error(`horário limite é de ${process.env.LIMIT_HOUR}:00`);
+  //   }
+  // }
 
   return countValidDays(now.toISOString(), forecast);
 }

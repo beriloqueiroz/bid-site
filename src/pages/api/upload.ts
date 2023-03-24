@@ -3,17 +3,23 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import { loginService } from '@/lib/user/login/ILogin';
 
-import { csvToJson } from '@/lib/helpers/convertions';
 import { deliveryService } from '@/lib/task/IDeliveryService';
 import { accountService } from '@/lib/account/IAccountInfosService';
 import { AccountInfo } from '@/lib/types/AccountInfo';
 import { mountSendTask } from '@/lib/task/helper';
+import { xlsxToJson } from '@/lib/helpers/xlsx';
 import { parseForm, FormidableError } from '../../lib/helpers/parse-form';
+
+export type ContentResponseUpload = {
+  status: number;
+  error: string | null;
+  content? :any
+};
 
 export type ResponseUploadApi = {
   status: number;
   error: string | null;
-  content?: any;
+  content?: ContentResponseUpload[];
 };
 
 type Template =
@@ -25,27 +31,23 @@ type Template =
     'Rua/Avenida/Travessa': string,
     'Número': string,
     'Bairro': string,
+    'Estado':string,
+    'Cidade':string,
     'CEP': string,
     'Complemento': string,
     'Ponto de referência': string,
     'Categoria de envio': string,
-    'Cidade':string,
-    'Estado':string,
     'Valor da mercadoria':number
   };
 
 async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
-  let tasks = [];
-  const responses: ResponseUploadApi[] = [];
+  const responses: ContentResponseUpload[] = [];
 
-  try {
-    tasks = await csvToJson(url.toString(), ',') as Template[];
-  } catch (e) {
-    tasks = await csvToJson(url.toString(), ';') as Template[];
-  }
+  const tasks = await xlsxToJson(url.toString()) as Template[];
+
   for (const task of tasks) {
+    const orderNumber = task.Pedido;
     try {
-      const orderNumber = task.Pedido;
       const data = mountSendTask(
         task['Rua/Avenida/Travessa'],
         task['Número'],
@@ -70,13 +72,13 @@ async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
       }
       responses.push({ status: 200, error: null, content: orderNumber });
     } catch (e) {
-      responses.push({ status: 500, error: `${e}` });
+      responses.push({ status: 500, error: `${e}`, content: orderNumber });
     }
   }
   return responses;
 }
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi[] | ResponseUploadApi | null>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi>) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     res.status(405).json({
@@ -86,15 +88,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-  const prefixCompany = req.headers['x-username'];
+  const username = req.headers['x-username'];
   const tokenSession = req.headers['x-token'];
 
-  if (!prefixCompany || !tokenSession) {
+  if (!username || !tokenSession) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token, id } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, id } = await loginService.authenticate(username.toString(), tokenSession.toString());
 
   if (!token || !id) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
@@ -113,7 +115,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
   try {
-    const { files } = await parseForm(req);
+    const { files } = await parseForm(req, false, true);
 
     const file = files.media;
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
@@ -134,7 +136,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     const mailData = {
       from: '"Tabelas (bid.log.br)" <sender@bid.log.br>',
       to: 'tabelas@bid.log.br',
-      subject: `${prefixCompany} - Tabela pelo formulário do site`,
+      subject: `${username} - Tabela pelo formulário do site`,
       text: 'Em anexo',
       headers: { 'x-myheader': 'test header' },
       attachments: [
@@ -153,14 +155,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
 
     const responses = await sendTasksbyFile(url.toString(), configSendTask);
     const hasSuccess = !!responses.find((r) => r.status === 200);
-    if (hasSuccess) { res.status(200).json(responses); } else { res.status(500).json(responses); }
+    if (hasSuccess) {
+      res.status(200).json({ status: 200, content: responses, error: null });
+    } else {
+      res.status(500).json({ status: 500, content: responses, error: 'nenhum pedido com sucesso' });
+    }
   } catch (e) {
     if (e instanceof FormidableError) {
       res.status(e.httpCode || 400).json({ status: 400, error: e.message });
     } else {
       res.status(500).json({ status: 500, error: 'Erro interno' });
     }
-    res.status(500).json({ status: 500, error: 'Erro interno' });
   }
 };
 

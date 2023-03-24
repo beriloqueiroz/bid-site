@@ -1,10 +1,11 @@
+import { authResponse } from '@/lib/types/AuthResponse';
 import { loginService } from '@/lib/user/login/ILogin';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export type ResponseLoginApi = {
   status: number;
   error: string | null;
-  content?: any;
+  content?: authResponse;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginApi | null>) => {

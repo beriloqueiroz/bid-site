@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import {
   KeyboardEvent, useEffect, useState,
 } from 'react';
@@ -237,12 +238,13 @@ export default function CustomerPanel() {
         {submitted && !hasError && <span className={style.successMessage}>Resultado detalhado:</span>}
         <div className={style.resultLog}>
           {resultLog.length > 0 && (
-            resultLog.map((resLg) => (
-              <div className={`${style.resultLogItem} ${!resLg?.error ? style.successLog : ''}`} key={resLg.content}>
+            resultLog.map((resLg, i) => (
+              <div className={`${style.resultLogItem} ${!resLg?.error ? style.successLog : ''}`} key={i}>
+                {resLg.content && (
                 <div>
-                  número do pedido:
-                  {resLg.content}
+                  {`pedido:${resLg.content}`}
                 </div>
+                )}
                 {resLg?.error && (
                 <div>
                   erro:

@@ -73,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
   }
 
   const {
-    street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type, declaredValue,
+    street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type, declaredValue, orderNumber,
   } = JSON.parse(req.body);
 
   try {
@@ -85,7 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
   const { client } = accountInfos;
 
   try {
-    const orderNumber = `${client.prefix}-${randomInt(100000)}`;
+    const order = !orderNumber || orderNumber === '' ? `${client.prefix}-${randomInt(100000)}` : orderNumber;
     const data = mountSendTask(
       street,
       number,
@@ -95,7 +95,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       cep,
       complement,
       reference,
-      orderNumber,
+      order,
       recipient,
       declaredValue,
       accountInfos,
@@ -107,7 +107,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
       res.status(500).json({ status: 500, error: JSON.stringify(response.error) });
       return;
     }
-    res.status(200).json({ status: 200, error: null, content: orderNumber });
+    res.status(200).json({ status: 200, error: null, content: order });
   } catch (e) {
     res.status(500).json({ status: 500, error: `${e}` });
   }
