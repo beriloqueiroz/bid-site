@@ -222,7 +222,7 @@ async function sendTask({
   }
 
   const data = {
-    name: `[${type.replace('+', '')}]${name}`,
+    name,
     email,
     date: startDate,
     endDate,
@@ -284,6 +284,13 @@ async function sendTask({
   }
 }
 
+function adjustData(date:string) {
+  const dataString = moment(date);
+  return `${dataString.day() < 10 ? 0 : ''}${dataString.day()}/${dataString.month() < 10 ? 0 : ''}${dataString.month()}/${dataString.year()}
+  ${dataString.hours()}:${dataString.minutes()}
+  `;
+}
+
 async function getTrackingHistory(orderNumber: string, config: TrackingTaskConfig[]): Promise<TaskLogDTO | null> {
   if (orderNumber.indexOf('-') < 0) {
     return null;
@@ -300,20 +307,21 @@ async function getTrackingHistory(orderNumber: string, config: TrackingTaskConfi
       history: histories,
       task: {
         ...order,
-        name: order?.name || '',
-        date: moment(order?.date).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
-        endDate: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
-        created_at: moment(order?.created_at).format('DD/MM/YYYY hh:mm:ss A') || '',
-        orderId: order?.orderId || '',
-        taskDescStatus: getDescStatus(order?.taskStatus || ''),
+        name: order.name || '',
+        date: moment(order.date).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        endDate: moment(order.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        created_at: adjustData(order.created_at),
+        orderId: order.orderId || '',
+        taskDescStatus: getDescStatus(order.taskStatus || ''),
         address: {
-          ...order?.address,
-          formatted_address: order?.address.formatted_address || '',
+          ...order.address,
+          formatted_address: order.address.formatted_address || '',
         },
-        forecast: moment(order?.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
+        forecast: moment(order.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
       },
       origin: name,
     };
+    console.log('🚀 ~ file: deliforce.ts:319 ~ getTrackingHistory ~ historyResponse:', historyResponse);
     return historyResponse;
   }
   return null;
