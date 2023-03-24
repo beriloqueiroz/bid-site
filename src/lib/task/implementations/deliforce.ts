@@ -287,7 +287,7 @@ async function sendTask({
 function adjustData(date:string) {
   const dataString = moment(date);
   return `${dataString.day() < 10 ? 0 : ''}${dataString.day()}/${dataString.month() < 10 ? 0 : ''}${dataString.month()}/${dataString.year()}
-  ${dataString.hours()}:${dataString.minutes()}
+  ${dataString.hours() - 3}:${dataString.minutes()}
   `;
 }
 
@@ -321,7 +321,6 @@ async function getTrackingHistory(orderNumber: string, config: TrackingTaskConfi
       },
       origin: name,
     };
-    console.log('🚀 ~ file: deliforce.ts:319 ~ getTrackingHistory ~ historyResponse:', historyResponse);
     return historyResponse;
   }
   return null;
