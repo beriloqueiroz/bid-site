@@ -203,38 +203,38 @@ export default function Rastreio() {
             </div>
             <ul className={style.ul}>
               {response.history.map(
-                (task) => task.taskStatus !== '0' && (
-                <li key={task._id}>
+                (hist) => hist.taskStatus !== '0' && (
+                <li key={hist._id}>
                   <div className={style.init}>
                     <div className={style.icon}>
-                      <ReactIcon status={task.taskDescStatus} />
+                      <ReactIcon status={hist.taskDescStatus} />
                     </div>
                     <div className={style.status}>
-                      <p>{`${task.taskDescStatus}`}</p>
+                      <p>{`${hist.taskDescStatus}`}</p>
                       <div className={style.statusInfo}>
-                        <p>{task.created_at}</p>
-                        <p className={style.reason}>{task.reason ? task.reason : ''}</p>
-                        {!isPrivate && (task.notes || task.imageArry?.length) && (
-                        <p className={style.more_detail} onClick={() => showDetail(task._id)}>
+                        <p>{hist.created_at}</p>
+                        <p className={style.reason}>{hist.reason ? hist.reason : ''}</p>
+                        {!isPrivate && (hist.notes || hist.imageArry?.length) && (
+                        <p className={style.more_detail} onClick={() => showDetail(hist._id)}>
                           mais detalhes
                         </p>
                         )}
                       </div>
                     </div>
                   </div>
-                  {isShowDetail.includes(task._id) && (task.notes || task.imageArry?.length) && (
+                  {isShowDetail.includes(hist._id) && (hist.notes || hist.imageArry?.length) && (
                   <div className={style.detail}>
-                    {task.notes && (
+                    {hist.notes && (
                     <p>
                       <strong>Notas:</strong>
                       {' '}
-                      {task.notes}
+                      {hist.notes}
                     </p>
                     )}
-                    {task.imageArry?.length > 0 && (
+                    {hist.imageArry?.length > 0 && (
                     <div>
                       <strong>Imagens:</strong>
-                      {task.imageArry.map((img, i) => (
+                      {hist.imageArry.map((img, i) => (
                         <a className={style.imagem} key={img} href={img} target="_blank" rel="noopener noreferrer">
                           <img src={img} alt={`Imagem ${i + 1}`} width="50px" height="50px" />
                         </a>

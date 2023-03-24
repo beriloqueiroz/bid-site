@@ -162,7 +162,7 @@ async function getTaskLog(taskId: string, auth: string): Promise<TaskLog[]> {
   if (!logs.length) return [];
   return logs.map((hist) => ({
     ...hist,
-    created_at: moment(hist.created_at).format('DD/MM/YYYY hh:mm:ss A') || '',
+    created_at: moment(hist.created_at).subtract(3, 'hours').format('DD/MM/YYYY hh:mm:ss A') || '',
     taskDescStatus: getDescStatus(hist.taskStatus, hist.notes, hist.imageArry),
   }));
 }
@@ -284,12 +284,12 @@ async function sendTask({
   }
 }
 
-function adjustData(date:string) {
-  const dataString = moment(date);
-  return `${dataString.day() < 10 ? 0 : ''}${dataString.day()}/${dataString.month() < 10 ? 0 : ''}${dataString.month()}/${dataString.year()}
-  ${dataString.hours() - 3}:${dataString.minutes()}
-  `;
-}
+// function adjustData(date:string) {
+//   const dataString = moment(date);
+//   return `${dataString.day() < 10 ? 0 : ''}${dataString.day()}/${dataString.month() < 10 ? 0 : ''}${dataString.month()}/${dataString.year()}
+//   ${dataString.hours()}:${dataString.minutes()}
+//   `;
+// }
 
 async function getTrackingHistory(orderNumber: string, config: TrackingTaskConfig[]): Promise<TaskLogDTO | null> {
   if (orderNumber.indexOf('-') < 0) {
@@ -310,7 +310,7 @@ async function getTrackingHistory(orderNumber: string, config: TrackingTaskConfi
         name: order.name || '',
         date: moment(order.date).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
         endDate: moment(order.endDate).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
-        created_at: adjustData(order.created_at),
+        created_at: moment(order.created_at).subtract(3, 'hour').format('DD/MM/YYYY hh:mm:ss A') || '',
         orderId: order.orderId || '',
         taskDescStatus: getDescStatus(order.taskStatus || ''),
         address: {
