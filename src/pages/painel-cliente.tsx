@@ -598,7 +598,7 @@ export default function CustomerPanel() {
               <form className={style.inLoteForm}>
                 <div className={style.inputUp}>
                   <label htmlFor="table" className={style.choose_btn}>
-                    {fileName !== '' ? `Arquivo selecionado: ${fileName}` : 'Escolher arquivo'}
+                    {fileName !== '' ? `Arquivo selecionado: ${fileName}` : 'Escolher arquivo excel (.xlsx)'}
                   </label>
                   <input
                     accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
