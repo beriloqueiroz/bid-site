@@ -26,9 +26,9 @@ type Template =
     notes: string,
     Start_Before: string,
     Complete_Before: string,
-    'Categoria de envio': string,
+    tipo: string,
     Reentrega: boolean,
-    'Devolução': boolean
+    valor: string
   };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi | ResponseUploadApi[]>) => {
@@ -95,14 +95,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           complement: task.FlatNo,
           phone: task.Phone_number,
           name: task.Name,
-          value: '10.00',
+          value: task.valor,
           startDate: `${moment(task.Start_Before).format('YYYY-MM-DD')}T08:00:00.830Z`,
           endDate: `${moment(task.Complete_Before).format('YYYY-MM-DD')}T23:00:00.830Z`,
           reference: task.notes,
           description: task.Description,
           email: 'sender@bid.log.br',
           orderNumber,
-          type: task['Categoria de envio'],
+          type: task.tipo,
           driver,
           key,
           model,

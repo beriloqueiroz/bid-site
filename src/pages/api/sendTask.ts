@@ -1,11 +1,10 @@
 import { deliveryService } from '@/lib/task/IDeliveryService';
-import { SendTask } from '@/lib/types/SendTask';
-import { calculePrice, dateByDeliveryType } from '@/lib/helpers/rules';
 import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
 import nodemailer from 'nodemailer';
 import { accountService } from '@/lib/account/IAccountInfosService';
+import { mountSendTask } from '@/lib/task/helper';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -83,34 +82,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     res.status(500).json({ status: 500, error: `erro ao enviar email ${error}` });
   }
 
-  const {
-    driver, key, model, rule, team, client,
-  } = accountInfos;
-
-  const price = calculePrice(declaredValue, type, city, client);
+  const { client } = accountInfos;
 
   try {
     const orderNumber = `${client.prefix}-${randomInt(100000)}`;
-    const data: SendTask = {
-      address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
-      complement: `${complement}, ${reference}`,
-      phone,
-      name: `[${orderNumber}] ${recipient}`,
-      value: price.toString(),
-      startDate: `${dateByDeliveryType(type).format('YYYY-MM-DD')}T10:00:00.830Z`,
-      endDate: `${dateByDeliveryType(type).format('YYYY-MM-DD')}T23:00:00.830Z`,
+    const data = mountSendTask(
+      street,
+      number,
+      neighborhood,
+      city,
+      state,
+      cep,
+      complement,
       reference,
-      description: accountInfos.client.address,
-      email: 'sender@bid.log.br',
       orderNumber,
+      recipient,
+      declaredValue,
+      accountInfos,
+      phone,
       type,
-      driver,
-      key,
-      model,
-      rule,
-      team,
-    };
-
+    );
     const response = await deliveryService.sendTask(data);
     if (response?.error || !response?.content) {
       res.status(500).json({ status: 500, error: JSON.stringify(response.error) });

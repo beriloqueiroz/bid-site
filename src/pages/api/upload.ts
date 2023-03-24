@@ -4,11 +4,10 @@ import nodemailer from 'nodemailer';
 import { loginService } from '@/lib/user/login/ILogin';
 
 import { csvToJson } from '@/lib/helpers/convertions';
-import { SendTask } from '@/lib/types/SendTask';
 import { deliveryService } from '@/lib/task/IDeliveryService';
-import { dateByDeliveryType } from '@/lib/helpers/rules';
 import { accountService } from '@/lib/account/IAccountInfosService';
 import { AccountInfo } from '@/lib/types/AccountInfo';
+import { mountSendTask } from '@/lib/task/helper';
 import { parseForm, FormidableError } from '../../lib/helpers/parse-form';
 
 export type ResponseUploadApi = {
@@ -31,44 +30,39 @@ type Template =
     'Ponto de referência': string,
     'Categoria de envio': string,
     'Cidade':string,
-    'Estado':string
+    'Estado':string,
+    'Valor da mercadoria':number
   };
 
-async function sendTasksbyFile(url: string, configSendTask: AccountInfo) {
+async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
   let tasks = [];
   const responses: ResponseUploadApi[] = [];
-  const collectionAddress = configSendTask.client.address;
 
   try {
     tasks = await csvToJson(url.toString(), ',') as Template[];
   } catch (e) {
     tasks = await csvToJson(url.toString(), ';') as Template[];
   }
-  const {
-    driver, key, model, rule, team,
-  } = configSendTask;
   for (const task of tasks) {
     try {
       const orderNumber = task.Pedido;
-      const data: SendTask = {
-        address: `${task['Rua/Avenida/Travessa']}, ${task['Número']} - ${task.Bairro}, ${task.Cidade} - ${task.Estado}, ${task.CEP} Brazil`,
-        complement: `${task.Complemento}, ${task['Ponto de referência']}`,
-        phone: task.Celular,
-        name: `[${orderNumber}] ${task.Nome}`,
-        value: '10.00',
-        startDate: dateByDeliveryType(task['Categoria de envio']).format('YYYY-MM-DDThh:mm:ss'),
-        endDate: dateByDeliveryType(task['Categoria de envio']).add(1, 'hour').format('YYYY-MM-DDThh:mm:ss'),
-        reference: task['Ponto de referência'],
-        description: collectionAddress,
-        email: 'sender@bid.log.br',
+      const data = mountSendTask(
+        task['Rua/Avenida/Travessa'],
+        task['Número'],
+        task.Bairro,
+        task.Cidade,
+        task.Estado,
+        task.CEP,
+        task.Complemento,
+        task['Ponto de referência'],
         orderNumber,
-        type: task['Categoria de envio'],
-        driver,
-        key,
-        model,
-        rule,
-        team,
-      };
+        task.Nome,
+        task['Valor da mercadoria'],
+        accountInfos,
+        task.Celular,
+        task['Categoria de envio'],
+      );
+
       const response = await deliveryService.sendTask(data);
       if (response?.error || !response?.content) {
         responses.push({ content: orderNumber, status: 500, error: JSON.stringify(response.error) });

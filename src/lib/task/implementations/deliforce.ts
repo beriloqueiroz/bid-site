@@ -259,7 +259,7 @@ async function sendTask({
       },
       {
         fieldName: 'valor',
-        fieldValue: value,
+        fieldValue: price || value,
         dataType: 'text',
         mandatoryFields: 'Not-Mandatory',
         permitAgent: 'Read Only',
