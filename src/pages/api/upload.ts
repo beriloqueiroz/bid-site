@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-syntax */
 import type { NextApiRequest, NextApiResponse } from 'next';
-import nodemailer from 'nodemailer';
 import { loginService } from '@/lib/user/login/ILogin';
 
 import { deliveryService } from '@/lib/task/IDeliveryService';
@@ -8,6 +7,7 @@ import { accountService } from '@/lib/account/IAccountInfosService';
 import { AccountInfo } from '@/lib/types/AccountInfo';
 import { mountSendTask } from '@/lib/task/helper';
 import { xlsxToJson } from '@/lib/helpers/xlsx';
+import { MailService } from '@/lib/mail/IMailService';
 import { parseForm, FormidableError } from '../../lib/helpers/parse-form';
 
 export type ContentResponseUpload = {
@@ -78,6 +78,16 @@ async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
   return responses;
 }
 
+async function sendEmail(url:string, name:string, username:string) {
+  return MailService.sendEmail(
+    '"Tabelas (bid.log.br)" <sender@bid.log.br>',
+    'tabelas@bid.log.br',
+    `${username} - Tabela pelo formulário do site`,
+    'Em anexo',
+    [{ filename: name, path: url }],
+  );
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi>) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -121,37 +131,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
     const name = Array.isArray(file) ? file.map((f) => f.newFilename) : file.newFilename;
 
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.hostinger.com',
-      port: 465,
-      secure: true,
-      requireTLS: true,
-      auth: {
-        user: 'sender@bid.log.br',
-        pass: 'Sender@bid#123',
-      },
-      logger: true,
-    });
+    const resultSentEmail = await sendEmail(url.toString(), name.toString(), username.toString());
 
-    const mailData = {
-      from: '"Tabelas (bid.log.br)" <sender@bid.log.br>',
-      to: 'tabelas@bid.log.br',
-      subject: `${username} - Tabela pelo formulário do site`,
-      text: 'Em anexo',
-      headers: { 'x-myheader': 'test header' },
-      attachments: [
-        {
-          filename: name.toString(),
-          path: url.toString(),
-        },
-      ],
-    };
-
-    transporter.sendMail(mailData, (err) => {
-      if (err) {
-        res.status(500).json({ status: 500, error: 'Erro ao enviar e-mail' });
-      }
-    });
+    if (!resultSentEmail || resultSentEmail.err) {
+      res.status(500).json({ status: 500, content: [], error: 'erro ao enviar email com tabela' });
+    }
 
     const responses = await sendTasksbyFile(url.toString(), configSendTask);
     const hasSuccess = !!responses.find((r) => r.status === 200);

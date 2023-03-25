@@ -3,11 +3,11 @@
 /* eslint-disable no-await-in-loop */
 import { deliveryService } from '@/lib/task/IDeliveryService';
 import { SendTask } from '@/lib/types/SendTask';
-import { csvToJson } from '@/lib/helpers/convertions';
 import moment from 'moment';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
 import { accountService } from '@/lib/account/IAccountInfosService';
+import { xlsxToJson } from '@/lib/helpers/xlsx';
 import { parseForm, FormidableError } from '../../lib/helpers/parse-form';
 
 export type ResponseUploadApi = {
@@ -27,7 +27,6 @@ type Template =
     Start_Before: string,
     Complete_Before: string,
     tipo: string,
-    Reentrega: boolean,
     valor: string
   };
 
@@ -75,18 +74,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
   const responses: ResponseUploadApi[] = [];
 
   try {
-    const { files } = await parseForm(req);
+    const { files } = await parseForm(req, false, true);
 
     const file = files.media;
     const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
 
-    let tasks = [];
+    const tasks = await xlsxToJson(url.toString()) as Template[];
 
-    try {
-      tasks = await csvToJson(url.toString(), ';') as Template[];
-    } catch (e) {
-      tasks = await csvToJson(url.toString(), ',') as Template[];
-    }
     for (const task of tasks) {
       try {
         const orderNumber = task.Order_id;

@@ -174,7 +174,7 @@ export default function CustomerPanel() {
         setDownloading(false);
         return;
       }
-      router.push('/model_admin.csv');
+      router.push('/model_admin.xlsx');
       setDownloading(false);
     } catch (err) {
       apply('error', { hasError: true, message: `${err}` });

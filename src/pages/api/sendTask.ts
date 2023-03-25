@@ -2,9 +2,9 @@ import { deliveryService } from '@/lib/task/IDeliveryService';
 import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loginService } from '@/lib/user/login/ILogin';
-import nodemailer from 'nodemailer';
 import { accountService } from '@/lib/account/IAccountInfosService';
 import { mountSendTask } from '@/lib/task/helper';
+import { MailService } from '@/lib/mail/IMailService';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -12,32 +12,13 @@ export type ResponseSendTaskApi = {
   content?: string;
 };
 
-async function sendEmail(prefixCompany:string, data: any) {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.hostinger.com',
-    port: 465,
-    secure: true,
-    requireTLS: true,
-    auth: {
-      user: 'sender@bid.log.br',
-      pass: 'Sender@bid#123',
-    },
-    logger: true,
-  });
-
-  const mailData = {
-    from: '"Tabelas (bid.log.br)" <sender@bid.log.br>',
-    to: 'tabelas@bid.log.br',
-    subject: `${prefixCompany} - Tabela pelo formulário do site`,
-    text: JSON.stringify(data),
-    headers: { 'x-myheader': 'test header' },
-  };
-
-  transporter.sendMail(mailData, (err) => {
-    if (err) {
-      throw new Error('erro ao enviar email');
-    }
-  });
+async function sendEmail(username:string, data:string) {
+  return MailService.sendEmail(
+    '"Tabelas (bid.log.br)" <sender@bid.log.br>',
+    'tabelas@bid.log.br',
+    `${username} - Tabela pelo formulário do site`,
+    data,
+  );
 }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTaskApi | null>) => {
