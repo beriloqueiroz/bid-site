@@ -114,8 +114,8 @@ export default function CustomerPanel() {
 
       if (!response?.length) {
         if (response?.status === 401) {
-          apply('error', { hasError: true, message: 'Erro de autenticação' });
           clearLogin();
+          apply('error', { hasError: true, message: 'Erro de autenticação' });
           setSending(false);
           return;
         }
@@ -164,8 +164,8 @@ export default function CustomerPanel() {
       } = await res.json();
 
       if (status === 401) {
-        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
         clearLogin();
+        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
         return;
       }
 

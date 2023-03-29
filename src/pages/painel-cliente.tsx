@@ -198,7 +198,7 @@ export default function CustomerPanel() {
         setDownloading(false);
         return;
       }
-      router.push('/model.csv');
+      router.push('/model.xlsx');
       setDownloading(false);
     } catch (err) {
       apply('error', { hasError: true, message: `${err}` });
@@ -219,6 +219,14 @@ export default function CustomerPanel() {
       return;
     }
     setCep(e.target.value);
+    if (e.target.value.length < 8) {
+      const cepWithKebec = e.target.value.replaceAll('-', '');
+      setCep(cepWithKebec);
+    }
+    if (e.target.value.length >= 8 && isNumber(e.target.value)) {
+      const cepWithKebec = `${e.target.value.substring(0, 5)}-${e.target.value.substring(5, 8)}`;
+      setCep(cepWithKebec);
+    }
     if (e.target.value.length >= 8) {
       try {
         const res = await fetch(`/api/getInfosByCep?cep=${e.target.value}`, {
@@ -552,7 +560,7 @@ export default function CustomerPanel() {
                     alertRequired={requiredError && declaredValue === 0}
                   />
                   <InputForm
-                    label="Preço"
+                    label="Preço do envio"
                     type="text"
                     name="preco"
                     id="preco"

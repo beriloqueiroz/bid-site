@@ -25,10 +25,13 @@ export default function Presentation() {
           .
           Selecionamos e treinamos cuidadosamente nossa equipe de entregadores, garantindo a confiança e a
           qualidade do serviço prestado. Além disso, oferecemos
+          {' '}
           <strong>preços</strong>
           {' '}
           justos e
+          {' '}
           <strong>competitivos</strong>
+          {' '}
           para que você possa realizar suas entregas sem preocupações. Conte conosco para uma entrega rápida e eficiente.
 
         </p>

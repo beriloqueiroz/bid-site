@@ -54,7 +54,7 @@ function getDescStatus(taskStatus: string, notes?: string, imageArry?: string[])
       out: TaskStatus.UPDATED_DELIVERY_DATA,
     },
   ];
-  const getDescStatusRet = st.find((s) => s?.in === taskStatus);
+  const getDescStatusRet = st.find((s) => s?.in === taskStatus.toString());
 
   if (getDescStatusRet) return getDescStatusRet.out;
 

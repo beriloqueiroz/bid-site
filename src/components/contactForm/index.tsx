@@ -23,9 +23,11 @@ export default function ContactForm() {
   function onChangeEmail(e: ChangeEvent<HTMLInputElement>) {
     setErrorEmail(false);
     setEmail(e.target.value);
+    setSubmitted(false);
   }
   function onChangePhone(e: ChangeEvent<HTMLInputElement>) {
     setErrorPhone(false);
+    setSubmitted(false);
     const { value } = e.target;
     if (value.length > 14) {
       return;
@@ -38,6 +40,15 @@ export default function ContactForm() {
       const number = value.substring(2, value.length);
       setPhone(`(${ddd}) ${number}`);
     }
+  }
+
+  function onChangeName(e: ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value);
+    setSubmitted(false);
+  }
+  function onChangeMessage(e: ChangeEvent<HTMLInputElement>) {
+    setMessage(e.target.value);
+    setSubmitted(false);
   }
 
   const handleSubmit = (e: any) => {
@@ -117,7 +128,7 @@ export default function ContactForm() {
               placeholder="João da Silva"
               isRequired
               alertRequired={requiredError && name === ''}
-              setOnChange={setName}
+              onChange={onChangeName}
               value={name}
             />
             <InputForm
@@ -147,7 +158,7 @@ export default function ContactForm() {
               name="mensagem"
               id="message"
               placeholder="Olá, gostaria de solicitar uma ..."
-              setOnChange={setMessage}
+              onChange={onChangeMessage}
               value={message}
               isTextArea
             />
@@ -165,7 +176,7 @@ export default function ContactForm() {
                 ))}
             {submitted && !geralError && (
             <span className={styles.successMessage}>
-              Sucesso ao enviar informações. Bm breve entraremos em contato.
+              Sucesso ao enviar informações. Em breve entraremos em contato.
             </span>
             )}
           </form>

@@ -42,6 +42,7 @@ export default function LoginForm({ isPrivate }:Props) {
     setUser('');
     setPassword('');
     cleanLogin();
+    setSendingLogin(false);
   }
 
   async function getOptionsAccounts() {
@@ -111,8 +112,8 @@ export default function LoginForm({ isPrivate }:Props) {
       } = await res.json();
 
       if (status === 401) {
-        apply('error', { hasError: true, message: 'Autenticação inválida' });
         clearLogin();
+        apply('error', { hasError: true, message: 'Autenticação inválida' });
         throw new Error(`${error}`);
       }
       apply('user', {
@@ -151,15 +152,21 @@ export default function LoginForm({ isPrivate }:Props) {
 
       const { status, error, content }: ResponseLoginApi = await res.json();
 
-      if (status !== 200 || !content || !content.token || !content.id || !content.userName) {
-        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
+      if (status !== 200) {
         clearLogin();
+        apply('error', { hasError: true, message: `Erro de autenticação ${error}` });
+        return;
+      }
+
+      if (!content || !content.token || !content.id || !content.userName) {
+        clearLogin();
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         return;
       }
 
       if (!content.isAdmin && isPrivate) {
-        apply('error', { hasError: true, message: 'Erro de autenticação' });
         clearLogin();
+        apply('error', { hasError: true, message: 'Erro de autenticação' });
         return;
       }
 

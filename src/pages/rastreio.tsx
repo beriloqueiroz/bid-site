@@ -88,7 +88,7 @@ export default function Rastreio() {
     const tracking = async (orderTrackApi: string) => {
       setSending(true);
       setError(false);
-      setIsPrivate(!!router.query.private);
+
       const responseApi = await axios.get(`/api/tracking?order=${orderTrackApi}`, {
         headers: {
           Accept: 'application/json, text/plain, */*',
@@ -105,6 +105,18 @@ export default function Rastreio() {
     };
     if (router.query.order) {
       tracking(router.query.order.toString());
+    }
+    if (router.query.private === 'false') {
+      setIsPrivate(false);
+      window.localStorage.removeItem('private');
+    }
+    if (router.query.private === 'true') {
+      setIsPrivate(true);
+      window.localStorage.setItem('private', 'true');
+    }
+    const localPrivate = window.localStorage.getItem('private');
+    if (!!localPrivate && !isPrivate) {
+      setIsPrivate(true);
     }
   }, [router.query]);
 

@@ -15,10 +15,12 @@ export default function About() {
           é simplificar e otimizar a operação de entregas por meio de soluções inteligentes. Almejamos a
           {' '}
           <strong>Visão</strong>
+          {' '}
           de ser reconhecidos como referência em entregas rápidas,
           confiáveis e eficientes em Fortaleza. Para alcançar esse objetivo, norteamos nossas ações pelos
           {' '}
           <strong>Valores</strong>
+          {' '}
           de respeito, honestidade, cordialidade, inteligência e agilidade.
         </p>
         <h2>Onde atuamos</h2>
@@ -50,6 +52,7 @@ export default function About() {
           , velocidade e um
           {' '}
           <strong>preço competitivo</strong>
+          {' '}
           em nossos serviços de entrega.
           Oferecemos serviços de entrega D+1, expressa e logística reversa para
           atender às necessidades de sua empresa. Realizamos a coleta das encomendas
