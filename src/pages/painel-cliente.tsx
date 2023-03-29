@@ -246,7 +246,7 @@ export default function CustomerPanel() {
         }
 
         if (!content) {
-          apply('error', { hasError: true, message: `Erro  ${error}` });
+          apply('error', { hasError: true, message: 'Cep inválido ou fora da região atendida' });
           return;
         }
 
