@@ -1,6 +1,6 @@
+/* eslint-disable prefer-destructuring */
 import { connection } from '@/lib/db/mysql/factory';
 import { AccountInfo, TrackingTaskConfig } from '@/lib/types/AccountInfo';
-import { IAccountInfosService } from '../IAccountInfosService';
 
 async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConfig[]> {
   const statment = 'SELECT * FROM `delivery_accont` WHERE `enabled`=true;';
@@ -78,6 +78,7 @@ async function getAccountInfoByAccountID(accountId :string): Promise<AccountInfo
                     join clients_price cp on c.id=cp.client_id
                     where da.id=? and da.enabled=true;`;
   let conn = null;
+  let res = null;
   try {
     conn = await connection();
   } catch (e) {
@@ -86,11 +87,15 @@ async function getAccountInfoByAccountID(accountId :string): Promise<AccountInfo
   if (!conn) {
     return null;
   }
-  const result = await conn.query(statment, [accountId]) as any[][];
-  const res = result[0][0];
-  conn.end();
+  try {
+    const result = await conn.query(statment, [accountId]) as any[][];
+    res = result[0][0];
+    conn.end();
+  } catch (e) {
+    return null;
+  }
 
-  if (!result[0][0]) return null;
+  if (!res) return null;
 
   return {
     key: res.auth_key,
@@ -118,4 +123,4 @@ async function getAccountInfoByAccountID(accountId :string): Promise<AccountInfo
   };
 }
 
-export const accountInfosSQL: IAccountInfosService = { getTrackingKeysByUserID, getAccountInfosByUserID, getAccountInfoByAccountID };
+export const accountInfosSQL = { getAccountInfoByAccountID, getAccountInfosByUserID, getTrackingKeysByUserID };
