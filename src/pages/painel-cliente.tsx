@@ -212,6 +212,8 @@ export default function CustomerPanel() {
   };
 
   const getInfosByCep = async (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
+    apply('error', { hasError: false, message: '' });
+
     if (!isNumber(e.target.value.slice(-1)) && e.target.value.length > 0) {
       return;
     }
@@ -219,15 +221,16 @@ export default function CustomerPanel() {
       return;
     }
     setCep(e.target.value);
-    if (e.target.value.length < 8) {
-      const cepWithKebec = e.target.value.replaceAll('-', '');
-      setCep(cepWithKebec);
+
+    if (e.target.value.length <= 8) {
+      const cepWithoutKebec = e.target.value.replaceAll('-', '');
+      setCep(cepWithoutKebec);
     }
     if (e.target.value.length >= 8 && isNumber(e.target.value)) {
       const cepWithKebec = `${e.target.value.substring(0, 5)}-${e.target.value.substring(5, 8)}`;
       setCep(cepWithKebec);
     }
-    if (e.target.value.length >= 8) {
+    if (e.target.value.replaceAll('-', '').length >= 8) {
       try {
         const res = await fetch(`/api/getInfosByCep?cep=${e.target.value}`, {
           method: 'GET',
