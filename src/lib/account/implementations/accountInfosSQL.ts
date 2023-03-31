@@ -5,6 +5,7 @@ import { AccountInfo, TrackingTaskConfig } from '@/lib/types/AccountInfo';
 async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConfig[]> {
   const statment = 'SELECT * FROM `delivery_accont` WHERE `enabled`=true;';
   let conn = null;
+  let result = [];
   try {
     conn = await connection();
   } catch (e) {
@@ -13,7 +14,11 @@ async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConf
   if (!conn) {
     return [];
   }
-  const result = await conn.query(statment, [userID]) as any[][];
+  try {
+    result = await conn.query(statment, [userID]) as any[][];
+  } catch (e) {
+    return [];
+  }
   const res = result[0];
   conn.end();
 

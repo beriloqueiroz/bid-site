@@ -1,6 +1,6 @@
 import { loginService } from '@/lib/user/login/ILogin';
-import { ceps } from '@/lib/helpers/ceps';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { cepService } from '@/lib/cep/ICepsInfoService';
 
 export type ResponseCepApi = {
   status: number;
@@ -14,10 +14,6 @@ export type ResponseCepApi = {
   };
 };
 
-const getInfosByCEP = async (cep: string) => {
-  const infos = ceps.find((elem) => elem.cep === cep);
-  return infos;
-};
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi | null>) => {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -45,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseCepApi 
 
   try {
     const param = req.query;
-    const infos = await getInfosByCEP(`${param.cep}`);
+    const infos = await cepService.getCepInfo(`${param.cep}`);
     res.status(200).json({ status: 200, error: null, content: infos });
   } catch (e) {
     res.status(500).json({ status: 500, error: 'Erro interno' });
