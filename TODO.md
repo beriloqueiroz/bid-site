@@ -1,3 +1,4 @@
 # TODO
 
-- usar xlsx no lugar do csv no uploadDirect
+- swagger
+- atualizar lib do redux
