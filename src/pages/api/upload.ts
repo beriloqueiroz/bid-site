@@ -43,7 +43,7 @@ type Template =
 async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
   const responses: ContentResponseUpload[] = [];
 
-  const tasks = await xlsxToJson(url.toString()) as Template[];
+  const tasks = await xlsxToJson(url.toString(), 'main') as Template[];
 
   for (const task of tasks) {
     const orderNumber = task.Pedido;
@@ -61,7 +61,7 @@ async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
         task.Nome,
         task['Valor da mercadoria'],
         accountInfos,
-        task.Celular,
+        task.Celular.toString(),
         task['Categoria de envio'],
       );
 

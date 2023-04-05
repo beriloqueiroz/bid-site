@@ -28,7 +28,7 @@ export function mountSendTask(
     address: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${cep} Brazil`,
     complement: `${complement}, ${reference}`,
     phone,
-    name: `[${orderNumber}] ${recipient}`,
+    name: `[${type.replace('+', '')}][${orderNumber}] ${recipient}`,
     value: price.toString(),
     startDate: startDate || `${dateByDeliveryType(type).format('YYYY-MM-DD')}T10:00:00.830Z`,
     endDate: endDate || `${dateByDeliveryType(type).format('YYYY-MM-DD')}T23:00:00.830Z`,

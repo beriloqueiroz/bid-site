@@ -281,4 +281,13 @@
       }
     }
   }
+
+  .successMessage {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-size: 20px;
+    text-align: center;
+    color: var(--color-success-1);
+    font-weight: 700;
+  }
 }

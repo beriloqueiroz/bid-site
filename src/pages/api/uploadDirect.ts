@@ -40,16 +40,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     return;
   }
 
-  const prefixCompany = req.headers['x-username'];
+  const username = req.headers['x-username'];
   const tokenSession = req.headers['x-token'];
   const account = req.headers['x-account'];
 
-  if (!prefixCompany || !tokenSession || !account) {
+  if (!username || !tokenSession || !account) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
-  const { token, id, isAdmin } = await loginService.authenticate(prefixCompany.toString(), tokenSession.toString());
+  const { token, id, isAdmin } = await loginService.authenticate(username.toString(), tokenSession.toString());
 
   if (!token || !id) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
@@ -59,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
   const configSendTask = await accountService.getAccountInfoByAccountID(account.toString());
 
   if (!configSendTask) {
-    res.status(500).json({ status: 500, error: `sem configuração encontrada, user ${id}` });
+    res.status(500).json({ status: 500, error: `sem configuração encontrada, account ${id}` });
     return;
   }
 
@@ -77,9 +77,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
     const { files } = await parseForm(req, false, true);
 
     const file = files.media;
-    const url = Array.isArray(file) ? file.map((f) => f.filepath) : file.filepath;
+    const url = Array.isArray(file) ? file.map((f) => f.filepath)[0] : file.filepath;
 
-    const tasks = await xlsxToJson(url.toString()) as Template[];
+    const tasks = await xlsxToJson(url.toString(), 'model_admin') as Template[];
 
     for (const task of tasks) {
       try {

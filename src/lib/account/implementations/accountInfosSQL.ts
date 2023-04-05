@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 import { connection } from '@/lib/db/mysql/factory';
-import { AccountInfo, TrackingTaskConfig } from '@/lib/types/AccountInfo';
+import { Account, AccountInfo, TrackingTaskConfig } from '@/lib/types/AccountInfo';
 
 async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConfig[]> {
   const statment = 'SELECT * FROM `delivery_accont` WHERE `enabled`=true;';
@@ -75,13 +75,8 @@ async function getAccountInfosByUserID(userID: string): Promise<AccountInfo | nu
     },
   };
 }
-async function getAccountInfoByAccountID(accountId :string): Promise<AccountInfo | null> {
-  const statment = `select da.*, c.*, cp.* from delivery_accont da 
-                    join clients_config cc on cc.account_to_send=da.id 
-                    join users u on u.client_id=cc.client_id 
-                    join clients c on c.id=u.client_id
-                    join clients_price cp on c.id=cp.client_id
-                    where da.id=? and da.enabled=true;`;
+async function getAccountInfoByAccountID(accountId :string): Promise<Account | null> {
+  const statment = 'select da.* from delivery_accont da where da.id=? and da.enabled=true;';
   let conn = null;
   let res = null;
   try {
@@ -108,23 +103,6 @@ async function getAccountInfoByAccountID(accountId :string): Promise<AccountInfo
     team: res.team,
     model: res.model,
     rule: res.rule,
-    client: {
-      prefix: res.prefix,
-      address: res.address,
-      allowInlote: res.allow_inlote,
-      corporateName: res.corporate_name,
-      name: res.name,
-      prices: {
-        capital: {
-          d: res.d_capital as number,
-          d1: res.d1_capital as number,
-        },
-        metropolitana: {
-          d: res.d_metropolitana as number,
-          d1: res.d1_metropolitana as number,
-        },
-      },
-    },
   };
 }
 

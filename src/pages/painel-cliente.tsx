@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import { useApply, useReducers } from '@/lib/redux/hooks';
 import LoginForm from '@/components/login';
 import Error from '@/components/error';
-import { calculePrice, isNumber } from '@/lib/helpers/rules';
+import { calculePrice, isNumber, dateByDeliveryType } from '@/lib/helpers/rules';
 import {
   initialAccountsToSend, initialClient, initialError, initialUser,
 } from '@/lib/redux/state/initial';
@@ -50,6 +50,7 @@ export default function CustomerPanel() {
   const [type, setType] = useState('');
   const [price, setPrice] = useState('10');
   const [declaredValue, setValueDeclared] = useState(0);
+  const [isClear, setIsClear] = useState(false);
 
   const [inLote, setInLote] = useState(false);
   const [optionsSelect] = useState<OptionSelect[]>([
@@ -206,8 +207,13 @@ export default function CustomerPanel() {
   }
 
   const handleKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
+    setIsClear(false);
+
     if (e.key === 'Enter') {
       e.preventDefault();
+    }
+    if (e.key === 'Backspace') {
+      setIsClear(true);
     }
   };
 
@@ -349,12 +355,17 @@ export default function CustomerPanel() {
 
   function onChangePhone(e: ChangeEvent<HTMLInputElement>) {
     const { value } = e.target;
+    if (!isNumber(value.replaceAll('(', '').replaceAll(') ', '')) && !isClear) {
+      return;
+    }
     if (value.length > 14) {
       return;
     }
-    setPhone(value);
+    setPhone(e.target.value);
 
-    if (value.length > 0 && value.length < 10 && value.indexOf('(') >= 0) { setPhone(value.replaceAll('(', '').replaceAll(') ', '')); } else
+    if (value.length > 0 && value.length < 10 && value.indexOf('(') >= 0) {
+      setPhone(value.replaceAll('(', '').replaceAll(') ', ''));
+    } else
     if (value.length === 10 && value.indexOf('(') < 0) {
       const ddd = value.substring(0, 2);
       const cellNumber = value.substring(2, value.length);
@@ -574,7 +585,19 @@ export default function CustomerPanel() {
                     onKeyDown={handleKeypress}
                     disable
                     classPlus={style.ilast_half}
-
+                  />
+                  <InputForm
+                    label="Previsão de entrega"
+                    type="text"
+                    name="previsao"
+                    id="previsao"
+                    placeholder=""
+                    isRequired
+                    setOnChange={setPrice}
+                    value={dateByDeliveryType(type, false).format('DD/MM/YYYY')}
+                    onKeyDown={handleKeypress}
+                    disable
+                    classPlus={style.ilast_half}
                   />
                   <Button
                     handleSubmit={individualHandleSubmit}
@@ -634,7 +657,7 @@ export default function CustomerPanel() {
             )}
           </div>
         )}
-        {submitted && !hasError && <span className={style.successMessage}>Sucesso ao enviar.</span>}
+        {submitted && !hasError && <div className={style.successMessage}>Sucesso ao enviar.</div>}
         {submitted && inloteResult.map((res) => (
           <div className={`${style.inlotResultMessage} ${res.error ? `${style.inlotError}` : `${style.inlotSuccess}`}`}>
             pedido:

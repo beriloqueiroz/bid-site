@@ -9,6 +9,14 @@ export interface AccountInfo {
   client: Client;
 }
 
+export interface Account {
+  key: string;
+  driver:string;
+  team:string;
+  rule:string;
+  model:string;
+}
+
 export interface TrackingTaskConfig {
   key: string;
   name: string;

@@ -217,7 +217,7 @@ async function sendTask({
   if (moment(startDate).isBefore(moment(now)) || moment(endDate).isBefore(moment(now))) {
     return {
       content: null,
-      error: 'Pedido com data antes de hoje',
+      error: 'Pedido com data antes de hoje, verifique se os campos de data estão como texto',
     };
   }
 

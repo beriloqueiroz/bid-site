@@ -24,7 +24,7 @@ export default function CustomerPanel() {
   const [requiredError, setRequiredError] = useState(false);
 
   const [resultLog, setResultLog] = useState<ResponseUploadApi[]>([]);
-  const [account, setAccount] = useState('');
+  const [account, setAccount] = useState('1');
 
   const apply = useApply();
 
