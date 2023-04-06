@@ -58,7 +58,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
   } = JSON.parse(req.body);
 
   try {
-    await sendEmail(username.toString(), JSON.stringify(req.body));
+    await sendEmail(username.toString(), JSON.stringify({
+      street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type, declaredValue, orderNumber,
+    }));
   } catch (error) {
     res.status(500).json({ status: 500, error: `erro ao enviar email ${error}` });
   }

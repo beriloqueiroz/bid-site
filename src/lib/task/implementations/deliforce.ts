@@ -237,7 +237,7 @@ async function sendTask({
     timezone: 'America/Fortaleza',
     driverId: driver,
     teamId: team,
-    customerNotes: reference,
+    customerNotes: reference || '',
     description,
     jobAmount: value,
     driverType: 1,
