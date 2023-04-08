@@ -23,6 +23,7 @@ export interface Props {
   children?: ReactNode;
   isSelect?: boolean;
   optionsSelect?: OptionSelect[];
+  destac?:boolean
 }
 
 export type OptionSelect = {

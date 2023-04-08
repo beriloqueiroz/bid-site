@@ -572,7 +572,7 @@ export default function CustomerPanel() {
                     alertRequired={requiredError && type === ''}
                   />
                   <InputForm
-                    label="Valor da mercadoria"
+                    label="Valor da mercadoria *"
                     littleLabel="É o valor que será devolvido caso o pacote seja 'perdido'"
                     type="text"
                     name="value"
@@ -597,6 +597,7 @@ export default function CustomerPanel() {
                     onKeyDown={handleKeypress}
                     disable
                     classPlus={style.ilast_half}
+                    destac
                   />
                   <InputForm
                     label="Previsão de entrega"

@@ -51,4 +51,17 @@
     border: 2px solid var(--color-error);
     background-color: var(--color-error);
   }
+
+  .destac {
+    font-weight: 700;
+    color: var(--color-primary-2);
+  }
+
+  .destac_input {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary-2);
+    border: 2px solid var(--color-primary-2);
+    padding: 0.4rem;
+  }
 }
