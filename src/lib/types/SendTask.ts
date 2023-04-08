@@ -17,4 +17,5 @@ export type SendTask = {
   team:string;
   rule:string;
   model:string;
+  declaredValue:string;
 };

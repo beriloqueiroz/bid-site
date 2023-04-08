@@ -43,6 +43,7 @@ export function mountSendTask(
     model,
     rule,
     team,
+    declaredValue: declaredValue.toString(),
   };
   return data;
 }

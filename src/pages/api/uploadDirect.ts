@@ -28,7 +28,8 @@ type Template =
     Complete_Before: string,
     tipo: string,
     valor: string,
-    'valor entrega': string
+    'valor entrega': string,
+    'valor declarado': string,
   };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi | ResponseUploadApi[]>) => {
@@ -90,7 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           phone: task.Phone_number,
           name: task.Name,
           value: task.valor,
-          valueDriver: task['valor entrega'],
+          valueDriver: `${task['valor entrega']}`,
           startDate: `${moment(new Date(task.Start_Before)).format('YYYY-MM-DD')}T08:00:00.830Z`,
           endDate: `${moment(new Date(task.Complete_Before)).format('YYYY-MM-DD')}T23:00:00.830Z`,
           reference: task.notes,
@@ -103,6 +104,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           model,
           rule,
           team,
+          declaredValue: `${task['valor declarado']}`,
         };
         const response = await deliveryService.sendTask(data);
         if (response?.error || !response?.content) {
