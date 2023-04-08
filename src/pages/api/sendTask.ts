@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
   const { client } = accountInfos;
 
   try {
-    const order = !orderNumber || orderNumber === '' ? `${client.prefix}-${randomInt(100000)}` : orderNumber;
+    const order = !orderNumber || orderNumber === '' ? `${client.prefix}-${randomInt(100000)}` : `${client.prefix}-${orderNumber}`;
     const data = mountSendTask(
       street,
       number,

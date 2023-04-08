@@ -51,6 +51,7 @@ export default function CustomerPanel() {
   const [price, setPrice] = useState('10');
   const [declaredValue, setValueDeclared] = useState(0);
   const [isClear, setIsClear] = useState(false);
+  const [dotNumberWait, setDotNumberWait] = useState(false);
 
   const [inLote, setInLote] = useState(false);
   const [optionsSelect] = useState<OptionSelect[]>([
@@ -263,7 +264,7 @@ export default function CustomerPanel() {
         setNeighborhood(content.bairro);
         setCity(content.cidade);
         setState(content.estado);
-        setPrice(calculePrice(declaredValue, type, content.cidade, client).toString());
+        setPrice(calculePrice(Number(declaredValue), type, content.cidade, client).toString());
       } catch (error) {
         apply('error', { hasError: true, message: `${error}` });
       }
@@ -286,7 +287,8 @@ export default function CustomerPanel() {
         return;
       }
 
-      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || type === '' || declaredValue === 0) {
+      if (street === '' || number === '' || neighborhood === '' || city === '' || state === '' || cep === '' || type === ''
+      || declaredValue === 0) {
         apply('error', { hasError: true, message: 'preencha todos os campos obrigatórios, os campos obrigatórios possuem *' });
         setRequiredError(true);
         return;
@@ -374,15 +376,25 @@ export default function CustomerPanel() {
   }
 
   function onChangeValue(e: ChangeEvent<HTMLInputElement>) {
-    if (isNumber(e.target.value)) {
-      setValueDeclared(Number(e.target.value));
-      setPrice(calculePrice(Number(e.target.value), type, city, client).toString());
+    if (e.target.value.indexOf('.') >= 0) {
+      return;
+    }
+    if (e.target.value.indexOf(',') >= e.target.value.length - 1 && e.target.value.length && !isClear) {
+      // setValueDeclared(Number(e.target.value.replace(',', '.')));
+      setDotNumberWait(true);
+      return;
+    }
+    const targetValue = e.target.value.replace(',', '.');
+    if (isNumber(targetValue)) {
+      setValueDeclared(Number(targetValue));
+      setPrice(calculePrice(Number(targetValue), type, city, client).toString());
+      setDotNumberWait(false);
     }
   }
 
   function onChangeType(e: ChangeEvent<HTMLSelectElement>) {
     setType(e.target.value);
-    setPrice(calculePrice(declaredValue, e.target.value, city, client).toString());
+    setPrice(calculePrice(Number(declaredValue), e.target.value, city, client).toString());
   }
 
   return (
@@ -407,7 +419,7 @@ export default function CustomerPanel() {
                     type="text"
                     name="pedido"
                     id="pedido"
-                    placeholder="PREFIX-12366"
+                    placeholder="123456"
                     isRequired={false}
                     setOnChange={setOrderNumber}
                     value={orderNumber}
@@ -567,7 +579,7 @@ export default function CustomerPanel() {
                     id="value"
                     placeholder="150"
                     onChange={onChangeValue}
-                    value={`${declaredValue}`}
+                    value={`${declaredValue.toString().replace('.', ',')}${dotNumberWait ? ',' : ''}`}
                     onKeyDown={handleKeypress}
                     classPlus={style.ilast_half}
                     isRequired
@@ -581,7 +593,7 @@ export default function CustomerPanel() {
                     placeholder="R$ --"
                     isRequired
                     setOnChange={setPrice}
-                    value={`R$ ${price}`}
+                    value={`R$ ${price.replace('.', ',')}`}
                     onKeyDown={handleKeypress}
                     disable
                     classPlus={style.ilast_half}
@@ -593,9 +605,7 @@ export default function CustomerPanel() {
                     id="previsao"
                     placeholder=""
                     isRequired
-                    setOnChange={setPrice}
                     value={dateByDeliveryType(type, false).format('DD/MM/YYYY')}
-                    onKeyDown={handleKeypress}
                     disable
                     classPlus={style.ilast_half}
                   />

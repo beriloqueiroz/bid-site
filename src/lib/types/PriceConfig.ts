@@ -6,5 +6,6 @@ export interface PriceConfig {
   metropolitana:{
     d:number,
     d1:number
-  }
+  },
+  gain:number
 }

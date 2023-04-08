@@ -30,7 +30,7 @@ export const initialClient:Client = {
   corporateName: '',
   name: '',
   prefix: '',
-  prices: { capital: { d: 15, d1: 10 }, metropolitana: { d: 20, d1: 15 } },
+  prices: { capital: { d: 15, d1: 10 }, metropolitana: { d: 20, d1: 15 }, gain: 2 },
 };
 
 export const initialAccountsToSend: { content :{ name:string, id:string }[] } = { content: [{ name: '', id: '' }] };

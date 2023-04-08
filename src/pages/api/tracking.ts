@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<TaskLogDTO | null | undefined>) {
   function parseRecipient(value: string) {
     if (value.includes('')) {
-      return value.split(']')[1];
+      return value.split(']')[2];
     }
     return value;
   }

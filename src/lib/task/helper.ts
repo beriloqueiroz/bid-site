@@ -1,4 +1,4 @@
-import { calculePrice, dateByDeliveryType } from '../helpers/rules';
+import { calculeDriverPrice, calculePrice, dateByDeliveryType } from '../helpers/rules';
 import { AccountInfo } from '../types/AccountInfo';
 import { SendTask } from '../types/SendTask';
 
@@ -30,6 +30,7 @@ export function mountSendTask(
     phone,
     name: `[${type.replace('+', '')}][${orderNumber}] ${recipient}`,
     value: price.toString(),
+    valueDriver: calculeDriverPrice(declaredValue, type, city, client).toString(),
     startDate: startDate || `${dateByDeliveryType(type).format('YYYY-MM-DD')}T10:00:00.830Z`,
     endDate: endDate || `${dateByDeliveryType(type).format('YYYY-MM-DD')}T23:00:00.830Z`,
     reference,

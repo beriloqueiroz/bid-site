@@ -48,9 +48,8 @@ export function dateByDeliveryType(type: string, withSub = true): Moment {
 
   return countValidDays(now.toISOString(), forecast);
 }
-
-export function calculePrice(value:number, typeSelected:string, citySelected: string, clientInfos: Client) {
-  let base = 10;
+export function calculePriceBase(value:number, typeSelected:string, citySelected: string, clientInfos: Client) {
+  let base = 15;
   if (typeSelected === 'D') {
     if (citySelected.toLowerCase() === 'fortaleza') {
       base = clientInfos.prices.capital.d;
@@ -61,6 +60,16 @@ export function calculePrice(value:number, typeSelected:string, citySelected: st
       base = clientInfos.prices.capital.d1;
     } else { base = clientInfos.prices.metropolitana.d1; }
   }
+  return base;
+}
+
+export function calculeDriverPrice(value:number, typeSelected:string, citySelected: string, clientInfos: Client) {
+  const base = calculePriceBase(value, typeSelected, citySelected, clientInfos);
+  return base - clientInfos.prices.gain;
+}
+
+export function calculePrice(value:number, typeSelected:string, citySelected: string, clientInfos: Client) {
+  const base = calculePriceBase(value, typeSelected, citySelected, clientInfos);
   if (value < 200) return base;
   return (base * value) / 200;
 }

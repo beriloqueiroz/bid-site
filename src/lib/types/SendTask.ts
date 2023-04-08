@@ -10,6 +10,7 @@ export type SendTask = {
   orderNumber: string;
   description: string;
   value: string;
+  valueDriver: string;
   type: string;
   key: string;
   driver:string;

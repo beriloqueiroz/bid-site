@@ -26,7 +26,7 @@ async function getTrackingKeysByUserID(userID: string): Promise<TrackingTaskConf
     key: row.auth_key,
     name: row.name,
     id: row.id,
-  })) as TrackingTaskConfig[];
+  })).reverse() as TrackingTaskConfig[];
 }
 
 async function getAccountInfosByUserID(userID: string): Promise<AccountInfo | null> {
@@ -63,6 +63,7 @@ async function getAccountInfosByUserID(userID: string): Promise<AccountInfo | nu
       corporateName: res.corporate_name,
       name: res.name,
       prices: {
+        gain: res.gain,
         capital: {
           d: res.d_capital as number,
           d1: res.d1_capital as number,
