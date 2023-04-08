@@ -37,7 +37,7 @@ type Template =
     'Complemento': string,
     'Ponto de referência': string,
     'Categoria de envio': string,
-    'Valor da mercadoria':number
+    'Valor da mercadoria':string
   };
 
 async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
@@ -59,7 +59,7 @@ async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
         task['Ponto de referência'],
         orderNumber,
         task.Nome,
-        task['Valor da mercadoria'],
+        Number(task['Valor da mercadoria'].replace(',', '.')),
         accountInfos,
         task.Celular.toString(),
         task['Categoria de envio'],
