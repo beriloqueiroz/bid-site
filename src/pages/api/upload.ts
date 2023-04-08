@@ -59,7 +59,7 @@ async function sendTasksbyFile(url: string, accountInfos: AccountInfo) {
         task['Ponto de referência'],
         orderNumber,
         task.Nome,
-        Number(task['Valor da mercadoria'].replace(',', '.')),
+        Number(task['Valor da mercadoria'].toString().replace(',', '.')),
         accountInfos,
         task.Celular.toString(),
         task['Categoria de envio'],
