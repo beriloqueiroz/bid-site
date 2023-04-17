@@ -1,10 +1,9 @@
+import { accountService } from '@/lib/account/IAccountInfosService';
 import { deliveryService } from '@/lib/task/IDeliveryService';
+import { mountSendTask } from '@/lib/task/helper';
+import { loginService } from '@/lib/user/login/ILogin';
 import { randomInt } from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { loginService } from '@/lib/user/login/ILogin';
-import { accountService } from '@/lib/account/IAccountInfosService';
-import { mountSendTask } from '@/lib/task/helper';
-import { MailService } from '@/lib/mail/IMailService';
 
 export type ResponseSendTaskApi = {
   status: number;
@@ -12,14 +11,14 @@ export type ResponseSendTaskApi = {
   content?: string;
 };
 
-async function sendEmail(username:string, data:string) {
-  return MailService.sendEmail(
-    '"Tabelas (bid.log.br)" <sender@bid.log.br>',
-    'tabelas@bid.log.br',
-    `${username} - Tabela pelo formulário do site`,
-    data,
-  );
-}
+// async function sendEmail(username:string, data:string) {
+//   return MailService.sendEmail(
+//     '"Tabelas (bid.log.br)" <sender@bid.log.br>',
+//     'tabelas@bid.log.br',
+//     `${username} - Tabela pelo formulário do site`,
+//     data,
+//   );
+// }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTaskApi | null>) => {
   if (req.method !== 'POST') {
@@ -57,13 +56,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseSendTas
     street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type, declaredValue, orderNumber,
   } = JSON.parse(req.body);
 
-  try {
-    await sendEmail(username.toString(), JSON.stringify({
-      street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type, declaredValue, orderNumber,
-    }));
-  } catch (error) {
-    res.status(500).json({ status: 500, error: `erro ao enviar email ${error}` });
-  }
+  // try {
+  //   await sendEmail(username.toString(), JSON.stringify({
+  //     street, number, neighborhood, city, state, cep, complement, reference, phone, recipient, type, declaredValue, orderNumber,
+  //   }));
+  // } catch (error) {
+  //   res.status(500).json({ status: 500, error: 'erro ao enviar email' });
+  // }
 
   const { client } = accountInfos;
 
