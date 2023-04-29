@@ -9,8 +9,8 @@ export type ResponseLoginApi = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginApi | null>) => {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
     res.status(405).json({
       status: 405,
       error: 'Method Not Allowed',
@@ -19,22 +19,40 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseLoginAp
   }
 
   const username = req.headers['x-username'];
-  const passCompany = req.headers['x-authentication'];
+  const tokenSession = req.headers['x-token'];
 
-  if (!username || !passCompany) {
+  if (!username || !tokenSession) {
+    res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
+    return;
+  }
+
+  const authResp = await loginService.authenticate(username.toString(), tokenSession.toString());
+
+  if (!authResp.token || !authResp.id) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
 
   const {
+    newUsername,
+    oldPassword,
+    newPassword,
+  } = JSON.parse(req.body);
+
+  const {
     token, isAdmin, id, userName,
-  } = await loginService.login(username.toString(), passCompany.toString());
+  } = await loginService.edit(
+    username.toString(),
+    authResp.token,
+    oldPassword,
+    newUsername,
+    newPassword,
+  );
 
   if (!token) {
     res.status(401).json({ status: 401, error: 'Credenciais inválidas' });
     return;
   }
-
   try {
     res.status(200).json({
       status: 200,

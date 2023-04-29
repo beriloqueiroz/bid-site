@@ -1,0 +1,7 @@
+.section {
+  padding: 100px 1rem;
+
+  @media (min-width: 768px) {
+    padding-top: 150px;
+  }
+}

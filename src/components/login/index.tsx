@@ -1,5 +1,7 @@
 /* eslint-disable react/require-default-props */
 import Button from '@/components/button';
+import { Button as ButtonR } from 'react-bootstrap';
+
 import InputForm from '@/components/inputForm';
 import { useApply, useReducers } from '@/lib/redux/hooks';
 
@@ -11,6 +13,7 @@ import {
 } from '@/lib/redux/state/initial';
 import { DataGetAccount } from '@/pages/api/getAccountInfos';
 import style from './style.module.scss';
+import EditUserForm from '../editUser';
 
 interface Props {
   isPrivate?:boolean;
@@ -22,6 +25,7 @@ export default function LoginForm({ isPrivate }:Props) {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [requiredError, setRequiredError] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
   const {
     isLogged, identification, token, userName,
@@ -113,8 +117,8 @@ export default function LoginForm({ isPrivate }:Props) {
 
       if (status === 401) {
         clearLogin();
-        apply('error', { hasError: true, message: 'Autenticação inválida' });
-        throw new Error(`${error}`);
+        apply('error', { hasError: true, message: `Autenticação inválida${error}` });
+        return;
       }
       apply('user', {
         isLogged: true, userName: usernameSession, identification: useridSession, token: tokenSession,
@@ -250,11 +254,17 @@ export default function LoginForm({ isPrivate }:Props) {
       </>
       )}
       {isLogged && (
-      <h2>
-        Usuário logado:
-        {' '}
-        {userName}
-      </h2>
+        <>
+          <div className="d-flex flex-row">
+            <h2>
+              Usuário logado:
+              {' '}
+              {userName}
+            </h2>
+            <ButtonR onClick={() => setShowEdit(!showEdit)}>{!showEdit ? 'Editar usuário /ou senha' : 'Cancelar edição'}</ButtonR>
+          </div>
+          {showEdit && <EditUserForm afterEdit={() => setShowEdit(false)} />}
+        </>
       )}
       <Button handleSubmit={!isLogged ? login : logout} sending={sendingLogin} text={!isLogged ? 'Entrar' : 'Sair'} id="login" type="submit" />
     </form>

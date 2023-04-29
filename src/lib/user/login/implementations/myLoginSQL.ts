@@ -108,4 +108,70 @@ async function logout(user: string, token: string): Promise<void> {
   }
 }
 
-export const myLoginSQL = { login, logout, authenticate };
+async function usernameExist(user:string):Promise<boolean> {
+  const statment = 'SELECT id FROM `users` WHERE `username` = ?';
+  let conn = null;
+  let result = null;
+  try {
+    conn = await connection();
+    result = await conn.query(statment, [user]) as any[][];
+    conn.end();
+  } catch (e) {
+    throw new Error('erro ao fazer consultar usuario');
+  }
+  console.log('🚀 ~ file: myLoginSQL.ts:124 ~ usernameExist ~ result[0][0]:', result[0][0]);
+  return !!result[0][0];
+}
+
+async function edit(user: string, currentToken: string, oldPassword:string, newUser:string, newPassword: string): Promise<authResponse> {
+  const statment = 'SELECT isAdmin, id FROM `users` WHERE `username` = ? AND `password` = ? and `token` = ?';
+  let conn = null;
+  try {
+    conn = await connection();
+  } catch (e) {
+    return { token: null };
+  }
+  if (!conn) {
+    return { token: null };
+  }
+
+  const newUserExist = await usernameExist(newUser);
+  if (newUserExist) {
+    return { token: null };
+  }
+
+  const result = await conn.query(statment, [user, oldPassword, currentToken]) as any[][];
+
+  const statmentUpdate = 'UPDATE `users` SET `username`= ?, `password`= ?, `token` = ? where `id` = ?';
+
+  const tokenRandom = randomUUID();
+
+  if (!result[0][0]) {
+    conn.end();
+    return {
+      token: null,
+    };
+  }
+  const { isAdmin, id } = result[0][0];
+
+  let resultUpdateToken = null;
+  try {
+    resultUpdateToken = await conn.query(statmentUpdate, [newUser, newPassword, tokenRandom, id]);
+  } catch (e) {
+    return { token: null };
+  }
+  conn.end();
+  if (!resultUpdateToken) {
+    return { token: null };
+  }
+  return {
+    token: tokenRandom,
+    isAdmin: !!isAdmin,
+    id,
+    userName: user,
+  };
+}
+
+export const myLoginSQL = {
+  login, logout, authenticate, edit,
+};
