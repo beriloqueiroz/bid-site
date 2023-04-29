@@ -70,6 +70,6 @@ export function calculeDriverPrice(value:number, typeSelected:string, citySelect
 
 export function calculePrice(value:number, typeSelected:string, citySelected: string, clientInfos: Client) {
   const base = calculePriceBase(value, typeSelected, citySelected, clientInfos);
-  if (value < 200) return base;
-  return (base * value) / 200;
+  if (value < 500) return base;
+  return (base * value) / 500;
 }
