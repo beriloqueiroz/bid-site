@@ -50,9 +50,10 @@ export default function ListClients({ infos }: Props) {
 
         if (status !== 200) {
           apply('error', { hasError: true, message: `Erro ${error}` });
-          setCreateSuccess(content);
+          setCreateSuccess(undefined);
           return false;
         }
+        setCreateSuccess(content);
         return true;
       } catch (err) {
         apply('error', { hasError: true, message: 'Erro ' });

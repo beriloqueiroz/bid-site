@@ -204,7 +204,7 @@ async function createAccountInfo(info:AccountInfo):Promise<CreateResponse | null
       [resultId, info.client.prices.capital.d1, info.client.prices.metropolitana.d1,
         info.client.prices.capital.d, info.client.prices.metropolitana.d, 0, 0, info.client.prices.gain],
     );
-    await conn.query(statmentCreateUser, [`${info.client.prefix}1`, `${info.client.prefix}mudar123`, resultId]);
+    await conn.query(statmentCreateUser, [`${info.client.prefix}1`, `${info.client.prefix}123`, resultId]);
     await conn.commit();
   } catch (error) {
     await conn.rollback();
@@ -214,7 +214,7 @@ async function createAccountInfo(info:AccountInfo):Promise<CreateResponse | null
   return {
     ok: true,
     user: `${info.client.prefix}1`,
-    pass: `${info.client.prefix}mudar123`,
+    pass: `${info.client.prefix}123`,
   };
 }
 export const accountInfosSQL = {
