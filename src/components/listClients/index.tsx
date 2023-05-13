@@ -32,6 +32,7 @@ export default function ListClients({ infos }: Props) {
 
   async function handlerCreate(info: AccountInfo): Promise<Boolean> {
     setCreateSuccess({ ok: false, user: '', pass: '' });
+    apply('error', { hasError: false, message: '' });
     if (isLogged) {
       try {
         const res = await fetch('/api/createClient', {
@@ -78,7 +79,7 @@ export default function ListClients({ infos }: Props) {
       </Collapse>
       <Collapse isOpen={create} className="m-3">
         <Button onClick={backList} className="ml-2">Cancelar/voltar</Button>
-        <h2>Cadastrar - em breve</h2>
+        <h2>Cadastrar</h2>
         <ClientForm action={handlerCreate} />
         {createSuccess?.ok && (
         <Alert color="info">
@@ -86,7 +87,6 @@ export default function ListClients({ infos }: Props) {
          o usuário e senha podem ser alterados após fazer o login pelo painel`}
         </Alert>
         )}
-        {!createSuccess?.ok && <Alert color="danger">Erro ao criar cliente</Alert>}
       </Collapse>
       <Collapse isOpen={!edit && !create}>
         <div className="d-flex flex-row">

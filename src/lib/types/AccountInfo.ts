@@ -1,6 +1,7 @@
 import { Client } from './Client';
 
 export interface AccountInfo {
+  keyId?: number;
   key: string;
   driver:string;
   team:string;

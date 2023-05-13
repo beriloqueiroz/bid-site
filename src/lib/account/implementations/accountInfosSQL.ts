@@ -131,6 +131,7 @@ async function listAccountInfos(): Promise<AccountInfo[]> {
 
   return response.map((res) => (
     {
+      keyId: res.id,
       key: res.auth_key,
       driver: res.driver,
       team: res.team,
@@ -198,7 +199,7 @@ async function createAccountInfo(info:AccountInfo):Promise<CreateResponse | null
       [info.client.corporateName, info.client.prefix, info.client.address, info.client.name, 1],
     );
     const resultId = result1[0].insertId;
-    await conn.query(statmentCreateClientConfig, [resultId, 1]);
+    await conn.query(statmentCreateClientConfig, [resultId, info.keyId]);
     await conn.query(
       statmentCreateClientPrice,
       [resultId, info.client.prices.capital.d1, info.client.prices.metropolitana.d1,

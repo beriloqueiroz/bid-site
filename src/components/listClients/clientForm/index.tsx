@@ -1,6 +1,8 @@
 /* eslint-disable react/require-default-props */
-import { useApply } from '@/lib/redux/hooks';
-import { AccountInfo } from '@/lib/types/AccountInfo';
+import InputForm from '@/components/inputForm';
+import Loading from '@/components/loading';
+import { useApply, useReducers } from '@/lib/redux/hooks';
+import { AccountInfo, TrackingTaskConfig } from '@/lib/types/AccountInfo';
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import {
@@ -18,20 +20,26 @@ export default function ClientForm({ action, info, buttonText }:Props) {
   const [name, setName] = useState(info?.client.prefix || '');
   const [corporateName, setCorporateName] = useState(info?.client.prefix || '');
   const [address, setAddress] = useState(info?.client.prefix || '');
-  const [priceCapD, setPriceCapD] = useState(info?.client.prices.capital.d || 15);
+  const [priceCapD, setPriceCapD] = useState(info?.client.prices.capital.d || 17);
   const [priceCapD1, setPriceCapD1] = useState(info?.client.prices.capital.d1 || 17);
-  const [priceMetD, setPriceMetD] = useState(info?.client.prices.metropolitana.d || 28);
+  const [priceMetD, setPriceMetD] = useState(info?.client.prices.metropolitana.d || 22);
   const [priceMetD1, setPriceMetD1] = useState(info?.client.prices.metropolitana.d1 || 22);
-  const [gain, setGain] = useState(info?.client.prices.gain || 4);
+  const [gain, setGain] = useState(info?.client.prices.gain || 6);
+  const [account, setAccount] = useState(info?.keyId || 1);
+  const [loading, setLoading] = useState(false);
+  const {
+    content,
+  } = useReducers('accountsToSend.content');
 
   const apply = useApply();
   function handler() {
+    setLoading(true);
     if (
       prefix === '' || name === '' || corporateName === ''
       || address === '' || priceCapD <= 0 || priceCapD1 <= 0
-      || priceMetD <= 0 || priceMetD1 <= 0 || gain <= 0
+      || priceMetD <= 0 || priceMetD1 <= 0 || gain <= 0 || account <= 0
     ) {
-      apply('error', { hasError: true, message: 'não deize nenhum campo em branco ou com 0' });
+      apply('error', { hasError: true, message: 'não deixe nenhum campo em branco ou com 0' });
       return;
     }
     action({
@@ -53,6 +61,7 @@ export default function ClientForm({ action, info, buttonText }:Props) {
           gain,
         },
       },
+      keyId: account,
       driver: '',
       key: '',
       model: '',
@@ -61,15 +70,17 @@ export default function ClientForm({ action, info, buttonText }:Props) {
     }).then((res) => {
       if (res) {
         setPrefix('');
+        setAccount(1);
         setName('');
         setCorporateName('');
         setAddress('');
-        setPriceCapD(15);
+        setPriceCapD(17);
         setPriceCapD1(17);
-        setPriceMetD(28);
+        setPriceMetD(22);
         setPriceMetD1(22);
-        setGain(4);
+        setGain(6);
       }
+      setLoading(false);
     });
   }
 
@@ -219,9 +230,24 @@ export default function ClientForm({ action, info, buttonText }:Props) {
           value={gain}
           onChange={(e) => setGain(Number(e.target.value))}
         />
-      </FormGroup>
-      <Button onClick={handler}>{buttonText || 'salvar'}</Button>
 
+        <InputForm
+          label="Conta para ser enviada task *"
+          type="text"
+          name="accountEmail"
+          id="accountEmail"
+          placeholder="Selecione"
+          isRequired
+          setOnChange={setAccount}
+          value={account}
+          isSelect
+          optionsSelect={content.map((elem: TrackingTaskConfig) => ({ value: Number(elem.id), content: elem.name }))}
+        />
+      </FormGroup>
+      <Button onClick={handler}>
+        {loading && <Loading />}
+        {!loading && (buttonText || 'salvar')}
+      </Button>
     </div>
   );
 }

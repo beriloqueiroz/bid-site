@@ -8,9 +8,9 @@ export interface Props {
   id: string;
   placeholder: string;
   isRequired?: boolean;
-  setOnChange?: Dispatch<SetStateAction<string>>;
+  setOnChange?: Dispatch<SetStateAction<any>>;
   isTextArea?: boolean;
-  value: string;
+  value: string | number;
   label: string;
   littleLabel?: string;
   onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
