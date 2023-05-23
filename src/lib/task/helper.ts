@@ -34,7 +34,7 @@ export function mountSendTask(
     startDate: startDate || `${dateByDeliveryType(type).format('YYYY-MM-DD')}T10:00:00.830Z`,
     endDate: endDate || `${dateByDeliveryType(type).format('YYYY-MM-DD')}T23:00:00.830Z`,
     reference,
-    description: '', // antes era o clientAddress
+    description: client.address,
     email: 'sender@bid.log.br',
     orderNumber,
     type,
