@@ -200,6 +200,7 @@ async function sendTask({
   rule,
   model,
   declaredValue,
+  clientAddress,
 }: SendTask): Promise<ResponseDefault> {
   const urlbase = process.env.URL_BASE_DELIFORCE;
 
@@ -281,7 +282,15 @@ async function sendTask({
         dataType: 'text',
         mandatoryFields: 'Not-Mandatory',
         permitAgent: 'Read Only',
-        order: 2,
+        order: 3,
+      },
+      {
+        fieldName: 'endereço coleta',
+        fieldValue: clientAddress,
+        dataType: 'text',
+        mandatoryFields: 'Not-Mandatory',
+        permitAgent: 'Read Only',
+        order: 4,
       },
     ],
   };

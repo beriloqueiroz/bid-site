@@ -18,4 +18,5 @@ export type SendTask = {
   rule:string;
   model:string;
   declaredValue:string;
+  clientAddress: string;
 };

@@ -30,6 +30,7 @@ type Template =
     valor: string,
     'valor entrega': string,
     'valor declarado': string,
+    'endereço coleta': string,
   };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadApi | ResponseUploadApi[]>) => {
@@ -105,6 +106,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ResponseUploadA
           rule,
           team,
           declaredValue: `${task['valor declarado']}`,
+          clientAddress: `${task['endereço coleta']}`,
         };
         const response = await deliveryService.sendTask(data);
         if (response?.error || !response?.content) {
